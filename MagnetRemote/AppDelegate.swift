@@ -36,103 +36,55 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         statusItem.menu = menu
     }
 
-    /// Creates a horseshoe magnet icon with signal waves for the menu bar
+    /// Creates a clean horseshoe magnet icon for the menu bar
     private func createMagnetIcon() -> NSImage {
         let size = NSSize(width: 18, height: 18)
         let image = NSImage(size: size, flipped: false) { rect in
-            // Magnet dimensions - shifted left to make room for signal
-            let magnetWidth: CGFloat = 10
-            let magnetHeight: CGFloat = 12
-            let armWidth: CGFloat = 3.0
-            let tipHeight: CGFloat = 2.0
-
-            // Offset magnet to the left to make room for signal waves
-            let offsetX: CGFloat = 1.5
-            let offsetY: CGFloat = (rect.height - magnetHeight) / 2
-
             NSColor.black.setFill()
-            NSColor.black.setStroke()
 
-            // Draw the horseshoe magnet body
+            // Simple, clean horseshoe magnet centered in the icon
             let magnetPath = NSBezierPath()
 
-            // Left arm (bottom to top)
-            let leftArmBottom = NSPoint(x: offsetX, y: offsetY + tipHeight)
-            let leftArmTop = NSPoint(x: offsetX, y: offsetY + magnetHeight - magnetWidth/2)
+            // Dimensions for a clear, recognizable magnet
+            let centerX = rect.width / 2
+            let outerRadius: CGFloat = 7
+            let innerRadius: CGFloat = 4
+            let armLength: CGFloat = 5
 
-            // Right arm (bottom to top)
-            let rightArmBottom = NSPoint(x: offsetX + magnetWidth - armWidth, y: offsetY + tipHeight)
-            let rightArmTop = NSPoint(x: offsetX + magnetWidth - armWidth, y: offsetY + magnetHeight - magnetWidth/2)
+            // Starting points for the arms
+            let leftOuterX = centerX - outerRadius
+            let rightOuterX = centerX + outerRadius
+            let leftInnerX = centerX - innerRadius
+            let rightInnerX = centerX + innerRadius
+            let armBottom: CGFloat = 2
+            let arcCenterY: CGFloat = armBottom + armLength
 
-            // Start from bottom left, go up, arc over, come down
-            magnetPath.move(to: leftArmBottom)
-            magnetPath.line(to: leftArmTop)
-
-            // Top arc
-            let arcCenter = NSPoint(x: offsetX + magnetWidth/2, y: offsetY + magnetHeight - magnetWidth/2)
+            // Draw outer shape: left arm up, arc over, right arm down
+            magnetPath.move(to: NSPoint(x: leftOuterX, y: armBottom))
+            magnetPath.line(to: NSPoint(x: leftOuterX, y: arcCenterY))
             magnetPath.appendArc(
-                withCenter: arcCenter,
-                radius: magnetWidth/2,
+                withCenter: NSPoint(x: centerX, y: arcCenterY),
+                radius: outerRadius,
                 startAngle: 180,
                 endAngle: 0,
                 clockwise: false
             )
+            magnetPath.line(to: NSPoint(x: rightOuterX, y: armBottom))
 
-            // Down the right side
-            magnetPath.line(to: NSPoint(x: offsetX + magnetWidth, y: offsetY + tipHeight))
-
-            // Inner right edge going up
-            magnetPath.line(to: NSPoint(x: offsetX + magnetWidth - armWidth, y: offsetY + tipHeight))
-            magnetPath.line(to: rightArmTop)
-
-            // Inner arc
+            // Draw inner cutout: right inner up, arc back, left inner down
+            magnetPath.line(to: NSPoint(x: rightInnerX, y: armBottom))
+            magnetPath.line(to: NSPoint(x: rightInnerX, y: arcCenterY))
             magnetPath.appendArc(
-                withCenter: arcCenter,
-                radius: magnetWidth/2 - armWidth,
+                withCenter: NSPoint(x: centerX, y: arcCenterY),
+                radius: innerRadius,
                 startAngle: 0,
                 endAngle: 180,
                 clockwise: true
             )
-
-            // Back down left inner edge
-            magnetPath.line(to: NSPoint(x: offsetX + armWidth, y: offsetY + tipHeight))
+            magnetPath.line(to: NSPoint(x: leftInnerX, y: armBottom))
             magnetPath.close()
 
             magnetPath.fill()
-
-            // Draw pole tips (horizontal lines at bottom of each arm)
-            let tipPath = NSBezierPath()
-
-            // Left tip
-            tipPath.move(to: NSPoint(x: offsetX - 0.5, y: offsetY + tipHeight))
-            tipPath.line(to: NSPoint(x: offsetX + armWidth + 0.5, y: offsetY + tipHeight))
-
-            // Right tip
-            tipPath.move(to: NSPoint(x: offsetX + magnetWidth - armWidth - 0.5, y: offsetY + tipHeight))
-            tipPath.line(to: NSPoint(x: offsetX + magnetWidth + 0.5, y: offsetY + tipHeight))
-
-            tipPath.lineWidth = 1.5
-            tipPath.lineCapStyle = .round
-            tipPath.stroke()
-
-            // Draw signal waves (indicating "remote" / sending)
-            let signalX: CGFloat = offsetX + magnetWidth + 3
-            let signalCenterY: CGFloat = rect.height / 2
-
-            for i in 0..<3 {
-                let waveRadius: CGFloat = 2.0 + CGFloat(i) * 2.5
-                let wavePath = NSBezierPath()
-                wavePath.appendArc(
-                    withCenter: NSPoint(x: signalX, y: signalCenterY),
-                    radius: waveRadius,
-                    startAngle: -45,
-                    endAngle: 45,
-                    clockwise: false
-                )
-                wavePath.lineWidth = 1.2
-                wavePath.lineCapStyle = .round
-                wavePath.stroke()
-            }
 
             return true
         }
