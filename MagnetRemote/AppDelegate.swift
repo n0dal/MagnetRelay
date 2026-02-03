@@ -74,7 +74,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         let hostingController = NSHostingController(rootView: settingsView)
 
         let window = NSWindow(contentViewController: hostingController)
-        window.title = "Magnet Remote Settings"
+        window.title = "Magnet Remote"
         window.styleMask = [.titled, .closable]
         window.center()
         window.setFrameAutosaveName("SettingsWindow")
