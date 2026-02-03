@@ -7,11 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0CD9095CDAD051599EACABAD /* DesignSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BC8DE88D4E5727AB47683D7 /* DesignSystem.swift */; };
 		0CDAC458074FA1FBADCCD42D /* DelugeBackend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0842FDC87ECD385876810EA0 /* DelugeBackend.swift */; };
 		27BAD4B0608CAF9C731C9521 /* RTorrentBackend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C14FCAA5AB3B069A915E600 /* RTorrentBackend.swift */; };
 		2CFA67CA782EF33046BF0E66 /* TransmissionBackend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99AFD7B7C2718F4FA951A200 /* TransmissionBackend.swift */; };
 		466F311223A1B649A6D2CACF /* QBittorrentBackend.swift in Sources */ = {isa = PBXBuildFile; fileRef = C12AFCAEF4BD5A041ED4DDE8 /* QBittorrentBackend.swift */; };
 		56109F67424176EC8F2BC62D /* ServerConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF259EE39DF429BB78388BC5 /* ServerConfig.swift */; };
+		5B420DE75D8F54493B35DBF5 /* Components.swift in Sources */ = {isa = PBXBuildFile; fileRef = 443C084112A8C9A44BCD11E0 /* Components.swift */; };
 		87FB4EB082A382E161663745 /* KeychainService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B19F1ED41E9D8323D7EC85C /* KeychainService.swift */; };
 		8A6C944A9B62C7987C205B6A /* SynologyBackend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3718241CF1850B0B486F027C /* SynologyBackend.swift */; };
 		96EDD9A76D64EFC063D53079 /* TorrentBackend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B51AFBA4C5FA9A7907B9E59 /* TorrentBackend.swift */; };
@@ -29,6 +31,8 @@
 		2937ED0673CAFEE4311043A3 /* MagnetRemote.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MagnetRemote.entitlements; sourceTree = "<group>"; };
 		3718241CF1850B0B486F027C /* SynologyBackend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SynologyBackend.swift; sourceTree = "<group>"; };
 		3B19F1ED41E9D8323D7EC85C /* KeychainService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainService.swift; sourceTree = "<group>"; };
+		443C084112A8C9A44BCD11E0 /* Components.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Components.swift; sourceTree = "<group>"; };
+		5BC8DE88D4E5727AB47683D7 /* DesignSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignSystem.swift; sourceTree = "<group>"; };
 		5C14FCAA5AB3B069A915E600 /* RTorrentBackend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RTorrentBackend.swift; sourceTree = "<group>"; };
 		73DF8C530248F010E8D4EB7F /* MagnetRemoteApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagnetRemoteApp.swift; sourceTree = "<group>"; };
 		8A12A28A7ED0258CB2F9EF91 /* LaunchAtLogin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchAtLogin.swift; sourceTree = "<group>"; };
@@ -78,6 +82,8 @@
 			children = (
 				CD9A67C4C28F3E7C745CA266 /* AppDelegate.swift */,
 				BFAA237107AB6DAAD09E7103 /* Assets.xcassets */,
+				443C084112A8C9A44BCD11E0 /* Components.swift */,
+				5BC8DE88D4E5727AB47683D7 /* DesignSystem.swift */,
 				953E5F363D88F363CC323F88 /* Info.plist */,
 				2937ED0673CAFEE4311043A3 /* MagnetRemote.entitlements */,
 				73DF8C530248F010E8D4EB7F /* MagnetRemoteApp.swift */,
@@ -179,7 +185,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				CD736C9F5A597A4547168BD5 /* AppDelegate.swift in Sources */,
+				5B420DE75D8F54493B35DBF5 /* Components.swift in Sources */,
 				0CDAC458074FA1FBADCCD42D /* DelugeBackend.swift in Sources */,
+				0CD9095CDAD051599EACABAD /* DesignSystem.swift in Sources */,
 				87FB4EB082A382E161663745 /* KeychainService.swift in Sources */,
 				E444B0A953A7FA891051738C /* LaunchAtLogin.swift in Sources */,
 				F7BC8CFF184DA10AF829DC0B /* MagnetHandler.swift in Sources */,

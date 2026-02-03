@@ -12,89 +12,158 @@ struct SettingsView: View {
     }
 
     var body: some View {
-        Form {
-            Section {
-                Picker("Client", selection: $config.clientType) {
-                    ForEach(ClientType.allCases) { client in
-                        Text(client.displayName).tag(client)
-                    }
-                }
-                .pickerStyle(.menu)
+        ScrollView {
+            VStack(spacing: MRLayout.sectionSpacing) {
+                // Header
+                header
 
-                TextField("Server URL", text: $config.serverURL)
-                    .textFieldStyle(.roundedBorder)
-                    .help("e.g., http://192.168.1.100:8080")
+                // Server Configuration
+                serverSection
 
-                TextField("Username", text: $config.username)
-                    .textFieldStyle(.roundedBorder)
+                // Preferences
+                preferencesSection
 
-                SecureField("Password", text: $password)
-                    .textFieldStyle(.roundedBorder)
-                    .onAppear {
-                        password = KeychainService.getPassword() ?? ""
-                    }
-                    .onChange(of: password) { newValue in
-                        KeychainService.setPassword(newValue)
-                    }
-            } header: {
-                Text("Server Configuration")
+                // About
+                aboutSection
             }
+            .padding(MRLayout.gutter)
+        }
+        .background(Color.MR.background)
+        .frame(width: 420, height: 520)
+        .onAppear {
+            password = KeychainService.getPassword() ?? ""
+        }
+    }
 
-            Section {
+    // MARK: - Header
+
+    private var header: some View {
+        VStack(spacing: MRSpacing.sm) {
+            Image(systemName: "link.circle.fill")
+                .font(.system(size: 48, weight: .medium))
+                .foregroundStyle(
+                    LinearGradient(
+                        colors: [Color.MR.accent, Color.MR.accent.opacity(0.7)],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    )
+                )
+
+            Text("Magnet Remote")
+                .font(Font.MR.title1)
+                .foregroundColor(Color.MR.textPrimary)
+
+            Text("Send magnet links to your server")
+                .font(Font.MR.subheadline)
+                .foregroundColor(Color.MR.textSecondary)
+        }
+        .padding(.vertical, MRSpacing.md)
+    }
+
+    // MARK: - Server Section
+
+    private var serverSection: some View {
+        MRSectionCard(icon: "server.rack", title: "Server") {
+            VStack(spacing: MRSpacing.md) {
+                MRPickerField(
+                    label: "Client",
+                    selection: $config.clientType,
+                    displayName: { $0.displayName }
+                )
+
+                MRTextField(
+                    label: "Server URL",
+                    placeholder: "http://192.168.1.100:8080",
+                    text: $config.serverURL
+                )
+
+                MRTextField(
+                    label: "Username",
+                    placeholder: "admin",
+                    text: $config.username
+                )
+
+                MRTextField(
+                    label: "Password",
+                    placeholder: "••••••••",
+                    text: $password,
+                    isSecure: true
+                )
+                .onChange(of: password) { newValue in
+                    KeychainService.setPassword(newValue)
+                }
+
                 HStack {
-                    Button(action: testConnection) {
-                        if isTesting {
-                            ProgressView()
-                                .scaleEffect(0.5)
-                                .frame(width: 16, height: 16)
-                        } else {
-                            Text("Test Connection")
-                        }
+                    MRPrimaryButton(
+                        title: "Test Connection",
+                        icon: "bolt.fill",
+                        isLoading: isTesting,
+                        isDisabled: config.serverURL.isEmpty
+                    ) {
+                        testConnection()
                     }
-                    .disabled(isTesting || config.serverURL.isEmpty)
-
-                    Spacer()
 
                     if let result = testResult {
                         resultBadge(result)
+                            .transition(.scale.combined(with: .opacity))
                     }
                 }
-            }
-
-            Section {
-                Toggle("Launch at Login", isOn: $config.launchAtLogin)
-                    .onChange(of: config.launchAtLogin) { newValue in
-                        LaunchAtLogin.setEnabled(newValue)
-                    }
-
-                Toggle("Show Notifications", isOn: $config.showNotifications)
-            } header: {
-                Text("Preferences")
-            }
-
-            Section {
-                Text("Magnet Remote registers as your system handler for magnet: links. When you click a magnet link in any app, it will be sent to your configured server.")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-            } header: {
-                Text("How It Works")
+                .animation(.mrSpring, value: testResult != nil)
             }
         }
-        .formStyle(.grouped)
-        .frame(width: 450, height: 380)
-        .padding()
     }
+
+    // MARK: - Preferences Section
+
+    private var preferencesSection: some View {
+        MRSectionCard(icon: "slider.horizontal.3", title: "Preferences") {
+            VStack(spacing: MRSpacing.sm) {
+                MRToggleRow(
+                    title: "Launch at Login",
+                    subtitle: "Start automatically when you log in",
+                    icon: "power",
+                    isOn: $config.launchAtLogin
+                )
+                .onChange(of: config.launchAtLogin) { newValue in
+                    LaunchAtLogin.setEnabled(newValue)
+                }
+
+                MRDivider()
+
+                MRToggleRow(
+                    title: "Show Notifications",
+                    subtitle: "Get notified when torrents are added",
+                    icon: "bell.fill",
+                    isOn: $config.showNotifications
+                )
+            }
+        }
+    }
+
+    // MARK: - About Section
+
+    private var aboutSection: some View {
+        MRSectionCard(icon: "info.circle", title: "About") {
+            VStack(spacing: MRSpacing.sm) {
+                MRInfoRow(label: "Version", value: "1.0.0", icon: "tag")
+                MRDivider()
+                Text("Magnet Remote registers as your system handler for magnet: links. Click any magnet link in a browser and it will be sent to your configured server.")
+                    .font(Font.MR.caption)
+                    .foregroundColor(Color.MR.textTertiary)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
+        }
+    }
+
+    // MARK: - Helpers
 
     @ViewBuilder
     private func resultBadge(_ result: TestResult) -> some View {
         switch result {
         case .success:
-            Label("Connected", systemImage: "checkmark.circle.fill")
-                .foregroundColor(.green)
+            MRStatusBadge(status: .success, message: "Connected")
         case .failure(let message):
-            Label(message, systemImage: "xmark.circle.fill")
-                .foregroundColor(.red)
-                .help(message)
+            MRStatusBadge(status: .error, message: message)
         }
     }
 
