@@ -385,22 +385,56 @@ struct PreferencesSheet: View {
 
             MRDivider()
 
-            // About
-            VStack(alignment: .leading, spacing: MRSpacing.sm) {
-                Text("About")
-                    .font(Font.MR.headline)
-                    .foregroundColor(Color.MR.textPrimary)
+            // Data & Privacy
+            VStack(spacing: MRSpacing.md) {
+                HStack {
+                    VStack(alignment: .leading, spacing: MRSpacing.xxs) {
+                        Text("Recent Magnets")
+                            .font(Font.MR.subheadline)
+                            .foregroundColor(Color.MR.textPrimary)
+                        Text("\(RecentMagnets.shared.items.count) items stored locally")
+                            .font(Font.MR.caption)
+                            .foregroundColor(Color.MR.textTertiary)
+                    }
+                    Spacer()
+                    Button("Clear") {
+                        RecentMagnets.shared.clear()
+                    }
+                    .buttonStyle(.plain)
+                    .foregroundColor(Color.MR.accent)
+                    .font(Font.MR.subheadline)
+                    .disabled(RecentMagnets.shared.items.isEmpty)
+                    .opacity(RecentMagnets.shared.items.isEmpty ? 0.5 : 1)
+                }
 
-                Text("Magnet Remote registers as your system handler for magnet: links. Click any magnet link in a browser and it will be sent to your configured server.")
-                    .font(Font.MR.caption)
-                    .foregroundColor(Color.MR.textTertiary)
-                    .fixedSize(horizontal: false, vertical: true)
+                HStack {
+                    Text("Privacy Policy")
+                        .font(Font.MR.subheadline)
+                        .foregroundColor(Color.MR.textPrimary)
+                    Spacer()
+                    Button("View") {
+                        if let url = URL(string: "https://github.com/[your-username]/MagnetRemote/blob/main/PRIVACY.md") {
+                            NSWorkspace.shared.open(url)
+                        }
+                    }
+                    .buttonStyle(.plain)
+                    .foregroundColor(Color.MR.accent)
+                    .font(Font.MR.subheadline)
+                }
             }
+
+            MRDivider()
+
+            // About
+            Text("Magnet Remote registers as your system handler for magnet: links. Click any magnet link in a browser and it will be sent to your configured server.")
+                .font(Font.MR.caption)
+                .foregroundColor(Color.MR.textTertiary)
+                .fixedSize(horizontal: false, vertical: true)
 
             Spacer()
         }
         .padding(MRLayout.gutter)
-        .frame(width: 340, height: 320)
+        .frame(width: 340, height: 380)
         .background(Color.MR.background)
     }
 }
