@@ -63,19 +63,20 @@ struct MRClientChip: View {
 
     var body: some View {
         Button(action: action) {
-            VStack(spacing: MRSpacing.xs) {
+            VStack(spacing: MRSpacing.xs + 2) {
                 Image(systemName: client.icon)
-                    .font(.system(size: 16, weight: .medium))
+                    .font(.system(size: 22, weight: .medium))
 
                 Text(client.displayName)
-                    .font(Font.MR.caption)
+                    .font(Font.MR.subheadline)
+                    .fontWeight(.medium)
                     .lineLimit(1)
             }
             .frame(maxWidth: .infinity)
-            .padding(.vertical, MRSpacing.sm)
-            .padding(.horizontal, MRSpacing.xs)
+            .padding(.vertical, MRSpacing.md)
+            .padding(.horizontal, MRSpacing.sm)
             .foregroundColor(isSelected ? .white : Color.MR.textSecondary)
-            .background(isSelected ? Color.MR.accent : Color.MR.background)
+            .background(isSelected ? Color.MR.accent : Color.MR.inputBackground)
             .clipShape(RoundedRectangle(cornerRadius: MRRadius.md, style: .continuous))
             .overlay(
                 RoundedRectangle(cornerRadius: MRRadius.md, style: .continuous)
@@ -134,58 +135,37 @@ struct MRInputField: View {
 
     @FocusState private var isFocused: Bool
 
-    private var hasContent: Bool { !text.isEmpty }
-    private var showFloatingLabel: Bool { isFocused || hasContent }
-
     var body: some View {
         HStack(spacing: MRSpacing.sm) {
-            // Icon with background circle
-            ZStack {
-                Circle()
-                    .fill(isFocused ? Color.MR.accent.opacity(0.15) : Color.MR.textTertiary.opacity(0.1))
-                    .frame(width: 28, height: 28)
+            // Icon
+            Image(systemName: icon)
+                .font(.system(size: 14, weight: .medium))
+                .foregroundColor(isFocused ? Color.MR.accent : Color.MR.textTertiary)
+                .frame(width: 18)
 
-                Image(systemName: icon)
-                    .font(.system(size: 12, weight: .semibold))
-                    .foregroundColor(isFocused ? Color.MR.accent : Color.MR.textTertiary)
-            }
-            .animation(.mrQuick, value: isFocused)
-
-            // Field container
-            VStack(alignment: .leading, spacing: 2) {
-                // Always show label
-                Text(label)
-                    .font(.system(size: 9, weight: .semibold))
-                    .foregroundColor(isFocused ? Color.MR.accent : Color.MR.textTertiary)
-                    .textCase(.uppercase)
-                    .tracking(0.5)
-
-                // Input
-                Group {
-                    if isSecure {
-                        SecureField(placeholder, text: $text)
-                    } else {
-                        TextField(placeholder, text: $text)
-                    }
+            // Input field
+            Group {
+                if isSecure {
+                    SecureField(placeholder, text: $text)
+                } else {
+                    TextField(placeholder, text: $text)
                 }
-                .font(Font.MR.body)
-                .foregroundColor(Color.MR.textPrimary)
-                .focused($isFocused)
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
+            .textFieldStyle(.plain)
+            .font(.system(size: 13))
+            .foregroundColor(Color.MR.textPrimary)
+            .focused($isFocused)
         }
         .padding(.horizontal, MRSpacing.md)
-        .padding(.vertical, MRSpacing.sm)
+        .padding(.vertical, MRSpacing.sm + 2)
         .frame(width: width)
-        .frame(minHeight: 48)
-        .background(
-            RoundedRectangle(cornerRadius: MRRadius.lg, style: .continuous)
-                .fill(isFocused ? Color.MR.inputBackgroundFocused : Color.MR.inputBackground)
-        )
+        .frame(height: 40)
+        .background(Color.MR.inputBackground)
+        .clipShape(RoundedRectangle(cornerRadius: MRRadius.md, style: .continuous))
         .overlay(
-            RoundedRectangle(cornerRadius: MRRadius.lg, style: .continuous)
+            RoundedRectangle(cornerRadius: MRRadius.md, style: .continuous)
                 .stroke(
-                    isFocused ? Color.MR.accent : Color.MR.border.opacity(0.5),
+                    isFocused ? Color.MR.accent : Color.MR.border,
                     lineWidth: isFocused ? 1.5 : 1
                 )
         )
@@ -204,22 +184,20 @@ struct MRCompactInput: View {
 
     var body: some View {
         TextField(placeholder, text: $text)
-            .font(Font.MR.body)
+            .textFieldStyle(.plain)
+            .font(.system(size: 13))
             .foregroundColor(Color.MR.textPrimary)
             .multilineTextAlignment(width != nil ? .center : .leading)
             .focused($isFocused)
-            .padding(.horizontal, MRSpacing.md)
-            .padding(.vertical, MRSpacing.sm + 4)
+            .padding(.horizontal, MRSpacing.sm)
             .frame(width: width)
-            .frame(minHeight: 48)
-            .background(
-                RoundedRectangle(cornerRadius: MRRadius.lg, style: .continuous)
-                    .fill(isFocused ? Color.MR.inputBackgroundFocused : Color.MR.inputBackground)
-            )
+            .frame(height: 40)
+            .background(Color.MR.inputBackground)
+            .clipShape(RoundedRectangle(cornerRadius: MRRadius.md, style: .continuous))
             .overlay(
-                RoundedRectangle(cornerRadius: MRRadius.lg, style: .continuous)
+                RoundedRectangle(cornerRadius: MRRadius.md, style: .continuous)
                     .stroke(
-                        isFocused ? Color.MR.accent : Color.MR.border.opacity(0.5),
+                        isFocused ? Color.MR.accent : Color.MR.border,
                         lineWidth: isFocused ? 1.5 : 1
                     )
             )
@@ -236,13 +214,14 @@ struct MRFieldRow: View {
     var body: some View {
         HStack(spacing: MRSpacing.sm) {
             Image(systemName: icon)
-                .font(.system(size: 12, weight: .medium))
+                .font(.system(size: 13, weight: .semibold))
                 .foregroundColor(Color.MR.accent)
-                .frame(width: 16)
+                .frame(width: 18)
 
             Text(label)
-                .font(Font.MR.caption)
-                .foregroundColor(Color.MR.textTertiary)
+                .font(.system(size: 11, weight: .semibold))
+                .foregroundColor(Color.MR.textSecondary)
+                .tracking(0.5)
         }
     }
 }
@@ -446,16 +425,20 @@ struct MRStatusBadge: View {
     var body: some View {
         HStack(spacing: MRSpacing.sm) {
             Image(systemName: status.icon)
-                .font(.system(size: 14))
+                .font(.system(size: 14, weight: .medium))
 
             Text(message)
-                .font(Font.MR.subheadline)
+                .font(Font.MR.headline)
         }
         .foregroundColor(status.color)
         .padding(.horizontal, MRSpacing.md)
-        .padding(.vertical, MRSpacing.sm)
-        .background(status.color.opacity(0.12))
-        .clipShape(RoundedRectangle(cornerRadius: MRRadius.full, style: .continuous))
+        .padding(.vertical, MRSpacing.sm + 2)
+        .background(status.color.opacity(0.15))
+        .clipShape(RoundedRectangle(cornerRadius: MRRadius.md, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: MRRadius.md, style: .continuous)
+                .stroke(status.color.opacity(0.3), lineWidth: 1)
+        )
     }
 }
 

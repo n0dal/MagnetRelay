@@ -22,11 +22,11 @@ enum ClientType: String, CaseIterable, Identifiable, Codable {
 
     var icon: String {
         switch self {
-        case .qbittorrent: return "arrow.down.circle"
-        case .transmission: return "gear.circle"
-        case .deluge: return "flame"
-        case .rtorrent: return "terminal"
-        case .synology: return "externaldrive.connected.to.line.below"
+        case .qbittorrent: return "arrow.down.circle.fill"
+        case .transmission: return "antenna.radiowaves.left.and.right"
+        case .deluge: return "flame.fill"
+        case .rtorrent: return "apple.terminal.fill"
+        case .synology: return "xserve"
         }
     }
 
@@ -51,6 +51,7 @@ class ServerConfig: ObservableObject {
     @AppStorage("username") var username: String = ""
     @AppStorage("launchAtLogin") var launchAtLogin: Bool = false
     @AppStorage("showNotifications") var showNotifications: Bool = true
+    @AppStorage("hasCompletedSetup") var hasCompletedSetup: Bool = false
 
     // Legacy support - computed property
     var serverURL: String {

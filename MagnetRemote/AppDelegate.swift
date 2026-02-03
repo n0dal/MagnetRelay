@@ -11,6 +11,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         setupStatusBar()
         setupURLHandler()
         requestNotificationPermission()
+
+        // Show settings on first launch
+        if !ServerConfig.shared.hasCompletedSetup {
+            DispatchQueue.main.async {
+                self.openSettings()
+            }
+        }
     }
 
     private func setupStatusBar() {
@@ -56,9 +63,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     @objc private func openSettings() {
+        // Activate app first - critical for menu bar apps to bring windows to front
+        NSApp.activate(ignoringOtherApps: true)
+
         if let window = settingsWindow {
-            window.makeKeyAndOrderFront(nil)
-            NSApp.activate(ignoringOtherApps: true)
+            bringWindowToFront(window)
             return
         }
 
@@ -72,8 +81,19 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         window.setFrameAutosaveName("SettingsWindow")
         window.isReleasedWhenClosed = false
 
+        // Ensure window moves to current space and can become key
+        window.collectionBehavior = [.moveToActiveSpace, .participatesInCycle]
+
         self.settingsWindow = window
-        window.makeKeyAndOrderFront(nil)
+        bringWindowToFront(window)
+    }
+
+    private func bringWindowToFront(_ window: NSWindow) {
+        // orderFrontRegardless is more aggressive than makeKeyAndOrderFront
+        window.orderFrontRegardless()
+        window.makeKey()
+
+        // Double-activate to ensure focus on menu bar apps
         NSApp.activate(ignoringOtherApps: true)
     }
 

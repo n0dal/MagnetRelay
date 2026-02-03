@@ -1,5 +1,6 @@
 import Foundation
 import Security
+import LocalAuthentication
 
 enum KeychainService {
     private static let service = "com.magnetremote.server"
@@ -8,20 +9,19 @@ enum KeychainService {
     static func setPassword(_ password: String) {
         guard let data = password.data(using: .utf8) else { return }
 
+        // Delete existing item first
+        deletePassword()
+
+        // Create access control - allow access when unlocked, no prompts needed
         let query: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
             kSecAttrService as String: service,
-            kSecAttrAccount as String: account
+            kSecAttrAccount as String: account,
+            kSecValueData as String: data,
+            kSecAttrAccessible as String: kSecAttrAccessibleWhenUnlockedThisDeviceOnly
         ]
 
-        // Delete existing item
-        SecItemDelete(query as CFDictionary)
-
-        // Add new item
-        var newQuery = query
-        newQuery[kSecValueData as String] = data
-
-        SecItemAdd(newQuery as CFDictionary, nil)
+        SecItemAdd(query as CFDictionary, nil)
     }
 
     static func getPassword() -> String? {

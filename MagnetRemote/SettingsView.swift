@@ -6,6 +6,7 @@ struct SettingsView: View {
     @State private var testResult: TestResult?
     @State private var isTesting = false
     @State private var showPreferences = false
+    @State private var isInitialLoad = true
 
     enum TestResult {
         case success
@@ -16,6 +17,11 @@ struct SettingsView: View {
         VStack(spacing: MRSpacing.lg) {
             // Header with preferences button
             header
+
+            // Welcome banner for first-time users
+            if !config.hasCompletedSetup {
+                setupBanner
+            }
 
             // Client selector
             clientSection
@@ -31,11 +37,15 @@ struct SettingsView: View {
 
             Spacer(minLength: 0)
         }
-        .padding(MRLayout.gutter)
+        .padding(MRLayout.gutter + 4)
         .background(Color.MR.background)
-        .frame(width: 440, height: 420)
+        .frame(width: 480, height: config.hasCompletedSetup ? 460 : 520)
         .onAppear {
             password = KeychainService.getPassword() ?? ""
+            // Delay flag reset to avoid onChange triggering during load
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                isInitialLoad = false
+            }
         }
         .onChange(of: config.clientType) { newValue in
             // Update port to client default if port is empty or matches another client's default
@@ -47,6 +57,32 @@ struct SettingsView: View {
         .sheet(isPresented: $showPreferences) {
             PreferencesSheet(config: config)
         }
+    }
+
+    // MARK: - Setup Banner
+
+    private var setupBanner: some View {
+        HStack(spacing: MRSpacing.md) {
+            Image(systemName: "info.circle.fill")
+                .font(.system(size: 20))
+                .foregroundColor(Color.MR.accent)
+
+            VStack(alignment: .leading, spacing: MRSpacing.xxs) {
+                Text("Welcome! Configure your server below.")
+                    .font(Font.MR.subheadline)
+                    .fontWeight(.medium)
+                    .foregroundColor(Color.MR.textPrimary)
+
+                Text("Test the connection to save settings and enable magnet link handling.")
+                    .font(Font.MR.caption)
+                    .foregroundColor(Color.MR.textSecondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+        }
+        .padding(MRSpacing.md)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Color.MR.accentMuted)
+        .clipShape(RoundedRectangle(cornerRadius: MRRadius.md, style: .continuous))
     }
 
     // MARK: - Header
@@ -144,6 +180,7 @@ struct SettingsView: View {
                     isSecure: true
                 )
                 .onChange(of: password) { newValue in
+                    guard !isInitialLoad else { return }
                     KeychainService.setPassword(newValue)
                 }
             }
@@ -186,7 +223,7 @@ struct SettingsView: View {
     private func resultBadge(_ result: TestResult) -> some View {
         switch result {
         case .success:
-            MRStatusBadge(status: .success, message: "Connected")
+            MRStatusBadge(status: .success, message: "Saved & Connected")
         case .failure(let message):
             MRStatusBadge(status: .error, message: message)
         }
@@ -207,6 +244,12 @@ struct SettingsView: View {
                 await MainActor.run {
                     testResult = .success
                     isTesting = false
+                    // Mark setup as complete on successful connection
+                    if !config.hasCompletedSetup {
+                        withAnimation(.mrQuick) {
+                            config.hasCompletedSetup = true
+                        }
+                    }
                 }
             } catch {
                 await MainActor.run {

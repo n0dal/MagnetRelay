@@ -18,11 +18,11 @@ extension Color {
         static let surfaceElevated = Color(light: .init(hex: "FFFFFF"),
                                            dark: .init(hex: "282A2E"))
 
-        // Input fields - slightly elevated from background
+        // Input fields - noticeably elevated from background for clarity
         static let inputBackground = Color(light: .init(hex: "FFFFFF"),
-                                           dark: .init(hex: "1A1B1F"))
+                                           dark: .init(hex: "1E2024"))
         static let inputBackgroundFocused = Color(light: .init(hex: "FFFFFF"),
-                                                  dark: .init(hex: "1E2024"))
+                                                  dark: .init(hex: "252830"))
 
         // Text hierarchy
         static let textPrimary = Color(light: .init(hex: "1A1D21"),
