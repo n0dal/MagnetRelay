@@ -196,7 +196,7 @@ struct SettingsView: View {
                 MRInputField(
                     icon: "globe",
                     label: "Host",
-                    placeholder: "192.168.1.100",
+                    placeholder: "nas.local or IP",
                     text: $config.serverHost
                 )
 
@@ -224,7 +224,7 @@ struct SettingsView: View {
                 MRInputField(
                     icon: "person",
                     label: "Username",
-                    placeholder: "admin",
+                    placeholder: "username",
                     text: $config.username
                 )
 
