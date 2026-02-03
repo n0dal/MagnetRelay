@@ -1,0 +1,389 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		0CDAC458074FA1FBADCCD42D /* DelugeBackend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0842FDC87ECD385876810EA0 /* DelugeBackend.swift */; };
+		27BAD4B0608CAF9C731C9521 /* RTorrentBackend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C14FCAA5AB3B069A915E600 /* RTorrentBackend.swift */; };
+		2CFA67CA782EF33046BF0E66 /* TransmissionBackend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99AFD7B7C2718F4FA951A200 /* TransmissionBackend.swift */; };
+		466F311223A1B649A6D2CACF /* QBittorrentBackend.swift in Sources */ = {isa = PBXBuildFile; fileRef = C12AFCAEF4BD5A041ED4DDE8 /* QBittorrentBackend.swift */; };
+		56109F67424176EC8F2BC62D /* ServerConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF259EE39DF429BB78388BC5 /* ServerConfig.swift */; };
+		87FB4EB082A382E161663745 /* KeychainService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B19F1ED41E9D8323D7EC85C /* KeychainService.swift */; };
+		8A6C944A9B62C7987C205B6A /* SynologyBackend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3718241CF1850B0B486F027C /* SynologyBackend.swift */; };
+		96EDD9A76D64EFC063D53079 /* TorrentBackend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B51AFBA4C5FA9A7907B9E59 /* TorrentBackend.swift */; };
+		C363D8B1E1C70B7BC9CACBA5 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8373FA484F3A905E44F7E5 /* SettingsView.swift */; };
+		CD736C9F5A597A4547168BD5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD9A67C4C28F3E7C745CA266 /* AppDelegate.swift */; };
+		DDBB60CC944426C3313F1610 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BFAA237107AB6DAAD09E7103 /* Assets.xcassets */; };
+		E444B0A953A7FA891051738C /* LaunchAtLogin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A12A28A7ED0258CB2F9EF91 /* LaunchAtLogin.swift */; };
+		E85F29CF8D283B28C4DAC316 /* MagnetRemoteApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73DF8C530248F010E8D4EB7F /* MagnetRemoteApp.swift */; };
+		F7BC8CFF184DA10AF829DC0B /* MagnetHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC4963A7D0A4C90729388036 /* MagnetHandler.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		0842FDC87ECD385876810EA0 /* DelugeBackend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DelugeBackend.swift; sourceTree = "<group>"; };
+		1B51AFBA4C5FA9A7907B9E59 /* TorrentBackend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TorrentBackend.swift; sourceTree = "<group>"; };
+		2937ED0673CAFEE4311043A3 /* MagnetRemote.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MagnetRemote.entitlements; sourceTree = "<group>"; };
+		3718241CF1850B0B486F027C /* SynologyBackend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SynologyBackend.swift; sourceTree = "<group>"; };
+		3B19F1ED41E9D8323D7EC85C /* KeychainService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainService.swift; sourceTree = "<group>"; };
+		5C14FCAA5AB3B069A915E600 /* RTorrentBackend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RTorrentBackend.swift; sourceTree = "<group>"; };
+		73DF8C530248F010E8D4EB7F /* MagnetRemoteApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagnetRemoteApp.swift; sourceTree = "<group>"; };
+		8A12A28A7ED0258CB2F9EF91 /* LaunchAtLogin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchAtLogin.swift; sourceTree = "<group>"; };
+		953E5F363D88F363CC323F88 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		99AFD7B7C2718F4FA951A200 /* TransmissionBackend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransmissionBackend.swift; sourceTree = "<group>"; };
+		AAB302FD868E6A50F27138B3 /* MagnetRemote.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MagnetRemote.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		BFAA237107AB6DAAD09E7103 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		C12AFCAEF4BD5A041ED4DDE8 /* QBittorrentBackend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QBittorrentBackend.swift; sourceTree = "<group>"; };
+		CD9A67C4C28F3E7C745CA266 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		FA8373FA484F3A905E44F7E5 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		FC4963A7D0A4C90729388036 /* MagnetHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagnetHandler.swift; sourceTree = "<group>"; };
+		FF259EE39DF429BB78388BC5 /* ServerConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerConfig.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		20653E1F28DEE86DBD5B41C9 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				AAB302FD868E6A50F27138B3 /* MagnetRemote.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		223B1F7A9F1932411DCDD12A = {
+			isa = PBXGroup;
+			children = (
+				36C99B60F7040D2259E049A1 /* MagnetRemote */,
+				20653E1F28DEE86DBD5B41C9 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		2AE96772B6111ED6C474A809 /* Backends */ = {
+			isa = PBXGroup;
+			children = (
+				0842FDC87ECD385876810EA0 /* DelugeBackend.swift */,
+				C12AFCAEF4BD5A041ED4DDE8 /* QBittorrentBackend.swift */,
+				5C14FCAA5AB3B069A915E600 /* RTorrentBackend.swift */,
+				3718241CF1850B0B486F027C /* SynologyBackend.swift */,
+				1B51AFBA4C5FA9A7907B9E59 /* TorrentBackend.swift */,
+				99AFD7B7C2718F4FA951A200 /* TransmissionBackend.swift */,
+			);
+			path = Backends;
+			sourceTree = "<group>";
+		};
+		36C99B60F7040D2259E049A1 /* MagnetRemote */ = {
+			isa = PBXGroup;
+			children = (
+				CD9A67C4C28F3E7C745CA266 /* AppDelegate.swift */,
+				BFAA237107AB6DAAD09E7103 /* Assets.xcassets */,
+				953E5F363D88F363CC323F88 /* Info.plist */,
+				2937ED0673CAFEE4311043A3 /* MagnetRemote.entitlements */,
+				73DF8C530248F010E8D4EB7F /* MagnetRemoteApp.swift */,
+				FA8373FA484F3A905E44F7E5 /* SettingsView.swift */,
+				2AE96772B6111ED6C474A809 /* Backends */,
+				D1769814A40D01C81F30D61E /* Models */,
+				6AE0C679A9AEEC8169863DDF /* Services */,
+			);
+			path = MagnetRemote;
+			sourceTree = "<group>";
+		};
+		6AE0C679A9AEEC8169863DDF /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				3B19F1ED41E9D8323D7EC85C /* KeychainService.swift */,
+				8A12A28A7ED0258CB2F9EF91 /* LaunchAtLogin.swift */,
+				FC4963A7D0A4C90729388036 /* MagnetHandler.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		D1769814A40D01C81F30D61E /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				FF259EE39DF429BB78388BC5 /* ServerConfig.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		B5D7427D79CE1AE57FDF3EAF /* MagnetRemote */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F2F99AE39924D0AE79CF0753 /* Build configuration list for PBXNativeTarget "MagnetRemote" */;
+			buildPhases = (
+				AFF122AABBD9D4DE53F57DAB /* Sources */,
+				CC2C325F7E75B0E4AF1B2110 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = MagnetRemote;
+			packageProductDependencies = (
+			);
+			productName = MagnetRemote;
+			productReference = AAB302FD868E6A50F27138B3 /* MagnetRemote.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		AC21887BDD2021A5935127FC /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1500;
+				TargetAttributes = {
+					B5D7427D79CE1AE57FDF3EAF = {
+						DevelopmentTeam = "";
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 3F17DB46AC0445FB7A8A6CA7 /* Build configuration list for PBXProject "MagnetRemote" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 223B1F7A9F1932411DCDD12A;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				B5D7427D79CE1AE57FDF3EAF /* MagnetRemote */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		CC2C325F7E75B0E4AF1B2110 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DDBB60CC944426C3313F1610 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		AFF122AABBD9D4DE53F57DAB /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CD736C9F5A597A4547168BD5 /* AppDelegate.swift in Sources */,
+				0CDAC458074FA1FBADCCD42D /* DelugeBackend.swift in Sources */,
+				87FB4EB082A382E161663745 /* KeychainService.swift in Sources */,
+				E444B0A953A7FA891051738C /* LaunchAtLogin.swift in Sources */,
+				F7BC8CFF184DA10AF829DC0B /* MagnetHandler.swift in Sources */,
+				E85F29CF8D283B28C4DAC316 /* MagnetRemoteApp.swift in Sources */,
+				466F311223A1B649A6D2CACF /* QBittorrentBackend.swift in Sources */,
+				27BAD4B0608CAF9C731C9521 /* RTorrentBackend.swift in Sources */,
+				56109F67424176EC8F2BC62D /* ServerConfig.swift in Sources */,
+				C363D8B1E1C70B7BC9CACBA5 /* SettingsView.swift in Sources */,
+				8A6C944A9B62C7987C205B6A /* SynologyBackend.swift in Sources */,
+				96EDD9A76D64EFC063D53079 /* TorrentBackend.swift in Sources */,
+				2CFA67CA782EF33046BF0E66 /* TransmissionBackend.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		4C0CEF54FB69BC49B6D6B9B2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = MagnetRemote/MagnetRemote.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				INFOPLIST_FILE = MagnetRemote/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.magnetremote.app;
+				SDKROOT = macosx;
+				SWIFT_VERSION = 5.9;
+			};
+			name = Release;
+		};
+		66A8621D14BDCE84666DEC1A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MARKETING_VERSION = 1.0.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		9A1891A0619EBD07151CECF1 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = MagnetRemote/MagnetRemote.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				INFOPLIST_FILE = MagnetRemote/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.magnetremote.app;
+				SDKROOT = macosx;
+				SWIFT_VERSION = 5.9;
+			};
+			name = Debug;
+		};
+		EC7ADF21E9DD55F15C51EBB4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = "";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MARKETING_VERSION = 1.0.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		3F17DB46AC0445FB7A8A6CA7 /* Build configuration list for PBXProject "MagnetRemote" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				66A8621D14BDCE84666DEC1A /* Debug */,
+				EC7ADF21E9DD55F15C51EBB4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		F2F99AE39924D0AE79CF0753 /* Build configuration list for PBXNativeTarget "MagnetRemote" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9A1891A0619EBD07151CECF1 /* Debug */,
+				4C0CEF54FB69BC49B6D6B9B2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = AC21887BDD2021A5935127FC /* Project object */;
+}
