@@ -39,7 +39,13 @@ MagnetRemote/
 Tests/
 ├── visual_tests.sh            # Automated visual testing script
 ├── screenshot.sh              # Quick screenshot helper for ad-hoc testing
+├── window_capture.py          # Python/Quartz helper for proper window screenshots
+├── mock_synology.py           # Mock Synology server for testing without real NAS
 └── screenshots/               # Generated test screenshots (gitignored)
+
+assets/                        # GitHub README images (committed)
+├── screenshot-main.png        # Welcome/first-launch screenshot
+└── screenshot-configured.png  # Configured state screenshot
 ```
 
 ## Key Patterns
@@ -189,6 +195,24 @@ The Development Team ID (e.g., `76ZSP26L92`) is NOT sensitive - it's visible in 
 
 ### Apple Development vs Mac Development Certificates
 Modern Apple Developer accounts use "Apple Development" certificates (universal for iOS/macOS), not the older "Mac Development" type. If Xcode complains about missing "Mac Development", specify `CODE_SIGN_IDENTITY: "Apple Development"` in project.yml or use ad-hoc signing (`-`) for local builds.
+
+### Naming Convention: MagnetRemote (One Word)
+The app name is **MagnetRemote** (no space), not "Magnet Remote". This is intentional:
+- More modern/tech-savvy (like GitHub, YouTube)
+- Easier for URLs, hashtags, and search
+- Consistent with bundle ID (`com.magnetremote.app`)
+- The `CFBundleName` and `CFBundleDisplayName` in Info.plist must match "MagnetRemote"
+
+### Window Owner Name Matches CFBundleName
+The Quartz window owner name (used by `Tests/window_capture.py`) is determined by `CFBundleName` in Info.plist. If you change the display name, you must also update `Tests/window_capture.py` to match, otherwise screenshot capture will fail.
+
+### App Store Approval (~90% Probability)
+The app is ready for App Store submission. Key points:
+- **No "torrent" in user-visible text** - removed for App Store compliance
+- **Privacy policy required** - hosted at `https://github.com/pgpillar/MagnetRemote/blob/main/PRIVACY.md`
+- **Legitimate use cases** - emphasize Linux ISOs, open source in submission
+- **App Review note**: "This app forwards magnet links to remote download clients. It does not download any content itself."
+- Main rejection risks: reviewer misunderstanding purpose (10%), not technical issues
 
 ## Pre-Release Checklist
 
