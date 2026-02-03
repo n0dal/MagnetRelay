@@ -22,32 +22,37 @@ class RecentMagnets: ObservableObject {
             self.addedAt = Date()
         }
 
+        /// Maximum characters for display name in menu
+        private static let maxDisplayLength = 45
+
         /// Extract the display name (dn=) from magnet URL, or use truncated hash
         private static func extractDisplayName(from magnetURL: String) -> String {
+            var name: String
+
             // Try to extract dn= parameter
             if let range = magnetURL.range(of: "dn="),
                let endRange = magnetURL[range.upperBound...].firstIndex(of: "&") {
                 let encoded = String(magnetURL[range.upperBound..<endRange])
-                if let decoded = encoded.removingPercentEncoding {
-                    return decoded
-                }
+                name = encoded.removingPercentEncoding ?? encoded
             } else if let range = magnetURL.range(of: "dn=") {
                 // dn= is the last parameter
                 let encoded = String(magnetURL[range.upperBound...])
-                if let decoded = encoded.removingPercentEncoding {
-                    return decoded
-                }
-            }
-
-            // Fall back to truncated hash
-            if let hashRange = magnetURL.range(of: "btih:") {
+                name = encoded.removingPercentEncoding ?? encoded
+            } else if let hashRange = magnetURL.range(of: "btih:") {
+                // Fall back to truncated hash
                 let hashStart = hashRange.upperBound
                 let hashEnd = magnetURL[hashStart...].firstIndex(of: "&") ?? magnetURL.endIndex
                 let hash = String(magnetURL[hashStart..<hashEnd])
-                return String(hash.prefix(8)) + "..."
+                name = String(hash.prefix(8)) + "..."
+            } else {
+                name = "Unknown Torrent"
             }
 
-            return "Unknown Torrent"
+            // Truncate if too long
+            if name.count > maxDisplayLength {
+                return String(name.prefix(maxDisplayLength - 1)) + "…"
+            }
+            return name
         }
     }
 
