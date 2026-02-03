@@ -82,13 +82,32 @@ class ServerConfig: ObservableObject {
     @AppStorage("lastConnectedAt") var lastConnectedAt: Double = 0
     @AppStorage("bannerDismissed") var bannerDismissed: Bool = false
 
-    // Computed property for last connection date
+    // Stores the config fingerprint when connection was last tested
+    @AppStorage("lastTestedConfigHash") var lastTestedConfigHash: String = ""
+
+    /// Fingerprint of current connection settings (client, host, port, https, username)
+    var currentConfigHash: String {
+        "\(clientType.rawValue)|\(serverHost)|\(serverPort)|\(useHTTPS)|\(username)"
+    }
+
+    /// Whether the current config matches the last successfully tested config
+    var isCurrentConfigTested: Bool {
+        !lastTestedConfigHash.isEmpty && lastTestedConfigHash == currentConfigHash
+    }
+
+    /// Mark current config as successfully tested
+    func markConfigAsTested() {
+        lastTestedConfigHash = currentConfigHash
+        lastConnectedAt = Date().timeIntervalSince1970
+    }
+
+    // Computed property for last connection date (only valid if config matches)
     var lastConnectedDate: Date? {
-        guard lastConnectedAt > 0 else { return nil }
+        guard lastConnectedAt > 0, isCurrentConfigTested else { return nil }
         return Date(timeIntervalSince1970: lastConnectedAt)
     }
 
-    // Human-readable last connection time
+    // Human-readable last connection time (only shown if config unchanged)
     var lastConnectedString: String? {
         guard let date = lastConnectedDate else { return nil }
         let formatter = RelativeDateTimeFormatter()

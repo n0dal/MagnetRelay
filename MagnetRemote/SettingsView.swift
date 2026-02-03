@@ -125,7 +125,7 @@ struct SettingsView: View {
 
                     // Connection status indicator
                     MRConnectionStatus(
-                        isConfigured: config.hasCompletedSetup,
+                        isConfigured: config.isCurrentConfigTested,
                         lastConnected: config.lastConnectedString
                     )
                 }
@@ -304,8 +304,8 @@ struct SettingsView: View {
                 await MainActor.run {
                     testResult = .success
                     isTesting = false
-                    // Save last connected time
-                    config.lastConnectedAt = Date().timeIntervalSince1970
+                    // Mark this config as tested and save connection time
+                    config.markConfigAsTested()
                     // Mark setup as complete on successful connection
                     if !config.hasCompletedSetup {
                         withAnimation(.mrQuick) {
