@@ -110,48 +110,12 @@ struct SettingsView: View {
     private var header: some View {
         HStack {
             HStack(spacing: MRSpacing.sm) {
-                // App icon with gradient matching the actual app icon
-                ZStack {
-                    RoundedRectangle(cornerRadius: 8, style: .continuous)
-                        .fill(
-                            LinearGradient(
-                                colors: [
-                                    Color(red: 0.39, green: 0.40, blue: 0.95),  // Indigo
-                                    Color(red: 0.55, green: 0.36, blue: 0.96)   // Purple
-                                ],
-                                startPoint: .topLeading,
-                                endPoint: .bottomTrailing
-                            )
-                        )
-                        .frame(width: 36, height: 36)
-
-                    // Horseshoe magnet shape using two colored bars
-                    HStack(spacing: 2) {
-                        // Red pole
-                        RoundedRectangle(cornerRadius: 2)
-                            .fill(Color.MR.accentRed)
-                            .frame(width: 6, height: 16)
-                        // Blue pole
-                        RoundedRectangle(cornerRadius: 2)
-                            .fill(Color.MR.accentBlue)
-                            .frame(width: 6, height: 16)
-                    }
-                    .offset(y: 3)
-
-                    // Top arc
-                    Circle()
-                        .trim(from: 0.5, to: 1.0)
-                        .stroke(
-                            LinearGradient(
-                                colors: [Color.MR.accentRed, Color.MR.accentBlue],
-                                startPoint: .leading,
-                                endPoint: .trailing
-                            ),
-                            style: StrokeStyle(lineWidth: 6, lineCap: .round)
-                        )
-                        .frame(width: 14, height: 14)
-                        .offset(y: -5)
-                }
+                // Use the actual app icon
+                Image(nsImage: NSApp.applicationIconImage)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 40, height: 40)
+                    .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
 
                 VStack(alignment: .leading, spacing: 2) {
                     Text("Magnet Remote")
