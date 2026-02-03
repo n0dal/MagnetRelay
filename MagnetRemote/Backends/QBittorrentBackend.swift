@@ -23,10 +23,13 @@ class QBittorrentBackend: TorrentBackend {
         request.setValue(url, forHTTPHeaderField: "Origin")
         request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
 
-        let body = "urls=\(magnet.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? magnet)"
+        guard let encodedMagnet = magnet.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else {
+            throw BackendError.encodingFailed
+        }
+        let body = "urls=\(encodedMagnet)"
         request.httpBody = body.data(using: .utf8)
 
-        let (_, response) = try await URLSession.shared.data(for: request)
+        let (_, response) = try await BackendSession.shared.data(for: request)
 
         guard let httpResponse = response as? HTTPURLResponse,
               (200...299).contains(httpResponse.statusCode) else {
@@ -50,7 +53,7 @@ class QBittorrentBackend: TorrentBackend {
         let body = "username=\(username)&password=\(password)"
         request.httpBody = body.data(using: .utf8)
 
-        let (data, response) = try await URLSession.shared.data(for: request)
+        let (data, response) = try await BackendSession.shared.data(for: request)
 
         guard let httpResponse = response as? HTTPURLResponse else {
             throw BackendError.connectionFailed("No response")

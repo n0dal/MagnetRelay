@@ -10,6 +10,9 @@ enum BackendError: LocalizedError {
     case authenticationFailed
     case connectionFailed(String)
     case serverError(String)
+    case timeout
+    case insecureConnection(String)
+    case encodingFailed
 
     var errorDescription: String? {
         switch self {
@@ -21,8 +24,28 @@ enum BackendError: LocalizedError {
             return "Connection failed: \(reason)"
         case .serverError(let reason):
             return "Server error: \(reason)"
+        case .timeout:
+            return "Connection timed out"
+        case .insecureConnection(let reason):
+            return "Insecure connection: \(reason)"
+        case .encodingFailed:
+            return "Failed to encode magnet URL"
         }
     }
+}
+
+/// Shared URLSession configuration for all backends with timeout
+enum BackendSession {
+    /// Default timeout in seconds for backend requests
+    static let defaultTimeout: TimeInterval = 30
+
+    /// Configured URLSession with timeout
+    static let shared: URLSession = {
+        let config = URLSessionConfiguration.default
+        config.timeoutIntervalForRequest = defaultTimeout
+        config.timeoutIntervalForResource = defaultTimeout * 2
+        return URLSession(configuration: config)
+    }()
 }
 
 class BackendFactory {

@@ -630,6 +630,26 @@ struct MRConnectionStatus: View {
 
 enum ConnectionError {
     static func userFriendlyMessage(from error: Error) -> String {
+        // Handle specific BackendError types first
+        if let backendError = error as? BackendError {
+            switch backendError {
+            case .timeout:
+                return "Connection timed out. Is server running?"
+            case .insecureConnection(let reason):
+                return reason
+            case .encodingFailed:
+                return "Failed to process magnet URL."
+            case .invalidURL:
+                return "Invalid server URL."
+            case .authenticationFailed:
+                return "Invalid username or password."
+            case .connectionFailed(let reason):
+                return reason
+            case .serverError(let reason):
+                return reason
+            }
+        }
+
         let message = error.localizedDescription.lowercased()
 
         // Connection refused / host unreachable

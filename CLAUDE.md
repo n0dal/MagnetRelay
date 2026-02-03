@@ -131,9 +131,9 @@ Use obviously fake examples to prevent user confusion:
 - Should only be used over HTTPS, and even then credentials appear in server logs
 
 ### Backend Issues To Fix
-1. **No request timeouts** - All backends can hang indefinitely
+1. ~~**No request timeouts**~~ - ✅ Fixed: 30s timeout via BackendSession.shared
 2. **No retry logic** - Single failure = complete failure
-3. **Generic error messages** - Don't indicate auth vs network vs server errors
+3. ~~**Generic error messages**~~ - ✅ Fixed: BackendError types with userFriendlyMessage helper
 4. **Session caching wasted** - BackendFactory creates fresh instances each time
 
 ## Build & Run
@@ -166,14 +166,14 @@ open /Applications/MagnetRemote.app
 ## Pre-Release Checklist
 
 ### Must Do
-- [ ] Add request timeouts to all backends (currently none - can hang forever)
+- [x] Add request timeouts to all backends (30s default via BackendSession.shared)
 - [ ] Test each backend against a real server
-- [ ] Add HTTPS warning/requirement for Synology
+- [x] Add HTTPS warning/requirement for Synology
 
 ### Should Do
-- [ ] Fix qBittorrent encoding fallback (throw error instead of using unencoded)
-- [ ] Fix Deluge username parameter (currently ignored)
-- [ ] Improve error messages with more context
+- [x] Fix qBittorrent encoding fallback (now throws BackendError.encodingFailed)
+- [ ] Fix Deluge username parameter (intentionally ignored - Deluge only uses password)
+- [x] Improve error messages with more context (BackendError cases handled in userFriendlyMessage)
 - [ ] Add retry logic for transient network failures
 
 ### Nice to Have
