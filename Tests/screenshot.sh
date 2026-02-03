@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Quick screenshot helper for MagnetRemote
+# Quick screenshot helper for MagnetRelay
 # Captures the app window with proper rounded corners and shadow
 #
 # Usage: ./Tests/screenshot.sh [output_name]
@@ -10,8 +10,8 @@
 #   ./Tests/screenshot.sh --reset my_test    # Reset + custom name
 #   ./Tests/screenshot.sh --no-shadow        # Capture without shadow
 
-APP_BUNDLE_ID="com.magnetremote.app"
-APP_PATH="/Applications/MagnetRemote.app"
+APP_BUNDLE_ID="com.magnetrelay.app"
+APP_PATH="/Applications/MagnetRelay.app"
 SCREENSHOT_DIR="Tests/screenshots"
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
@@ -40,13 +40,13 @@ done
 mkdir -p "$SCREENSHOT_DIR"
 
 # Kill existing instance
-pkill -x "MagnetRemote" 2>/dev/null
+pkill -x "MagnetRelay" 2>/dev/null
 sleep 0.5
 
 # Reset to first-launch state if requested
 if [ "$RESET" = true ]; then
     defaults delete "$APP_BUNDLE_ID" 2>/dev/null || true
-    security delete-generic-password -s "com.magnetremote.server" 2>/dev/null || true
+    security delete-generic-password -s "com.magnetrelay.server" 2>/dev/null || true
     echo "Reset to first-launch state"
 fi
 
@@ -55,7 +55,7 @@ open "$APP_PATH"
 sleep 2
 
 # Bring window to front
-osascript -e 'tell application "MagnetRemote" to activate' 2>/dev/null
+osascript -e 'tell application "MagnetRelay" to activate' 2>/dev/null
 sleep 0.5
 
 # Capture using Python helper for proper window capture
@@ -72,8 +72,8 @@ if [ $? -eq 0 ]; then
 else
     echo "Warning: Window capture failed, trying fallback..."
     # Fallback to full window using AppleScript bounds
-    POS=$(osascript -e 'tell application "System Events" to get position of first window of process "MagnetRemote"' 2>/dev/null)
-    SIZE=$(osascript -e 'tell application "System Events" to get size of first window of process "MagnetRemote"' 2>/dev/null)
+    POS=$(osascript -e 'tell application "System Events" to get position of first window of process "MagnetRelay"' 2>/dev/null)
+    SIZE=$(osascript -e 'tell application "System Events" to get size of first window of process "MagnetRelay"' 2>/dev/null)
 
     if [ -n "$POS" ] && [ -n "$SIZE" ]; then
         X=$(echo "$POS" | cut -d',' -f1 | tr -d ' ')

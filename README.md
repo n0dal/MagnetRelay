@@ -1,8 +1,8 @@
 <p align="center">
-  <img src="MagnetRemote/Assets.xcassets/AppIcon.appiconset/icon_128x128@2x.png" alt="MagnetRemote Icon" width="128" height="128">
+  <img src="MagnetRelay/Assets.xcassets/AppIcon.appiconset/icon_128x128@2x.png" alt="MagnetRelay Icon" width="128" height="128">
 </p>
 
-<h1 align="center">MagnetRemote</h1>
+<h1 align="center">MagnetRelay</h1>
 
 <p align="center">
   <strong>Forward magnet links to your home server with one click</strong>
@@ -25,12 +25,12 @@
 ---
 
 <p align="center">
-  <img src="assets/screenshot-main.png" alt="MagnetRemote Screenshot" width="400">
+  <img src="assets/screenshot-main.png" alt="MagnetRelay Screenshot" width="400">
 </p>
 
-## What is MagnetRemote?
+## What is MagnetRelay?
 
-**MagnetRemote** is a lightweight macOS menu bar app that registers as your system's `magnet:` link handler. When you click a magnet link anywhere—in your browser, email, or any app—it's automatically forwarded to your configured download server.
+**MagnetRelay** is a lightweight macOS menu bar app that registers as your system's `magnet:` link handler. When you click a magnet link anywhere—in your browser, email, or any app—it's automatically forwarded to your configured download server.
 
 Perfect for:
 - 🐧 **Linux distributions** — Download ISOs directly to your NAS
@@ -62,17 +62,17 @@ Perfect for:
 
 ```bash
 # Clone the repository
-git clone https://github.com/pgpillar/MagnetRemote.git
-cd MagnetRemote
+git clone https://github.com/pgpillar/MagnetRelay.git
+cd MagnetRelay
 
 # Generate Xcode project
 xcodegen generate
 
 # Build
-xcodebuild -project MagnetRemote.xcodeproj -scheme MagnetRemote build
+xcodebuild -project MagnetRelay.xcodeproj -scheme MagnetRelay build
 
 # Install
-cp -r ~/Library/Developer/Xcode/DerivedData/MagnetRemote-*/Build/Products/Debug/MagnetRemote.app /Applications/
+cp -r ~/Library/Developer/Xcode/DerivedData/MagnetRelay-*/Build/Products/Debug/MagnetRelay.app /Applications/
 ```
 
 ### Requirements
@@ -82,7 +82,7 @@ cp -r ~/Library/Developer/Xcode/DerivedData/MagnetRemote-*/Build/Products/Debug/
 
 ## Usage
 
-1. **Launch** MagnetRemote from your Applications folder
+1. **Launch** MagnetRelay from your Applications folder
 2. **Configure** your download client (host, port, credentials)
 3. **Test** the connection to verify everything works
 4. **Click** any magnet link — it's automatically sent to your server!
@@ -93,7 +93,7 @@ cp -r ~/Library/Developer/Xcode/DerivedData/MagnetRemote-*/Build/Products/Debug/
 
 ### Menu Bar
 
-MagnetRemote lives in your menu bar. Click the icon to:
+MagnetRelay lives in your menu bar. Click the icon to:
 - View recent magnet links
 - Resend a previous magnet
 - Open settings
@@ -101,7 +101,7 @@ MagnetRemote lives in your menu bar. Click the icon to:
 
 ## Privacy
 
-**MagnetRemote does not collect any data.**
+**MagnetRelay does not collect any data.**
 
 - ✅ No analytics or tracking
 - ✅ No network calls except to your configured server
@@ -122,7 +122,7 @@ brew install xcodegen
 xcodegen generate
 
 # Open in Xcode
-open MagnetRemote.xcodeproj
+open MagnetRelay.xcodeproj
 ```
 
 ## Contributing

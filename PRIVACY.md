@@ -1,14 +1,14 @@
-# Privacy Policy for MagnetRemote
+# Privacy Policy for MagnetRelay
 
 **Last Updated:** February 2025
 
 ## Overview
 
-MagnetRemote is a macOS utility that forwards magnet links to your personal download server. We are committed to protecting your privacy.
+MagnetRelay is a macOS utility that forwards magnet links to your personal download server. We are committed to protecting your privacy.
 
 ## Data Collection
 
-**We do not collect any data.** MagnetRemote:
+**We do not collect any data.** MagnetRelay:
 
 - Does not collect personal information
 - Does not use analytics or tracking
@@ -27,7 +27,7 @@ The following data is stored **locally on your device only**:
 
 ## Network Activity
 
-MagnetRemote only connects to:
+MagnetRelay only connects to:
 
 - **Your configured download server** - To send magnet links and test connections
 
@@ -47,7 +47,7 @@ You can:
 
 ## Children's Privacy
 
-MagnetRemote does not knowingly collect information from children under 13.
+MagnetRelay does not knowingly collect information from children under 13.
 
 ## Changes to This Policy
 
@@ -55,8 +55,8 @@ If we update this policy, we will post the new version here with an updated date
 
 ## Contact
 
-For privacy questions, please open an issue at: https://github.com/pgpillar/MagnetRemote
+For privacy questions, please open an issue at: https://github.com/pgpillar/MagnetRelay
 
 ---
 
-**Summary:** MagnetRemote runs entirely on your device. Your data stays on your device. We don't collect, store, or transmit any of your information.
+**Summary:** MagnetRelay runs entirely on your device. Your data stays on your device. We don't collect, store, or transmit any of your information.

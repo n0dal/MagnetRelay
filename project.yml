@@ -1,6 +1,6 @@
-name: MagnetRemote
+name: MagnetRelay
 options:
-  bundleIdPrefix: com.magnetremote
+  bundleIdPrefix: com.magnetrelay
   deploymentTarget:
     macOS: "13.0"
   xcodeVersion: "15.0"
@@ -11,7 +11,7 @@ settings:
   DEVELOPMENT_TEAM: "76ZSP26L92"
 
 targets:
-  MagnetRemote:
+  MagnetRelay:
     type: application
     platform: macOS
     sources:
@@ -19,18 +19,18 @@ targets:
         excludes:
           - "**/.DS_Store"
     settings:
-      PRODUCT_BUNDLE_IDENTIFIER: com.magnetremote.app
+      PRODUCT_BUNDLE_IDENTIFIER: com.magnetrelay.app
       INFOPLIST_FILE: MagnetRemote/Info.plist
-      CODE_SIGN_ENTITLEMENTS: MagnetRemote/MagnetRemote.entitlements
+      CODE_SIGN_ENTITLEMENTS: MagnetRemote/MagnetRelay.entitlements
       ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
       COMBINE_HIDPI_IMAGES: YES
       ENABLE_HARDENED_RUNTIME: YES
       CODE_SIGN_STYLE: Automatic
-      CODE_SIGN_IDENTITY: "Apple Development"
+      CODE_SIGN_IDENTITY: "-"
       SWIFT_VERSION: "5.9"
       MACOSX_DEPLOYMENT_TARGET: "13.0"
     entitlements:
-      path: MagnetRemote/MagnetRemote.entitlements
+      path: MagnetRemote/MagnetRelay.entitlements
       properties:
         com.apple.security.app-sandbox: true
         com.apple.security.network.client: true

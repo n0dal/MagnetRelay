@@ -1,0 +1,415 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		078E4911CD2D945AB958A9DC /* KeychainService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43474983E87B64F984EA765B /* KeychainService.swift */; };
+		0973D782896574C185C119FE /* Components.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75495766AAC5974068205656 /* Components.swift */; };
+		0ACFD46933F2EEDABCE67ED2 /* ServerConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09BE96F9399934F3EDAE91CB /* ServerConfig.swift */; };
+		0D58FDC036FF7D64A2E7251D /* MagnetHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7047A8014B09639193C3844 /* MagnetHandler.swift */; };
+		1AD922271C0B7B002CF0B88E /* TransmissionBackend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07BCB2A8B3F4A05440567F87 /* TransmissionBackend.swift */; };
+		313CA597EDF9A6B6488CD2C2 /* QBittorrentBackend.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFADC92718278B9B91FE3EA8 /* QBittorrentBackend.swift */; };
+		45F9CBC79BBF9ED3B629C7EB /* SynologyBackend.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC460905468B470E10979BDB /* SynologyBackend.swift */; };
+		49DEAC552FB29914811643E7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7BA5FC844BC7BD84D2F33C7B /* Assets.xcassets */; };
+		61E4756CDD7E97D893DCC17B /* settings.local.json in Resources */ = {isa = PBXBuildFile; fileRef = F3227ADF2956B2DAE934814D /* settings.local.json */; };
+		80D94CE8F6A71682B8DA26D9 /* RecentMagnets.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5EA07AA297A147C0749ABEE /* RecentMagnets.swift */; };
+		8B3FA0E8C329CFD0213EDD9A /* DelugeBackend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 336C205486FAC9B7FB0FC99D /* DelugeBackend.swift */; };
+		92B4D659E55478C06E67939A /* RemoteClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C385A9623AA960550EA5355 /* RemoteClient.swift */; };
+		A59AD50790838F60219880F1 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1863047DDD33E766076C2845 /* AppDelegate.swift */; };
+		B0D43B06E6D7F3DF9990204C /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63FF0C89415DD8CDE35E5EC4 /* SettingsView.swift */; };
+		CF8F4D75EAC99B3E293D2AD4 /* LaunchAtLogin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DD33F145E2F0A368BBB2EE2 /* LaunchAtLogin.swift */; };
+		DB4FEAE8382C53B79D4DB177 /* MagnetRemoteApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BD973575E78DD68CF839C11 /* MagnetRemoteApp.swift */; };
+		DFCBCB33F3158BDB47CEC430 /* DesignSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D0FAE26FE0C4060791AFBB /* DesignSystem.swift */; };
+		F9E2EE006147C6C43ABA13AF /* RTorrentBackend.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF20943F38CF40BF28A30822 /* RTorrentBackend.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		07BCB2A8B3F4A05440567F87 /* TransmissionBackend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransmissionBackend.swift; sourceTree = "<group>"; };
+		09BE96F9399934F3EDAE91CB /* ServerConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerConfig.swift; sourceTree = "<group>"; };
+		0BBED09F99FB260E9E12C211 /* MagnetRelay.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MagnetRelay.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		0DDEFF9F134A055355C9F290 /* MagnetRelay.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MagnetRelay.entitlements; sourceTree = "<group>"; };
+		1863047DDD33E766076C2845 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		21D0FAE26FE0C4060791AFBB /* DesignSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignSystem.swift; sourceTree = "<group>"; };
+		336C205486FAC9B7FB0FC99D /* DelugeBackend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DelugeBackend.swift; sourceTree = "<group>"; };
+		3BD973575E78DD68CF839C11 /* MagnetRemoteApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagnetRemoteApp.swift; sourceTree = "<group>"; };
+		43474983E87B64F984EA765B /* KeychainService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainService.swift; sourceTree = "<group>"; };
+		63FF0C89415DD8CDE35E5EC4 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		75495766AAC5974068205656 /* Components.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Components.swift; sourceTree = "<group>"; };
+		7BA5FC844BC7BD84D2F33C7B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		7C385A9623AA960550EA5355 /* RemoteClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteClient.swift; sourceTree = "<group>"; };
+		7DD33F145E2F0A368BBB2EE2 /* LaunchAtLogin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchAtLogin.swift; sourceTree = "<group>"; };
+		AC460905468B470E10979BDB /* SynologyBackend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SynologyBackend.swift; sourceTree = "<group>"; };
+		AF20943F38CF40BF28A30822 /* RTorrentBackend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RTorrentBackend.swift; sourceTree = "<group>"; };
+		D7047A8014B09639193C3844 /* MagnetHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagnetHandler.swift; sourceTree = "<group>"; };
+		E5EA07AA297A147C0749ABEE /* RecentMagnets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentMagnets.swift; sourceTree = "<group>"; };
+		EFFBFC7085767026793617AB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		F3227ADF2956B2DAE934814D /* settings.local.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = settings.local.json; sourceTree = "<group>"; };
+		FFADC92718278B9B91FE3EA8 /* QBittorrentBackend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QBittorrentBackend.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		2F424801D1C048E4764C6069 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				0BBED09F99FB260E9E12C211 /* MagnetRelay.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		5E95BA192017C136C19F50A5 /* Backends */ = {
+			isa = PBXGroup;
+			children = (
+				336C205486FAC9B7FB0FC99D /* DelugeBackend.swift */,
+				FFADC92718278B9B91FE3EA8 /* QBittorrentBackend.swift */,
+				7C385A9623AA960550EA5355 /* RemoteClient.swift */,
+				AF20943F38CF40BF28A30822 /* RTorrentBackend.swift */,
+				AC460905468B470E10979BDB /* SynologyBackend.swift */,
+				07BCB2A8B3F4A05440567F87 /* TransmissionBackend.swift */,
+			);
+			path = Backends;
+			sourceTree = "<group>";
+		};
+		68D9BF2C1F4F17B142D6D55F /* MagnetRemote */ = {
+			isa = PBXGroup;
+			children = (
+				1863047DDD33E766076C2845 /* AppDelegate.swift */,
+				7BA5FC844BC7BD84D2F33C7B /* Assets.xcassets */,
+				75495766AAC5974068205656 /* Components.swift */,
+				21D0FAE26FE0C4060791AFBB /* DesignSystem.swift */,
+				EFFBFC7085767026793617AB /* Info.plist */,
+				0DDEFF9F134A055355C9F290 /* MagnetRelay.entitlements */,
+				3BD973575E78DD68CF839C11 /* MagnetRemoteApp.swift */,
+				63FF0C89415DD8CDE35E5EC4 /* SettingsView.swift */,
+				D11F348E2F5F04FD52C724DC /* .claude */,
+				5E95BA192017C136C19F50A5 /* Backends */,
+				ED37C1A7DB9AAFC15F1EC79B /* Models */,
+				B79F682AD0424742EA45EA99 /* Services */,
+			);
+			path = MagnetRemote;
+			sourceTree = "<group>";
+		};
+		B79F682AD0424742EA45EA99 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				43474983E87B64F984EA765B /* KeychainService.swift */,
+				7DD33F145E2F0A368BBB2EE2 /* LaunchAtLogin.swift */,
+				D7047A8014B09639193C3844 /* MagnetHandler.swift */,
+				E5EA07AA297A147C0749ABEE /* RecentMagnets.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		D11F348E2F5F04FD52C724DC /* .claude */ = {
+			isa = PBXGroup;
+			children = (
+				F3227ADF2956B2DAE934814D /* settings.local.json */,
+			);
+			path = .claude;
+			sourceTree = "<group>";
+		};
+		DCDCC75BEC3E133C05515A2C = {
+			isa = PBXGroup;
+			children = (
+				68D9BF2C1F4F17B142D6D55F /* MagnetRemote */,
+				2F424801D1C048E4764C6069 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		ED37C1A7DB9AAFC15F1EC79B /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				09BE96F9399934F3EDAE91CB /* ServerConfig.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		335B3203E118CB2A8C5F5094 /* MagnetRelay */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = DBDA8A198D07EA11C707630B /* Build configuration list for PBXNativeTarget "MagnetRelay" */;
+			buildPhases = (
+				5822511CD4312B8AD4969B3A /* Sources */,
+				B1281CBED2EB829E9FDEBBF1 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = MagnetRelay;
+			packageProductDependencies = (
+			);
+			productName = MagnetRelay;
+			productReference = 0BBED09F99FB260E9E12C211 /* MagnetRelay.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		A3F41BE9C0B0A75B84D5B141 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1500;
+				TargetAttributes = {
+					335B3203E118CB2A8C5F5094 = {
+						DevelopmentTeam = 76ZSP26L92;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 8B921EB2CD449B40B3D432F3 /* Build configuration list for PBXProject "MagnetRelay" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = DCDCC75BEC3E133C05515A2C;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				335B3203E118CB2A8C5F5094 /* MagnetRelay */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		B1281CBED2EB829E9FDEBBF1 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				49DEAC552FB29914811643E7 /* Assets.xcassets in Resources */,
+				61E4756CDD7E97D893DCC17B /* settings.local.json in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		5822511CD4312B8AD4969B3A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A59AD50790838F60219880F1 /* AppDelegate.swift in Sources */,
+				0973D782896574C185C119FE /* Components.swift in Sources */,
+				8B3FA0E8C329CFD0213EDD9A /* DelugeBackend.swift in Sources */,
+				DFCBCB33F3158BDB47CEC430 /* DesignSystem.swift in Sources */,
+				078E4911CD2D945AB958A9DC /* KeychainService.swift in Sources */,
+				CF8F4D75EAC99B3E293D2AD4 /* LaunchAtLogin.swift in Sources */,
+				0D58FDC036FF7D64A2E7251D /* MagnetHandler.swift in Sources */,
+				DB4FEAE8382C53B79D4DB177 /* MagnetRemoteApp.swift in Sources */,
+				313CA597EDF9A6B6488CD2C2 /* QBittorrentBackend.swift in Sources */,
+				F9E2EE006147C6C43ABA13AF /* RTorrentBackend.swift in Sources */,
+				80D94CE8F6A71682B8DA26D9 /* RecentMagnets.swift in Sources */,
+				92B4D659E55478C06E67939A /* RemoteClient.swift in Sources */,
+				0ACFD46933F2EEDABCE67ED2 /* ServerConfig.swift in Sources */,
+				B0D43B06E6D7F3DF9990204C /* SettingsView.swift in Sources */,
+				45F9CBC79BBF9ED3B629C7EB /* SynologyBackend.swift in Sources */,
+				1AD922271C0B7B002CF0B88E /* TransmissionBackend.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		0E96039399E19D1BA9EB2ABC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = MagnetRemote/MagnetRelay.entitlements;
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				INFOPLIST_FILE = MagnetRemote/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.magnetrelay.app;
+				SDKROOT = macosx;
+				SWIFT_VERSION = 5.9;
+			};
+			name = Release;
+		};
+		235B312E46520F60C3794739 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 76ZSP26L92;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MARKETING_VERSION = 1.0.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		2E64F0DE77004590DCFDB2D0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = 76ZSP26L92;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MARKETING_VERSION = 1.0.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		C3B0B1904B7F203C25D5A533 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = MagnetRemote/MagnetRelay.entitlements;
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				INFOPLIST_FILE = MagnetRemote/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.magnetrelay.app;
+				SDKROOT = macosx;
+				SWIFT_VERSION = 5.9;
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		8B921EB2CD449B40B3D432F3 /* Build configuration list for PBXProject "MagnetRelay" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2E64F0DE77004590DCFDB2D0 /* Debug */,
+				235B312E46520F60C3794739 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		DBDA8A198D07EA11C707630B /* Build configuration list for PBXNativeTarget "MagnetRelay" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C3B0B1904B7F203C25D5A533 /* Debug */,
+				0E96039399E19D1BA9EB2ABC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = A3F41BE9C0B0A75B84D5B141 /* Project object */;
+}

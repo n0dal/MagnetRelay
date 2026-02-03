@@ -69,7 +69,7 @@ struct SettingsView: View {
                 .foregroundColor(Color.MR.accent)
 
             VStack(alignment: .leading, spacing: MRSpacing.xxs) {
-                Text("Welcome to MagnetRemote!")
+                Text("Welcome to MagnetRelay!")
                     .font(Font.MR.subheadline)
                     .fontWeight(.medium)
                     .foregroundColor(Color.MR.textPrimary)
@@ -124,7 +124,7 @@ struct SettingsView: View {
                     .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
 
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("MagnetRemote")
+                    Text("MagnetRelay")
                         .font(Font.MR.title3)
                         .foregroundColor(Color.MR.textPrimary)
 
@@ -418,7 +418,7 @@ struct PreferencesSheet: View {
                         .foregroundColor(Color.MR.textPrimary)
                     Spacer()
                     Button("View") {
-                        if let url = URL(string: "https://github.com/pgpillar/MagnetRemote/blob/main/PRIVACY.md") {
+                        if let url = URL(string: "https://github.com/pgpillar/MagnetRelay/blob/main/PRIVACY.md") {
                             NSWorkspace.shared.open(url)
                         }
                     }
@@ -431,7 +431,7 @@ struct PreferencesSheet: View {
             MRDivider()
 
             // About
-            (Text("MagnetRemote registers as your system handler for ")
+            (Text("MagnetRelay registers as your system handler for ")
                 .foregroundColor(Color.MR.textTertiary)
             + Text("magnet:")
                 .foregroundColor(Color.MR.accent)

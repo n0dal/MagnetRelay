@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Visual Tests for MagnetRemote
+# Visual Tests for MagnetRelay
 # This script captures screenshots of all app states for visual verification
 # Uses proper window capture with rounded corners and shadows
 #
@@ -10,8 +10,8 @@
 
 set -e
 
-APP_BUNDLE_ID="com.magnetremote.app"
-APP_PATH="/Applications/MagnetRemote.app"
+APP_BUNDLE_ID="com.magnetrelay.app"
+APP_PATH="/Applications/MagnetRelay.app"
 SCREENSHOT_DIR="Tests/screenshots"
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 TIMESTAMP=$(date +%Y%m%d_%H%M%S)
@@ -27,14 +27,14 @@ ensure_app_installed() {
     if [ ! -d "$APP_PATH" ]; then
         echo -e "${YELLOW}App not installed. Building and installing...${NC}"
         cd "$(dirname "$0")/.."
-        xcodebuild -project MagnetRemote.xcodeproj -scheme MagnetRemote -configuration Debug build -quiet
-        cp -r ~/Library/Developer/Xcode/DerivedData/MagnetRemote-*/Build/Products/Debug/MagnetRemote.app /Applications/
+        xcodebuild -project MagnetRelay.xcodeproj -scheme MagnetRelay -configuration Debug build -quiet
+        cp -r ~/Library/Developer/Xcode/DerivedData/MagnetRelay-*/Build/Products/Debug/MagnetRelay.app /Applications/
     fi
 }
 
 # Kill app if running
 kill_app() {
-    pkill -x "MagnetRemote" 2>/dev/null || true
+    pkill -x "MagnetRelay" 2>/dev/null || true
     sleep 0.5
 }
 
@@ -46,7 +46,7 @@ launch_app() {
     # Click menu bar item to open Settings (in case window didn't auto-open)
     osascript <<'EOF' 2>/dev/null || true
 tell application "System Events"
-    tell process "MagnetRemote"
+    tell process "MagnetRelay"
         try
             click menu bar item 1 of menu bar 2
             delay 0.2
@@ -58,7 +58,7 @@ EOF
     sleep 1
 
     # Activate to bring window to front
-    osascript -e 'tell application "MagnetRemote" to activate' 2>/dev/null || true
+    osascript -e 'tell application "MagnetRelay" to activate' 2>/dev/null || true
     sleep 0.5
 }
 
@@ -69,7 +69,7 @@ take_screenshot() {
     mkdir -p "$SCREENSHOT_DIR"
 
     # Bring window to front
-    osascript -e 'tell application "MagnetRemote" to activate' 2>/dev/null || true
+    osascript -e 'tell application "MagnetRelay" to activate' 2>/dev/null || true
     sleep 0.3
 
     # Use Python helper for proper window capture
@@ -88,8 +88,8 @@ take_screenshot() {
     fi
 
     # Last resort fallback: region capture
-    local pos=$(osascript -e 'tell application "System Events" to get position of first window of process "MagnetRemote"' 2>/dev/null)
-    local size=$(osascript -e 'tell application "System Events" to get size of first window of process "MagnetRemote"' 2>/dev/null)
+    local pos=$(osascript -e 'tell application "System Events" to get position of first window of process "MagnetRelay"' 2>/dev/null)
+    local size=$(osascript -e 'tell application "System Events" to get size of first window of process "MagnetRelay"' 2>/dev/null)
 
     if [ -n "$pos" ] && [ -n "$size" ]; then
         local x=$(echo "$pos" | cut -d',' -f1 | tr -d ' ')
@@ -108,7 +108,7 @@ take_screenshot() {
 reset_defaults() {
     defaults delete "$APP_BUNDLE_ID" 2>/dev/null || true
     # Also clear keychain entry
-    security delete-generic-password -s "com.magnetremote.server" 2>/dev/null || true
+    security delete-generic-password -s "com.magnetrelay.server" 2>/dev/null || true
 }
 
 # Set specific defaults for testing
@@ -259,7 +259,7 @@ test_empty_config() {
 
 main() {
     echo "========================================"
-    echo "MagnetRemote Visual Tests"
+    echo "MagnetRelay Visual Tests"
     echo "========================================"
     echo "Timestamp: $TIMESTAMP"
     echo "Screenshots: $SCREENSHOT_DIR/"

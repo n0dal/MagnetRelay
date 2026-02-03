@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Window capture helper for MagnetRemote screenshots.
+Window capture helper for MagnetRelay screenshots.
 
 Uses macOS Quartz framework to get proper window IDs for screenshot capture
 with rounded corners and shadows preserved.
@@ -27,7 +27,7 @@ except ImportError:
 
 
 def get_magnetremote_window_id():
-    """Find the main MagnetRemote window ID."""
+    """Find the main MagnetRelay window ID."""
     window_list = Quartz.CGWindowListCopyWindowInfo(
         Quartz.kCGWindowListOptionOnScreenOnly | Quartz.kCGWindowListExcludeDesktopElements,
         Quartz.kCGNullWindowID
@@ -38,8 +38,8 @@ def get_magnetremote_window_id():
 
     for window in window_list:
         owner = window.get('kCGWindowOwnerName', '')
-        # Match "MagnetRemote" (the app's display name)
-        if owner != 'MagnetRemote':
+        # Match "MagnetRelay" (the app's display name)
+        if owner != 'MagnetRelay':
             continue
 
         bounds = window.get('kCGWindowBounds', {})
@@ -56,11 +56,11 @@ def get_magnetremote_window_id():
 
 
 def capture_window(output_path, include_shadow=True):
-    """Capture the MagnetRemote window to a file."""
+    """Capture the MagnetRelay window to a file."""
     window_id = get_magnetremote_window_id()
 
     if not window_id:
-        print("Error: MagnetRemote window not found", file=sys.stderr)
+        print("Error: MagnetRelay window not found", file=sys.stderr)
         return False
 
     # Build screencapture command
@@ -85,7 +85,7 @@ def capture_window(output_path, include_shadow=True):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="MagnetRemote window capture helper")
+    parser = argparse.ArgumentParser(description="MagnetRelay window capture helper")
     parser.add_argument("--get-id", action="store_true", help="Print window ID only")
     parser.add_argument("--capture", metavar="FILE", help="Capture window to file")
     parser.add_argument("--no-shadow", action="store_true", help="Exclude window shadow")

@@ -3,7 +3,7 @@ import Security
 import LocalAuthentication
 
 enum KeychainService {
-    private static let service = "com.magnetremote.server"
+    private static let service = "com.magnetrelay.server"
     private static let account = "password"
 
     static func setPassword(_ password: String) {
