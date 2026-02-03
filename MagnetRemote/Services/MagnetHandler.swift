@@ -32,7 +32,7 @@ class MagnetHandler {
             RecentMagnets.shared.add(magnetURL)
 
             await showNotification(
-                title: "Torrent Added",
+                title: "Magnet Sent",
                 body: "Sent to \(config.clientType.displayName)",
                 isError: false
             )
@@ -40,7 +40,7 @@ class MagnetHandler {
             // Use user-friendly error message
             let friendlyMessage = ConnectionError.userFriendlyMessage(from: error)
             await showNotification(
-                title: "Failed to Add Torrent",
+                title: "Failed to Send",
                 body: friendlyMessage,
                 isError: true
             )

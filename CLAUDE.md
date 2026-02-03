@@ -1,10 +1,10 @@
 # Magnet Remote
 
-A macOS menu bar app that handles `magnet:` URLs and forwards them to remote torrent clients.
+A macOS menu bar app that handles `magnet:` URLs and forwards them to remote download clients.
 
 ## Project Overview
 
-Magnet Remote registers as the system-wide handler for `magnet:` URL scheme. When a user clicks a magnet link in any app (browser, email, etc.), macOS routes it to this app, which forwards it to the user's configured torrent client server.
+Magnet Remote registers as the system-wide handler for `magnet:` URL scheme. When a user clicks a magnet link in any app (browser, email, etc.), macOS routes it to this app, which forwards it to the user's configured download server.
 
 **Target:** macOS 13.0+ (Sonoma)
 **Language:** Swift 5.9, SwiftUI
@@ -22,7 +22,7 @@ MagnetRemote/
 ├── Models/
 │   └── ServerConfig.swift     # User configuration (AppStorage-backed)
 ├── Backends/
-│   ├── TorrentBackend.swift   # Protocol + BackendFactory
+│   ├── RemoteClient.swift     # Protocol + BackendFactory
 │   ├── QBittorrentBackend.swift
 │   ├── TransmissionBackend.swift
 │   ├── DelugeBackend.swift
@@ -58,9 +58,9 @@ Tests/
 - Secondary accents: red (`accentRed`) and blue (`accentBlue`) from magnet icon colors
 
 ### Backend Protocol
-All torrent clients implement `TorrentBackend`:
+All download clients implement `RemoteClient`:
 ```swift
-protocol TorrentBackend {
+protocol RemoteClient {
     func testConnection(url: String, username: String, password: String) async throws
     func addMagnet(_ magnet: String, url: String, username: String, password: String) async throws
 }

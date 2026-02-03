@@ -15,9 +15,9 @@
 		466F311223A1B649A6D2CACF /* QBittorrentBackend.swift in Sources */ = {isa = PBXBuildFile; fileRef = C12AFCAEF4BD5A041ED4DDE8 /* QBittorrentBackend.swift */; };
 		56109F67424176EC8F2BC62D /* ServerConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF259EE39DF429BB78388BC5 /* ServerConfig.swift */; };
 		5B420DE75D8F54493B35DBF5 /* Components.swift in Sources */ = {isa = PBXBuildFile; fileRef = 443C084112A8C9A44BCD11E0 /* Components.swift */; };
+		6A2E081A84D9729EE7FF6D77 /* RemoteClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB1D2EC34F16904583A8518B /* RemoteClient.swift */; };
 		87FB4EB082A382E161663745 /* KeychainService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B19F1ED41E9D8323D7EC85C /* KeychainService.swift */; };
 		8A6C944A9B62C7987C205B6A /* SynologyBackend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3718241CF1850B0B486F027C /* SynologyBackend.swift */; };
-		96EDD9A76D64EFC063D53079 /* TorrentBackend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B51AFBA4C5FA9A7907B9E59 /* TorrentBackend.swift */; };
 		A3EFA599FB9C70983DAAB0A0 /* settings.local.json in Resources */ = {isa = PBXBuildFile; fileRef = AC9436D7E4434E39F313DBFA /* settings.local.json */; };
 		C363D8B1E1C70B7BC9CACBA5 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8373FA484F3A905E44F7E5 /* SettingsView.swift */; };
 		CD736C9F5A597A4547168BD5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD9A67C4C28F3E7C745CA266 /* AppDelegate.swift */; };
@@ -30,7 +30,6 @@
 /* Begin PBXFileReference section */
 		0842FDC87ECD385876810EA0 /* DelugeBackend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DelugeBackend.swift; sourceTree = "<group>"; };
 		11746696E7F4F2DA66C8EB78 /* RecentMagnets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentMagnets.swift; sourceTree = "<group>"; };
-		1B51AFBA4C5FA9A7907B9E59 /* TorrentBackend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TorrentBackend.swift; sourceTree = "<group>"; };
 		2937ED0673CAFEE4311043A3 /* MagnetRemote.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MagnetRemote.entitlements; sourceTree = "<group>"; };
 		3718241CF1850B0B486F027C /* SynologyBackend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SynologyBackend.swift; sourceTree = "<group>"; };
 		3B19F1ED41E9D8323D7EC85C /* KeychainService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainService.swift; sourceTree = "<group>"; };
@@ -45,6 +44,7 @@
 		AC9436D7E4434E39F313DBFA /* settings.local.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = settings.local.json; sourceTree = "<group>"; };
 		BFAA237107AB6DAAD09E7103 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C12AFCAEF4BD5A041ED4DDE8 /* QBittorrentBackend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QBittorrentBackend.swift; sourceTree = "<group>"; };
+		CB1D2EC34F16904583A8518B /* RemoteClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteClient.swift; sourceTree = "<group>"; };
 		CD9A67C4C28F3E7C745CA266 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		FA8373FA484F3A905E44F7E5 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		FC4963A7D0A4C90729388036 /* MagnetHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagnetHandler.swift; sourceTree = "<group>"; };
@@ -81,9 +81,9 @@
 			children = (
 				0842FDC87ECD385876810EA0 /* DelugeBackend.swift */,
 				C12AFCAEF4BD5A041ED4DDE8 /* QBittorrentBackend.swift */,
+				CB1D2EC34F16904583A8518B /* RemoteClient.swift */,
 				5C14FCAA5AB3B069A915E600 /* RTorrentBackend.swift */,
 				3718241CF1850B0B486F027C /* SynologyBackend.swift */,
-				1B51AFBA4C5FA9A7907B9E59 /* TorrentBackend.swift */,
 				99AFD7B7C2718F4FA951A200 /* TransmissionBackend.swift */,
 			);
 			path = Backends;
@@ -210,10 +210,10 @@
 				466F311223A1B649A6D2CACF /* QBittorrentBackend.swift in Sources */,
 				27BAD4B0608CAF9C731C9521 /* RTorrentBackend.swift in Sources */,
 				26CECD59445C757DC2F70F8D /* RecentMagnets.swift in Sources */,
+				6A2E081A84D9729EE7FF6D77 /* RemoteClient.swift in Sources */,
 				56109F67424176EC8F2BC62D /* ServerConfig.swift in Sources */,
 				C363D8B1E1C70B7BC9CACBA5 /* SettingsView.swift in Sources */,
 				8A6C944A9B62C7987C205B6A /* SynologyBackend.swift in Sources */,
-				96EDD9A76D64EFC063D53079 /* TorrentBackend.swift in Sources */,
 				2CFA67CA782EF33046BF0E66 /* TransmissionBackend.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

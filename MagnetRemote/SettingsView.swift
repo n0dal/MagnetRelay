@@ -377,7 +377,7 @@ struct PreferencesSheet: View {
 
                 MRToggleRow(
                     title: "Show Notifications",
-                    subtitle: "Get notified when torrents are added",
+                    subtitle: "Get notified when magnets are sent",
                     icon: "bell.fill",
                     isOn: $config.showNotifications
                 )
@@ -413,7 +413,7 @@ struct PreferencesSheet: View {
                         .foregroundColor(Color.MR.textPrimary)
                     Spacer()
                     Button("View") {
-                        if let url = URL(string: "https://github.com/[your-username]/MagnetRemote/blob/main/PRIVACY.md") {
+                        if let url = URL(string: "https://github.com/pgpillar/MagnetRemote/blob/main/PRIVACY.md") {
                             NSWorkspace.shared.open(url)
                         }
                     }

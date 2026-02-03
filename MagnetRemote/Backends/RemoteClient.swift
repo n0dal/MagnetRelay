@@ -1,6 +1,6 @@
 import Foundation
 
-protocol TorrentBackend {
+protocol RemoteClient {
     func testConnection(url: String, username: String, password: String) async throws
     func addMagnet(_ magnet: String, url: String, username: String, password: String) async throws
 }
@@ -111,7 +111,7 @@ enum BackendSession {
 }
 
 class BackendFactory {
-    static func create(for type: ClientType) -> TorrentBackend {
+    static func create(for type: ClientType) -> RemoteClient {
         switch type {
         case .qbittorrent:
             return QBittorrentBackend()
@@ -120,7 +120,7 @@ class BackendFactory {
         case .deluge:
             return DelugeBackend()
         case .rtorrent:
-            return RTorrentBackend()
+            return RRemoteClient()
         case .synology:
             return SynologyBackend()
         }

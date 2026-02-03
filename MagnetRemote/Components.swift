@@ -94,7 +94,7 @@ struct MRClientChip: View {
             )
         }
         .buttonStyle(MRButtonPressStyle())
-        .accessibilityLabel("\(client.displayName) torrent client\(client.isExperimental ? ", experimental" : "")")
+        .accessibilityLabel("\(client.displayName) client\(client.isExperimental ? ", experimental" : "")")
         .accessibilityHint(isSelected ? "Currently selected" : "Double tap to select")
         .accessibilityAddTraits(isSelected ? .isSelected : [])
     }

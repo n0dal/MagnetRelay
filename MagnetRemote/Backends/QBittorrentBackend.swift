@@ -1,6 +1,6 @@
 import Foundation
 
-class QBittorrentBackend: TorrentBackend {
+class QBittorrentBackend: RemoteClient {
     private var sessionCookie: String?
 
     func testConnection(url: String, username: String, password: String) async throws {
@@ -33,7 +33,7 @@ class QBittorrentBackend: TorrentBackend {
 
         guard let httpResponse = response as? HTTPURLResponse,
               (200...299).contains(httpResponse.statusCode) else {
-            throw BackendError.serverError("Failed to add torrent")
+            throw BackendError.serverError("Failed to send magnet")
         }
     }
 

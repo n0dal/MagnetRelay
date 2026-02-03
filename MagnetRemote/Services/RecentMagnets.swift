@@ -45,7 +45,7 @@ class RecentMagnets: ObservableObject {
                 let hash = String(magnetURL[hashStart..<hashEnd])
                 name = String(hash.prefix(8)) + "..."
             } else {
-                name = "Unknown Torrent"
+                name = "Unknown"
             }
 
             // Truncate if too long

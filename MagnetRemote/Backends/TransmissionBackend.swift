@@ -1,6 +1,6 @@
 import Foundation
 
-class TransmissionBackend: TorrentBackend {
+class TransmissionBackend: RemoteClient {
     private var sessionId: String?
 
     func testConnection(url: String, username: String, password: String) async throws {
@@ -39,7 +39,7 @@ class TransmissionBackend: TorrentBackend {
 
         guard let httpResponse = response as? HTTPURLResponse,
               (200...299).contains(httpResponse.statusCode) else {
-            throw BackendError.serverError("Failed to add torrent")
+            throw BackendError.serverError("Failed to send magnet")
         }
 
         if let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],

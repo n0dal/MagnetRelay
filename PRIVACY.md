@@ -4,7 +4,7 @@
 
 ## Overview
 
-Magnet Remote is a macOS utility that forwards magnet links to your personal torrent client server. We are committed to protecting your privacy.
+Magnet Remote is a macOS utility that forwards magnet links to your personal download server. We are committed to protecting your privacy.
 
 ## Data Collection
 
@@ -29,7 +29,7 @@ The following data is stored **locally on your device only**:
 
 Magnet Remote only connects to:
 
-- **Your configured torrent client server** - To send magnet links and test connections
+- **Your configured download server** - To send magnet links and test connections
 
 No other network connections are made. We do not operate any servers that receive data from this app.
 
@@ -55,7 +55,7 @@ If we update this policy, we will post the new version here with an updated date
 
 ## Contact
 
-For privacy questions, please open an issue at: https://github.com/[your-username]/MagnetRemote
+For privacy questions, please open an issue at: https://github.com/pgpillar/MagnetRemote
 
 ---
 
