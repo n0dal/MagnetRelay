@@ -35,6 +35,142 @@ struct MRSectionCard<Content: View>: View {
     }
 }
 
+// MARK: - Client Selector
+
+struct MRClientSelector: View {
+    @Binding var selection: ClientType
+
+    var body: some View {
+        HStack(spacing: MRSpacing.sm) {
+            ForEach(ClientType.allCases) { client in
+                MRClientChip(
+                    client: client,
+                    isSelected: selection == client
+                ) {
+                    withAnimation(.mrQuick) {
+                        selection = client
+                    }
+                }
+            }
+        }
+    }
+}
+
+struct MRClientChip: View {
+    let client: ClientType
+    let isSelected: Bool
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            VStack(spacing: MRSpacing.xs) {
+                Image(systemName: client.icon)
+                    .font(.system(size: 16, weight: .medium))
+
+                Text(client.displayName)
+                    .font(Font.MR.caption)
+                    .lineLimit(1)
+            }
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, MRSpacing.sm)
+            .padding(.horizontal, MRSpacing.xs)
+            .foregroundColor(isSelected ? .white : Color.MR.textSecondary)
+            .background(isSelected ? Color.MR.accent : Color.MR.background)
+            .clipShape(RoundedRectangle(cornerRadius: MRRadius.md, style: .continuous))
+            .overlay(
+                RoundedRectangle(cornerRadius: MRRadius.md, style: .continuous)
+                    .stroke(isSelected ? Color.clear : Color.MR.border, lineWidth: 1)
+            )
+        }
+        .buttonStyle(MRButtonPressStyle())
+    }
+}
+
+// MARK: - Protocol Toggle
+
+struct MRProtocolToggle: View {
+    @Binding var useHTTPS: Bool
+
+    var body: some View {
+        HStack(spacing: 0) {
+            protocolButton(title: "http", isSelected: !useHTTPS) {
+                useHTTPS = false
+            }
+            protocolButton(title: "https", isSelected: useHTTPS) {
+                useHTTPS = true
+            }
+        }
+        .background(Color.MR.background)
+        .clipShape(RoundedRectangle(cornerRadius: MRRadius.md, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: MRRadius.md, style: .continuous)
+                .stroke(Color.MR.border, lineWidth: 1)
+        )
+    }
+
+    private func protocolButton(title: String, isSelected: Bool, action: @escaping () -> Void) -> some View {
+        Button(action: { withAnimation(.mrQuick) { action() } }) {
+            Text(title)
+                .font(Font.MR.caption)
+                .fontWeight(.medium)
+                .foregroundColor(isSelected ? .white : Color.MR.textSecondary)
+                .padding(.horizontal, MRSpacing.md)
+                .padding(.vertical, MRSpacing.sm)
+                .background(isSelected ? Color.MR.accent : Color.clear)
+        }
+        .buttonStyle(.plain)
+    }
+}
+
+// MARK: - Compact Text Field
+
+struct MRCompactField: View {
+    let placeholder: String
+    @Binding var text: String
+    var isSecure: Bool = false
+    var width: CGFloat? = nil
+
+    var body: some View {
+        Group {
+            if isSecure {
+                SecureField(placeholder, text: $text)
+            } else {
+                TextField(placeholder, text: $text)
+            }
+        }
+        .font(Font.MR.body)
+        .padding(.horizontal, MRSpacing.md)
+        .padding(.vertical, MRSpacing.sm + 2)
+        .frame(width: width)
+        .background(Color.MR.background)
+        .clipShape(RoundedRectangle(cornerRadius: MRRadius.md, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: MRRadius.md, style: .continuous)
+                .stroke(Color.MR.border, lineWidth: 1)
+        )
+    }
+}
+
+// MARK: - Labeled Field Row
+
+struct MRFieldRow: View {
+    let icon: String
+    let label: String
+
+    var body: some View {
+        HStack(spacing: MRSpacing.sm) {
+            Image(systemName: icon)
+                .font(.system(size: 12, weight: .medium))
+                .foregroundColor(Color.MR.accent)
+                .frame(width: 16)
+
+            Text(label)
+                .font(Font.MR.caption)
+                .foregroundColor(Color.MR.textTertiary)
+        }
+    }
+}
+
 // MARK: - Primary Button
 
 struct MRPrimaryButton: View {
@@ -98,6 +234,30 @@ struct MRSecondaryButton: View {
     }
 }
 
+// MARK: - Icon Button
+
+struct MRIconButton: View {
+    let icon: String
+    var size: CGFloat = 32
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            Image(systemName: icon)
+                .font(.system(size: 14, weight: .medium))
+                .foregroundColor(Color.MR.textSecondary)
+                .frame(width: size, height: size)
+                .background(Color.MR.surface)
+                .clipShape(RoundedRectangle(cornerRadius: MRRadius.sm, style: .continuous))
+                .overlay(
+                    RoundedRectangle(cornerRadius: MRRadius.sm, style: .continuous)
+                        .stroke(Color.MR.border, lineWidth: 1)
+                )
+        }
+        .buttonStyle(MRButtonPressStyle())
+    }
+}
+
 // MARK: - Button Press Style
 
 struct MRButtonPressStyle: ButtonStyle {
@@ -109,7 +269,7 @@ struct MRButtonPressStyle: ButtonStyle {
     }
 }
 
-// MARK: - Text Field
+// MARK: - Text Field (Full)
 
 struct MRTextField: View {
     let label: String
