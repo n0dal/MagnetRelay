@@ -50,12 +50,12 @@ Tests/
 - Must register early (willFinish, not didFinish) to catch URLs on cold launch
 
 ### Design System
-- Inspired by ContextAtlas project's design patterns
-- Color tokens: `Color.MR.accent`, `.surface`, `.textPrimary`, etc.
+- Color tokens: `Color.MR.accent`, `.surface`, `.textPrimary`, `.accentRed`, `.accentBlue`, etc.
 - Typography: `Font.MR.title1`, `.body`, `.caption`, etc.
 - Spacing: `MRSpacing.sm`, `.md`, `.lg`, etc.
-- Components prefixed with `MR` (MRSectionCard, MRPrimaryButton, etc.)
-- Teal/cyan accent color palette (network utility aesthetic)
+- Components prefixed with `MR` (MRSectionCard, MRPrimaryButton, MRConnectionStatus, etc.)
+- **Purple/indigo accent color palette** matching the app icon (`#6366F1` light, `#818CF8` dark)
+- Secondary accents: red (`accentRed`) and blue (`accentBlue`) from magnet icon colors
 
 ### Backend Protocol
 All torrent clients implement `TorrentBackend`:
@@ -69,6 +69,17 @@ protocol TorrentBackend {
 ### Configuration
 - `ServerConfig.shared` singleton with `@AppStorage` properties
 - Password stored separately in Keychain via `KeychainService`
+- Key properties: `clientType`, `serverHost`, `serverPort`, `useHTTPS`, `username`
+- State tracking: `hasCompletedSetup`, `lastConnectedAt`, `bannerDismissed`
+- `ClientType` enum has `displayName`, `shortName` (for compact UI), `icon`, `defaultPort`
+
+### UX Patterns
+- **Connection status indicator**: Shows configured state and last connection time in header
+- **Password visibility toggle**: Eye icon in password field to show/hide
+- **Numeric port validation**: Port field filters non-numeric input automatically
+- **User-friendly errors**: `ConnectionError.userFriendlyMessage()` maps technical errors to actionable messages
+- **Dismissible welcome banner**: First-time users can dismiss before completing setup
+- **Accessibility**: All interactive elements have `.accessibilityLabel()` and `.accessibilityHint()`
 
 ## Supported Backends
 
@@ -143,7 +154,7 @@ The `Tests/` directory contains automated visual testing tools that capture scre
 | `https_enabled` | HTTPS protocol toggle enabled |
 | `empty_config` | Settings with no server configured |
 
-**Screenshots Location:** `Tests/screenshots/`
+**Screenshots Location:** `Tests/screenshots/` (gitignored, auto-generated)
 
 **Adding New Tests:**
 

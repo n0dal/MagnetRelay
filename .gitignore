@@ -36,3 +36,6 @@ Pods/
 *.swp
 *.swo
 *~
+
+# Test screenshots (auto-generated)
+Tests/screenshots/

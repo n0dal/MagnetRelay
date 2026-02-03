@@ -20,13 +20,24 @@ enum ClientType: String, CaseIterable, Identifiable, Codable {
         }
     }
 
+    // Shorter names for compact UI (client chips)
+    var shortName: String {
+        switch self {
+        case .qbittorrent: return "qBit"
+        case .transmission: return "Trans"
+        case .deluge: return "Deluge"
+        case .rtorrent: return "rTorrent"
+        case .synology: return "Synology"
+        }
+    }
+
     var icon: String {
         switch self {
-        case .qbittorrent: return "arrow.down.circle.fill"
-        case .transmission: return "antenna.radiowaves.left.and.right"
-        case .deluge: return "flame.fill"
-        case .rtorrent: return "apple.terminal.fill"
-        case .synology: return "xserve"
+        case .qbittorrent: return "arrow.down.to.line.circle.fill"
+        case .transmission: return "gear.circle.fill"
+        case .deluge: return "drop.circle.fill"
+        case .rtorrent: return "terminal.fill"
+        case .synology: return "externaldrive.fill.badge.wifi"
         }
     }
 
@@ -52,6 +63,22 @@ class ServerConfig: ObservableObject {
     @AppStorage("launchAtLogin") var launchAtLogin: Bool = false
     @AppStorage("showNotifications") var showNotifications: Bool = true
     @AppStorage("hasCompletedSetup") var hasCompletedSetup: Bool = false
+    @AppStorage("lastConnectedAt") var lastConnectedAt: Double = 0
+    @AppStorage("bannerDismissed") var bannerDismissed: Bool = false
+
+    // Computed property for last connection date
+    var lastConnectedDate: Date? {
+        guard lastConnectedAt > 0 else { return nil }
+        return Date(timeIntervalSince1970: lastConnectedAt)
+    }
+
+    // Human-readable last connection time
+    var lastConnectedString: String? {
+        guard let date = lastConnectedDate else { return nil }
+        let formatter = RelativeDateTimeFormatter()
+        formatter.unitsStyle = .abbreviated
+        return formatter.localizedString(for: date, relativeTo: Date())
+    }
 
     // Legacy support - computed property
     var serverURL: String {

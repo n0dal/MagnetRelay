@@ -4,47 +4,55 @@ import SwiftUI
 
 extension Color {
     enum MR {
-        // Accent colors - Teal/Cyan for network utility feel
-        static let accent = Color(light: .init(red: 0.15, green: 0.55, blue: 0.60),
-                                  dark: .init(red: 0.25, green: 0.70, blue: 0.75))
-        static let accentMuted = Color(light: .init(red: 0.15, green: 0.55, blue: 0.60, alpha: 0.12),
-                                       dark: .init(red: 0.25, green: 0.70, blue: 0.75, alpha: 0.20))
+        // Accent colors - Indigo/Purple to match app icon
+        static let accent = Color(light: .init(hex: "6366F1"),  // Indigo
+                                  dark: .init(hex: "818CF8"))   // Lighter indigo for dark mode
+        static let accentMuted = Color(light: .init(hex: "6366F1", alpha: 0.12),
+                                       dark: .init(hex: "818CF8", alpha: 0.20))
 
-        // Backgrounds
-        static let background = Color(light: .init(hex: "F8FAFB"),
-                                      dark: .init(hex: "121315"))
+        // Secondary accent - Magnet red (for destructive actions or highlights)
+        static let accentRed = Color(light: .init(hex: "EF4444"),
+                                     dark: .init(hex: "F87171"))
+
+        // Tertiary accent - Magnet blue (for info or secondary highlights)
+        static let accentBlue = Color(light: .init(hex: "3B82F6"),
+                                      dark: .init(hex: "60A5FA"))
+
+        // Backgrounds - Subtle purple tint
+        static let background = Color(light: .init(hex: "F8F8FC"),
+                                      dark: .init(hex: "0F0F14"))
         static let surface = Color(light: .init(hex: "FFFFFF"),
-                                   dark: .init(hex: "1E1F23"))
+                                   dark: .init(hex: "1A1A24"))
         static let surfaceElevated = Color(light: .init(hex: "FFFFFF"),
-                                           dark: .init(hex: "282A2E"))
+                                           dark: .init(hex: "24243A"))
 
         // Input fields - noticeably elevated from background for clarity
         static let inputBackground = Color(light: .init(hex: "FFFFFF"),
-                                           dark: .init(hex: "1E2024"))
-        static let inputBackgroundFocused = Color(light: .init(hex: "FFFFFF"),
-                                                  dark: .init(hex: "252830"))
+                                           dark: .init(hex: "1C1C28"))
+        static let inputBackgroundFocused = Color(light: .init(hex: "FAFAFF"),
+                                                  dark: .init(hex: "222232"))
 
         // Text hierarchy
-        static let textPrimary = Color(light: .init(hex: "1A1D21"),
-                                       dark: .init(hex: "F1F3F5"))
-        static let textSecondary = Color(light: .init(hex: "5C6370"),
-                                         dark: .init(hex: "A0A8B0"))
-        static let textTertiary = Color(light: .init(hex: "8B939E"),
-                                        dark: .init(hex: "6B7280"))
+        static let textPrimary = Color(light: .init(hex: "1A1A2E"),
+                                       dark: .init(hex: "F0F0F8"))
+        static let textSecondary = Color(light: .init(hex: "555570"),
+                                         dark: .init(hex: "A0A0B8"))
+        static let textTertiary = Color(light: .init(hex: "8888A0"),
+                                        dark: .init(hex: "686880"))
 
-        // Dividers & borders
-        static let divider = Color(light: .init(hex: "E5E8EB"),
-                                   dark: .init(hex: "383A40"))
-        static let border = Color(light: .init(hex: "D1D5DB"),
-                                  dark: .init(hex: "4B4F56"))
+        // Dividers & borders - Purple tinted
+        static let divider = Color(light: .init(hex: "E8E8F0"),
+                                   dark: .init(hex: "32324A"))
+        static let border = Color(light: .init(hex: "D0D0E0"),
+                                  dark: .init(hex: "44445C"))
 
         // Semantic colors
-        static let success = Color(light: .init(red: 0.20, green: 0.60, blue: 0.35),
-                                   dark: .init(red: 0.30, green: 0.75, blue: 0.45))
-        static let error = Color(light: .init(red: 0.85, green: 0.25, blue: 0.25),
-                                 dark: .init(red: 0.95, green: 0.40, blue: 0.40))
-        static let warning = Color(light: .init(red: 0.85, green: 0.60, blue: 0.20),
-                                   dark: .init(red: 0.95, green: 0.70, blue: 0.30))
+        static let success = Color(light: .init(hex: "22C55E"),
+                                   dark: .init(hex: "4ADE80"))
+        static let error = Color(light: .init(hex: "EF4444"),
+                                 dark: .init(hex: "F87171"))
+        static let warning = Color(light: .init(hex: "F59E0B"),
+                                   dark: .init(hex: "FBBF24"))
     }
 }
 
@@ -59,13 +67,13 @@ extension Color {
 }
 
 extension NSColor {
-    convenience init(hex: String) {
+    convenience init(hex: String, alpha: Double = 1.0) {
         let hex = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
         var int: UInt64 = 0
         Scanner(string: hex).scanHexInt64(&int)
         let r, g, b: UInt64
         (r, g, b) = ((int >> 16) & 0xFF, (int >> 8) & 0xFF, int & 0xFF)
-        self.init(red: CGFloat(r) / 255, green: CGFloat(g) / 255, blue: CGFloat(b) / 255, alpha: 1)
+        self.init(red: CGFloat(r) / 255, green: CGFloat(g) / 255, blue: CGFloat(b) / 255, alpha: CGFloat(alpha))
     }
 
     convenience init(red: Double, green: Double, blue: Double, alpha: Double = 1.0) {

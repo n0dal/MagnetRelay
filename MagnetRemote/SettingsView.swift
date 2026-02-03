@@ -19,7 +19,7 @@ struct SettingsView: View {
             header
 
             // Welcome banner for first-time users
-            if !config.hasCompletedSetup {
+            if !config.hasCompletedSetup && !config.bannerDismissed {
                 setupBanner
             }
 
@@ -39,7 +39,7 @@ struct SettingsView: View {
         }
         .padding(MRLayout.gutter + 4)
         .background(Color.MR.background)
-        .frame(width: 480, height: config.hasCompletedSetup ? 460 : 520)
+        .frame(width: 480, height: (config.hasCompletedSetup || config.bannerDismissed) ? 460 : 520)
         .onAppear {
             password = KeychainService.getPassword() ?? ""
             // Delay flag reset to avoid onChange triggering during load
@@ -78,11 +78,31 @@ struct SettingsView: View {
                     .foregroundColor(Color.MR.textSecondary)
                     .fixedSize(horizontal: false, vertical: true)
             }
+
+            Spacer()
+
+            // Dismiss button
+            Button {
+                withAnimation(.mrQuick) {
+                    config.bannerDismissed = true
+                }
+            } label: {
+                Image(systemName: "xmark")
+                    .font(.system(size: 12, weight: .medium))
+                    .foregroundColor(Color.MR.textTertiary)
+                    .frame(width: 24, height: 24)
+                    .background(Color.MR.surface.opacity(0.5))
+                    .clipShape(Circle())
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel("Dismiss welcome banner")
         }
         .padding(MRSpacing.md)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(Color.MR.accentMuted)
         .clipShape(RoundedRectangle(cornerRadius: MRRadius.md, style: .continuous))
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("Welcome banner. Configure your server and test the connection to enable magnet link handling.")
     }
 
     // MARK: - Header
@@ -90,30 +110,65 @@ struct SettingsView: View {
     private var header: some View {
         HStack {
             HStack(spacing: MRSpacing.sm) {
-                Image(systemName: "link.circle.fill")
-                    .font(.system(size: 28, weight: .medium))
-                    .foregroundStyle(
-                        LinearGradient(
-                            colors: [Color.MR.accent, Color.MR.accent.opacity(0.7)],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
+                // App icon with gradient matching the actual app icon
+                ZStack {
+                    RoundedRectangle(cornerRadius: 8, style: .continuous)
+                        .fill(
+                            LinearGradient(
+                                colors: [
+                                    Color(red: 0.39, green: 0.40, blue: 0.95),  // Indigo
+                                    Color(red: 0.55, green: 0.36, blue: 0.96)   // Purple
+                                ],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            )
                         )
-                    )
+                        .frame(width: 36, height: 36)
 
-                VStack(alignment: .leading, spacing: 0) {
+                    // Horseshoe magnet shape using two colored bars
+                    HStack(spacing: 2) {
+                        // Red pole
+                        RoundedRectangle(cornerRadius: 2)
+                            .fill(Color.MR.accentRed)
+                            .frame(width: 6, height: 16)
+                        // Blue pole
+                        RoundedRectangle(cornerRadius: 2)
+                            .fill(Color.MR.accentBlue)
+                            .frame(width: 6, height: 16)
+                    }
+                    .offset(y: 3)
+
+                    // Top arc
+                    Circle()
+                        .trim(from: 0.5, to: 1.0)
+                        .stroke(
+                            LinearGradient(
+                                colors: [Color.MR.accentRed, Color.MR.accentBlue],
+                                startPoint: .leading,
+                                endPoint: .trailing
+                            ),
+                            style: StrokeStyle(lineWidth: 6, lineCap: .round)
+                        )
+                        .frame(width: 14, height: 14)
+                        .offset(y: -5)
+                }
+
+                VStack(alignment: .leading, spacing: 2) {
                     Text("Magnet Remote")
                         .font(Font.MR.title3)
                         .foregroundColor(Color.MR.textPrimary)
 
-                    Text("v1.0.0")
-                        .font(Font.MR.caption)
-                        .foregroundColor(Color.MR.textTertiary)
+                    // Connection status indicator
+                    MRConnectionStatus(
+                        isConfigured: config.hasCompletedSetup,
+                        lastConnected: config.lastConnectedString
+                    )
                 }
             }
 
             Spacer()
 
-            MRIconButton(icon: "gearshape") {
+            MRIconButton(icon: "gearshape", accessibilityText: "Open preferences") {
                 showPreferences = true
             }
         }
@@ -152,7 +207,8 @@ struct SettingsView: View {
                 MRCompactInput(
                     placeholder: "Port",
                     text: $config.serverPort,
-                    width: 72
+                    width: 72,
+                    numericOnly: true
                 )
             }
         }
@@ -244,6 +300,8 @@ struct SettingsView: View {
                 await MainActor.run {
                     testResult = .success
                     isTesting = false
+                    // Save last connected time
+                    config.lastConnectedAt = Date().timeIntervalSince1970
                     // Mark setup as complete on successful connection
                     if !config.hasCompletedSetup {
                         withAnimation(.mrQuick) {
@@ -253,7 +311,9 @@ struct SettingsView: View {
                 }
             } catch {
                 await MainActor.run {
-                    testResult = .failure(error.localizedDescription)
+                    // Use user-friendly error message
+                    let friendlyMessage = ConnectionError.userFriendlyMessage(from: error)
+                    testResult = .failure(friendlyMessage)
                     isTesting = false
                 }
             }

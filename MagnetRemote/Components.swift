@@ -67,7 +67,7 @@ struct MRClientChip: View {
                 Image(systemName: client.icon)
                     .font(.system(size: 22, weight: .medium))
 
-                Text(client.displayName)
+                Text(client.shortName)
                     .font(Font.MR.subheadline)
                     .fontWeight(.medium)
                     .lineLimit(1)
@@ -84,6 +84,9 @@ struct MRClientChip: View {
             )
         }
         .buttonStyle(MRButtonPressStyle())
+        .accessibilityLabel("\(client.displayName) torrent client")
+        .accessibilityHint(isSelected ? "Currently selected" : "Double tap to select")
+        .accessibilityAddTraits(isSelected ? .isSelected : [])
     }
 }
 
@@ -134,6 +137,7 @@ struct MRInputField: View {
     var width: CGFloat? = nil
 
     @FocusState private var isFocused: Bool
+    @State private var showPassword: Bool = false
 
     var body: some View {
         HStack(spacing: MRSpacing.sm) {
@@ -145,7 +149,7 @@ struct MRInputField: View {
 
             // Input field
             Group {
-                if isSecure {
+                if isSecure && !showPassword {
                     SecureField(placeholder, text: $text)
                 } else {
                     TextField(placeholder, text: $text)
@@ -155,6 +159,19 @@ struct MRInputField: View {
             .font(.system(size: 13))
             .foregroundColor(Color.MR.textPrimary)
             .focused($isFocused)
+
+            // Password visibility toggle
+            if isSecure {
+                Button {
+                    showPassword.toggle()
+                } label: {
+                    Image(systemName: showPassword ? "eye.slash.fill" : "eye.fill")
+                        .font(.system(size: 12, weight: .medium))
+                        .foregroundColor(Color.MR.textTertiary)
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel(showPassword ? "Hide password" : "Show password")
+            }
         }
         .padding(.horizontal, MRSpacing.md)
         .padding(.vertical, MRSpacing.sm + 2)
@@ -170,6 +187,7 @@ struct MRInputField: View {
                 )
         )
         .animation(.mrQuick, value: isFocused)
+        .accessibilityLabel(label)
     }
 }
 
@@ -179,6 +197,7 @@ struct MRCompactInput: View {
     let placeholder: String
     @Binding var text: String
     var width: CGFloat? = nil
+    var numericOnly: Bool = false
 
     @FocusState private var isFocused: Bool
 
@@ -202,6 +221,15 @@ struct MRCompactInput: View {
                     )
             )
             .animation(.mrQuick, value: isFocused)
+            .onChange(of: text) { newValue in
+                if numericOnly {
+                    let filtered = newValue.filter { $0.isNumber }
+                    if filtered != newValue {
+                        text = filtered
+                    }
+                }
+            }
+            .accessibilityLabel(placeholder)
     }
 }
 
@@ -250,14 +278,21 @@ struct MRPrimaryButton: View {
                 Text(title)
                     .font(Font.MR.headline)
             }
-            .foregroundColor(.white)
+            .foregroundColor(isDisabled ? Color.MR.textTertiary : .white)
             .frame(maxWidth: .infinity)
             .padding(.vertical, MRSpacing.md)
-            .background(isDisabled ? Color.MR.textTertiary : Color.MR.accent)
+            .background(isDisabled ? Color.MR.surface : Color.MR.accent)
             .clipShape(RoundedRectangle(cornerRadius: MRRadius.md, style: .continuous))
+            .overlay(
+                RoundedRectangle(cornerRadius: MRRadius.md, style: .continuous)
+                    .stroke(isDisabled ? Color.MR.border : Color.clear, lineWidth: 1)
+            )
+            .opacity(isDisabled ? 0.6 : 1.0)
         }
         .buttonStyle(MRButtonPressStyle())
         .disabled(isDisabled || isLoading)
+        .accessibilityLabel(title)
+        .accessibilityHint(isDisabled ? "Button disabled. Enter server host to enable." : "Double tap to test connection")
     }
 }
 
@@ -294,6 +329,7 @@ struct MRSecondaryButton: View {
 struct MRIconButton: View {
     let icon: String
     var size: CGFloat = 32
+    var accessibilityText: String = "Button"
     let action: () -> Void
 
     var body: some View {
@@ -310,6 +346,7 @@ struct MRIconButton: View {
                 )
         }
         .buttonStyle(MRButtonPressStyle())
+        .accessibilityLabel(accessibilityText)
     }
 }
 
@@ -478,6 +515,10 @@ struct MRToggleRow: View {
                 .toggleStyle(.switch)
                 .tint(Color.MR.accent)
         }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("\(title). \(subtitle ?? "")")
+        .accessibilityValue(isOn ? "On" : "Off")
+        .accessibilityHint("Double tap to toggle")
     }
 }
 
@@ -551,5 +592,98 @@ struct MRInfoRow: View {
                 .font(Font.MR.subheadline)
                 .foregroundColor(Color.MR.textPrimary)
         }
+    }
+}
+
+// MARK: - Connection Status Indicator
+
+struct MRConnectionStatus: View {
+    let isConfigured: Bool
+    let lastConnected: String?
+
+    var body: some View {
+        HStack(spacing: MRSpacing.xs) {
+            Circle()
+                .fill(isConfigured ? Color.MR.success : Color.MR.textTertiary)
+                .frame(width: 8, height: 8)
+
+            if let lastConnected = lastConnected {
+                Text("Connected \(lastConnected)")
+                    .font(Font.MR.caption)
+                    .foregroundColor(Color.MR.textTertiary)
+            } else if isConfigured {
+                Text("Configured")
+                    .font(Font.MR.caption)
+                    .foregroundColor(Color.MR.textTertiary)
+            } else {
+                Text("Not configured")
+                    .font(Font.MR.caption)
+                    .foregroundColor(Color.MR.textTertiary)
+            }
+        }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(isConfigured ? "Server configured. Last connected \(lastConnected ?? "unknown")" : "Server not configured")
+    }
+}
+
+// MARK: - Error Message Helper
+
+enum ConnectionError {
+    static func userFriendlyMessage(from error: Error) -> String {
+        let message = error.localizedDescription.lowercased()
+
+        // Connection refused / host unreachable
+        if message.contains("connection refused") ||
+           message.contains("could not connect") ||
+           message.contains("network is unreachable") ||
+           message.contains("host") {
+            return "Server not reachable. Check host and port."
+        }
+
+        // Timeout
+        if message.contains("timed out") || message.contains("timeout") {
+            return "Connection timed out. Is server running?"
+        }
+
+        // Authentication
+        if message.contains("401") ||
+           message.contains("unauthorized") ||
+           message.contains("authentication") ||
+           message.contains("forbidden") ||
+           message.contains("403") {
+            return "Invalid username or password."
+        }
+
+        // SSL/TLS errors
+        if message.contains("ssl") ||
+           message.contains("certificate") ||
+           message.contains("tls") ||
+           message.contains("secure connection") {
+            return "SSL error. Try disabling HTTPS."
+        }
+
+        // DNS errors
+        if message.contains("hostname") ||
+           message.contains("dns") ||
+           message.contains("name or service not known") {
+            return "Invalid hostname. Check server address."
+        }
+
+        // 404 - wrong path
+        if message.contains("404") || message.contains("not found") {
+            return "API not found. Check client type and port."
+        }
+
+        // Generic network error
+        if message.contains("network") || message.contains("internet") {
+            return "Network error. Check your connection."
+        }
+
+        // Fallback - truncate if too long
+        let originalMessage = error.localizedDescription
+        if originalMessage.count > 40 {
+            return String(originalMessage.prefix(37)) + "..."
+        }
+        return originalMessage
     }
 }
