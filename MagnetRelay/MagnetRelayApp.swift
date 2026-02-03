@@ -1,7 +1,7 @@
 import SwiftUI
 
 @main
-struct MagnetRemoteApp: App {
+struct MagnetRelayApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
     var body: some Scene {

@@ -7,51 +7,59 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		078E4911CD2D945AB958A9DC /* KeychainService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43474983E87B64F984EA765B /* KeychainService.swift */; };
-		0973D782896574C185C119FE /* Components.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75495766AAC5974068205656 /* Components.swift */; };
-		0ACFD46933F2EEDABCE67ED2 /* ServerConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09BE96F9399934F3EDAE91CB /* ServerConfig.swift */; };
-		0D58FDC036FF7D64A2E7251D /* MagnetHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7047A8014B09639193C3844 /* MagnetHandler.swift */; };
-		1AD922271C0B7B002CF0B88E /* TransmissionBackend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07BCB2A8B3F4A05440567F87 /* TransmissionBackend.swift */; };
-		313CA597EDF9A6B6488CD2C2 /* QBittorrentBackend.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFADC92718278B9B91FE3EA8 /* QBittorrentBackend.swift */; };
-		45F9CBC79BBF9ED3B629C7EB /* SynologyBackend.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC460905468B470E10979BDB /* SynologyBackend.swift */; };
-		49DEAC552FB29914811643E7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7BA5FC844BC7BD84D2F33C7B /* Assets.xcassets */; };
-		61E4756CDD7E97D893DCC17B /* settings.local.json in Resources */ = {isa = PBXBuildFile; fileRef = F3227ADF2956B2DAE934814D /* settings.local.json */; };
-		80D94CE8F6A71682B8DA26D9 /* RecentMagnets.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5EA07AA297A147C0749ABEE /* RecentMagnets.swift */; };
-		8B3FA0E8C329CFD0213EDD9A /* DelugeBackend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 336C205486FAC9B7FB0FC99D /* DelugeBackend.swift */; };
-		92B4D659E55478C06E67939A /* RemoteClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C385A9623AA960550EA5355 /* RemoteClient.swift */; };
-		A59AD50790838F60219880F1 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1863047DDD33E766076C2845 /* AppDelegate.swift */; };
-		B0D43B06E6D7F3DF9990204C /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63FF0C89415DD8CDE35E5EC4 /* SettingsView.swift */; };
-		CF8F4D75EAC99B3E293D2AD4 /* LaunchAtLogin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DD33F145E2F0A368BBB2EE2 /* LaunchAtLogin.swift */; };
-		DB4FEAE8382C53B79D4DB177 /* MagnetRemoteApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BD973575E78DD68CF839C11 /* MagnetRemoteApp.swift */; };
-		DFCBCB33F3158BDB47CEC430 /* DesignSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D0FAE26FE0C4060791AFBB /* DesignSystem.swift */; };
-		F9E2EE006147C6C43ABA13AF /* RTorrentBackend.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF20943F38CF40BF28A30822 /* RTorrentBackend.swift */; };
+		0E708630F0EB7A5ADAC8D029 /* KeychainService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5C9D37721B2AB041A7E4AC2 /* KeychainService.swift */; };
+		1820B29069DA3EC844F8E4FD /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28217E30B30822E101392A05 /* SettingsView.swift */; };
+		19106B309B28CEC5A052A4C7 /* MagnetRelayApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EE326CE8F096CD6E93D0DEF /* MagnetRelayApp.swift */; };
+		201544595266DF8633165966 /* QBittorrentBackend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D843D62429CDBCE5FEFB154 /* QBittorrentBackend.swift */; };
+		533DD74B223C78B81FB780ED /* settings.local.json in Resources */ = {isa = PBXBuildFile; fileRef = B16DC18ACDA28E972C8E2BF0 /* settings.local.json */; };
+		5E8202BAEF080B6016D836F2 /* MagnetHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC1B88B68751EB75293CA1CB /* MagnetHandler.swift */; };
+		6A694B18B6EC0B10D85C1F3C /* TransmissionBackend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12B1BED5B429D8E502F164C8 /* TransmissionBackend.swift */; };
+		751092A0C3EB83158532D54D /* ServerConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = F56AC8CE36FDD9DA686F5894 /* ServerConfig.swift */; };
+		87B1C291B7BDA6AE5535B1D5 /* LaunchAtLogin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 302C8B6672733124E9AA7F57 /* LaunchAtLogin.swift */; };
+		89CF2D2BE14C365E684D3771 /* RecentMagnets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C3BAFED9C9161A8C93583C /* RecentMagnets.swift */; };
+		8F2ADB09640985599CF1ECEF /* RemoteClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC2135966ED49B94C333FAD9 /* RemoteClient.swift */; };
+		92FF5DF27B7655791497AC61 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0521F13659742EDAD59525F1 /* Assets.xcassets */; };
+		A2F18F9EF9EF5A81F38E0EBE /* DelugeBackend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60DBA14FE6FB964615C53C78 /* DelugeBackend.swift */; };
+		A6991B29A3DAF9F8193587AC /* RTorrentBackend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 438025AA2B9640F02BAEF6BB /* RTorrentBackend.swift */; };
+		A93D1FAAF65DF296D85FCDDF /* Components.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C56DB23DB0C20A7A5957C67 /* Components.swift */; };
+		B61B3BB9F9716EAE45A6BC79 /* SynologyBackend.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBA25C4999CA534805671FEA /* SynologyBackend.swift */; };
+		B92F833D55AF131670D45C49 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6040E307DBB2D39BB0AC23F4 /* AppDelegate.swift */; };
+		D5CF8A92DCCA3B7113523DE2 /* DesignSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7D34C6CEC83DFAD85E3E339 /* DesignSystem.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		07BCB2A8B3F4A05440567F87 /* TransmissionBackend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransmissionBackend.swift; sourceTree = "<group>"; };
-		09BE96F9399934F3EDAE91CB /* ServerConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerConfig.swift; sourceTree = "<group>"; };
+		0521F13659742EDAD59525F1 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		0BBED09F99FB260E9E12C211 /* MagnetRelay.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MagnetRelay.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		0DDEFF9F134A055355C9F290 /* MagnetRelay.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MagnetRelay.entitlements; sourceTree = "<group>"; };
-		1863047DDD33E766076C2845 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		21D0FAE26FE0C4060791AFBB /* DesignSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignSystem.swift; sourceTree = "<group>"; };
-		336C205486FAC9B7FB0FC99D /* DelugeBackend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DelugeBackend.swift; sourceTree = "<group>"; };
-		3BD973575E78DD68CF839C11 /* MagnetRemoteApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagnetRemoteApp.swift; sourceTree = "<group>"; };
-		43474983E87B64F984EA765B /* KeychainService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainService.swift; sourceTree = "<group>"; };
-		63FF0C89415DD8CDE35E5EC4 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
-		75495766AAC5974068205656 /* Components.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Components.swift; sourceTree = "<group>"; };
-		7BA5FC844BC7BD84D2F33C7B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		7C385A9623AA960550EA5355 /* RemoteClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteClient.swift; sourceTree = "<group>"; };
-		7DD33F145E2F0A368BBB2EE2 /* LaunchAtLogin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchAtLogin.swift; sourceTree = "<group>"; };
-		AC460905468B470E10979BDB /* SynologyBackend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SynologyBackend.swift; sourceTree = "<group>"; };
-		AF20943F38CF40BF28A30822 /* RTorrentBackend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RTorrentBackend.swift; sourceTree = "<group>"; };
-		D7047A8014B09639193C3844 /* MagnetHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagnetHandler.swift; sourceTree = "<group>"; };
-		E5EA07AA297A147C0749ABEE /* RecentMagnets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentMagnets.swift; sourceTree = "<group>"; };
-		EFFBFC7085767026793617AB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
-		F3227ADF2956B2DAE934814D /* settings.local.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = settings.local.json; sourceTree = "<group>"; };
-		FFADC92718278B9B91FE3EA8 /* QBittorrentBackend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QBittorrentBackend.swift; sourceTree = "<group>"; };
+		12B1BED5B429D8E502F164C8 /* TransmissionBackend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransmissionBackend.swift; sourceTree = "<group>"; };
+		28217E30B30822E101392A05 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		2E153EEEC8C62BE7E0BF4987 /* MagnetRelay.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MagnetRelay.entitlements; sourceTree = "<group>"; };
+		302C8B6672733124E9AA7F57 /* LaunchAtLogin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchAtLogin.swift; sourceTree = "<group>"; };
+		39C3BAFED9C9161A8C93583C /* RecentMagnets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentMagnets.swift; sourceTree = "<group>"; };
+		438025AA2B9640F02BAEF6BB /* RTorrentBackend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RTorrentBackend.swift; sourceTree = "<group>"; };
+		6040E307DBB2D39BB0AC23F4 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		60DBA14FE6FB964615C53C78 /* DelugeBackend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DelugeBackend.swift; sourceTree = "<group>"; };
+		6D843D62429CDBCE5FEFB154 /* QBittorrentBackend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QBittorrentBackend.swift; sourceTree = "<group>"; };
+		7EE326CE8F096CD6E93D0DEF /* MagnetRelayApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagnetRelayApp.swift; sourceTree = "<group>"; };
+		9C56DB23DB0C20A7A5957C67 /* Components.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Components.swift; sourceTree = "<group>"; };
+		B16DC18ACDA28E972C8E2BF0 /* settings.local.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = settings.local.json; sourceTree = "<group>"; };
+		BC1B88B68751EB75293CA1CB /* MagnetHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagnetHandler.swift; sourceTree = "<group>"; };
+		BC2135966ED49B94C333FAD9 /* RemoteClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteClient.swift; sourceTree = "<group>"; };
+		CBA25C4999CA534805671FEA /* SynologyBackend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SynologyBackend.swift; sourceTree = "<group>"; };
+		EE47A785D84808DCDB1F31E8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		F56AC8CE36FDD9DA686F5894 /* ServerConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerConfig.swift; sourceTree = "<group>"; };
+		F5C9D37721B2AB041A7E4AC2 /* KeychainService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainService.swift; sourceTree = "<group>"; };
+		F7D34C6CEC83DFAD85E3E339 /* DesignSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignSystem.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
+		20DF3DA711BDA6E2223BF2FE /* .claude */ = {
+			isa = PBXGroup;
+			children = (
+				B16DC18ACDA28E972C8E2BF0 /* settings.local.json */,
+			);
+			path = .claude;
+			sourceTree = "<group>";
+		};
 		2F424801D1C048E4764C6069 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -60,71 +68,63 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		5E95BA192017C136C19F50A5 /* Backends */ = {
+		4049BEC0FA0AAC537DAF6E5F /* MagnetRelay */ = {
 			isa = PBXGroup;
 			children = (
-				336C205486FAC9B7FB0FC99D /* DelugeBackend.swift */,
-				FFADC92718278B9B91FE3EA8 /* QBittorrentBackend.swift */,
-				7C385A9623AA960550EA5355 /* RemoteClient.swift */,
-				AF20943F38CF40BF28A30822 /* RTorrentBackend.swift */,
-				AC460905468B470E10979BDB /* SynologyBackend.swift */,
-				07BCB2A8B3F4A05440567F87 /* TransmissionBackend.swift */,
+				6040E307DBB2D39BB0AC23F4 /* AppDelegate.swift */,
+				0521F13659742EDAD59525F1 /* Assets.xcassets */,
+				9C56DB23DB0C20A7A5957C67 /* Components.swift */,
+				F7D34C6CEC83DFAD85E3E339 /* DesignSystem.swift */,
+				EE47A785D84808DCDB1F31E8 /* Info.plist */,
+				2E153EEEC8C62BE7E0BF4987 /* MagnetRelay.entitlements */,
+				7EE326CE8F096CD6E93D0DEF /* MagnetRelayApp.swift */,
+				28217E30B30822E101392A05 /* SettingsView.swift */,
+				20DF3DA711BDA6E2223BF2FE /* .claude */,
+				88A8A3356DB53BB04161DF6F /* Backends */,
+				9596B16F1C88B383AA43C368 /* Models */,
+				B8B3DBB9C250575A94CE03F6 /* Services */,
+			);
+			path = MagnetRelay;
+			sourceTree = "<group>";
+		};
+		88A8A3356DB53BB04161DF6F /* Backends */ = {
+			isa = PBXGroup;
+			children = (
+				60DBA14FE6FB964615C53C78 /* DelugeBackend.swift */,
+				6D843D62429CDBCE5FEFB154 /* QBittorrentBackend.swift */,
+				BC2135966ED49B94C333FAD9 /* RemoteClient.swift */,
+				438025AA2B9640F02BAEF6BB /* RTorrentBackend.swift */,
+				CBA25C4999CA534805671FEA /* SynologyBackend.swift */,
+				12B1BED5B429D8E502F164C8 /* TransmissionBackend.swift */,
 			);
 			path = Backends;
 			sourceTree = "<group>";
 		};
-		68D9BF2C1F4F17B142D6D55F /* MagnetRemote */ = {
+		9596B16F1C88B383AA43C368 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				1863047DDD33E766076C2845 /* AppDelegate.swift */,
-				7BA5FC844BC7BD84D2F33C7B /* Assets.xcassets */,
-				75495766AAC5974068205656 /* Components.swift */,
-				21D0FAE26FE0C4060791AFBB /* DesignSystem.swift */,
-				EFFBFC7085767026793617AB /* Info.plist */,
-				0DDEFF9F134A055355C9F290 /* MagnetRelay.entitlements */,
-				3BD973575E78DD68CF839C11 /* MagnetRemoteApp.swift */,
-				63FF0C89415DD8CDE35E5EC4 /* SettingsView.swift */,
-				D11F348E2F5F04FD52C724DC /* .claude */,
-				5E95BA192017C136C19F50A5 /* Backends */,
-				ED37C1A7DB9AAFC15F1EC79B /* Models */,
-				B79F682AD0424742EA45EA99 /* Services */,
+				F56AC8CE36FDD9DA686F5894 /* ServerConfig.swift */,
 			);
-			path = MagnetRemote;
+			path = Models;
 			sourceTree = "<group>";
 		};
-		B79F682AD0424742EA45EA99 /* Services */ = {
+		B8B3DBB9C250575A94CE03F6 /* Services */ = {
 			isa = PBXGroup;
 			children = (
-				43474983E87B64F984EA765B /* KeychainService.swift */,
-				7DD33F145E2F0A368BBB2EE2 /* LaunchAtLogin.swift */,
-				D7047A8014B09639193C3844 /* MagnetHandler.swift */,
-				E5EA07AA297A147C0749ABEE /* RecentMagnets.swift */,
+				F5C9D37721B2AB041A7E4AC2 /* KeychainService.swift */,
+				302C8B6672733124E9AA7F57 /* LaunchAtLogin.swift */,
+				BC1B88B68751EB75293CA1CB /* MagnetHandler.swift */,
+				39C3BAFED9C9161A8C93583C /* RecentMagnets.swift */,
 			);
 			path = Services;
-			sourceTree = "<group>";
-		};
-		D11F348E2F5F04FD52C724DC /* .claude */ = {
-			isa = PBXGroup;
-			children = (
-				F3227ADF2956B2DAE934814D /* settings.local.json */,
-			);
-			path = .claude;
 			sourceTree = "<group>";
 		};
 		DCDCC75BEC3E133C05515A2C = {
 			isa = PBXGroup;
 			children = (
-				68D9BF2C1F4F17B142D6D55F /* MagnetRemote */,
+				4049BEC0FA0AAC537DAF6E5F /* MagnetRelay */,
 				2F424801D1C048E4764C6069 /* Products */,
 			);
-			sourceTree = "<group>";
-		};
-		ED37C1A7DB9AAFC15F1EC79B /* Models */ = {
-			isa = PBXGroup;
-			children = (
-				09BE96F9399934F3EDAE91CB /* ServerConfig.swift */,
-			);
-			path = Models;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -187,8 +187,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				49DEAC552FB29914811643E7 /* Assets.xcassets in Resources */,
-				61E4756CDD7E97D893DCC17B /* settings.local.json in Resources */,
+				92FF5DF27B7655791497AC61 /* Assets.xcassets in Resources */,
+				533DD74B223C78B81FB780ED /* settings.local.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -199,22 +199,22 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A59AD50790838F60219880F1 /* AppDelegate.swift in Sources */,
-				0973D782896574C185C119FE /* Components.swift in Sources */,
-				8B3FA0E8C329CFD0213EDD9A /* DelugeBackend.swift in Sources */,
-				DFCBCB33F3158BDB47CEC430 /* DesignSystem.swift in Sources */,
-				078E4911CD2D945AB958A9DC /* KeychainService.swift in Sources */,
-				CF8F4D75EAC99B3E293D2AD4 /* LaunchAtLogin.swift in Sources */,
-				0D58FDC036FF7D64A2E7251D /* MagnetHandler.swift in Sources */,
-				DB4FEAE8382C53B79D4DB177 /* MagnetRemoteApp.swift in Sources */,
-				313CA597EDF9A6B6488CD2C2 /* QBittorrentBackend.swift in Sources */,
-				F9E2EE006147C6C43ABA13AF /* RTorrentBackend.swift in Sources */,
-				80D94CE8F6A71682B8DA26D9 /* RecentMagnets.swift in Sources */,
-				92B4D659E55478C06E67939A /* RemoteClient.swift in Sources */,
-				0ACFD46933F2EEDABCE67ED2 /* ServerConfig.swift in Sources */,
-				B0D43B06E6D7F3DF9990204C /* SettingsView.swift in Sources */,
-				45F9CBC79BBF9ED3B629C7EB /* SynologyBackend.swift in Sources */,
-				1AD922271C0B7B002CF0B88E /* TransmissionBackend.swift in Sources */,
+				B92F833D55AF131670D45C49 /* AppDelegate.swift in Sources */,
+				A93D1FAAF65DF296D85FCDDF /* Components.swift in Sources */,
+				A2F18F9EF9EF5A81F38E0EBE /* DelugeBackend.swift in Sources */,
+				D5CF8A92DCCA3B7113523DE2 /* DesignSystem.swift in Sources */,
+				0E708630F0EB7A5ADAC8D029 /* KeychainService.swift in Sources */,
+				87B1C291B7BDA6AE5535B1D5 /* LaunchAtLogin.swift in Sources */,
+				5E8202BAEF080B6016D836F2 /* MagnetHandler.swift in Sources */,
+				19106B309B28CEC5A052A4C7 /* MagnetRelayApp.swift in Sources */,
+				201544595266DF8633165966 /* QBittorrentBackend.swift in Sources */,
+				A6991B29A3DAF9F8193587AC /* RTorrentBackend.swift in Sources */,
+				89CF2D2BE14C365E684D3771 /* RecentMagnets.swift in Sources */,
+				8F2ADB09640985599CF1ECEF /* RemoteClient.swift in Sources */,
+				751092A0C3EB83158532D54D /* ServerConfig.swift in Sources */,
+				1820B29069DA3EC844F8E4FD /* SettingsView.swift in Sources */,
+				B61B3BB9F9716EAE45A6BC79 /* SynologyBackend.swift in Sources */,
+				6A694B18B6EC0B10D85C1F3C /* TransmissionBackend.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -225,12 +225,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = MagnetRemote/MagnetRelay.entitlements;
+				CODE_SIGN_ENTITLEMENTS = MagnetRelay/MagnetRelay.entitlements;
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
-				INFOPLIST_FILE = MagnetRemote/Info.plist;
+				INFOPLIST_FILE = MagnetRelay/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -371,12 +371,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = MagnetRemote/MagnetRelay.entitlements;
+				CODE_SIGN_ENTITLEMENTS = MagnetRelay/MagnetRelay.entitlements;
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
-				INFOPLIST_FILE = MagnetRemote/Info.plist;
+				INFOPLIST_FILE = MagnetRelay/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",

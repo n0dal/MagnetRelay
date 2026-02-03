@@ -2,12 +2,12 @@
 """
 Mock Synology Download Station API Server
 
-This mimics Synology's API for testing MagnetRemote without a real NAS.
+This mimics Synology's API for testing MagnetRelay without a real NAS.
 
 Usage:
     python3 Tests/mock_synology.py
 
-Then configure MagnetRemote:
+Then configure MagnetRelay:
     - Host: localhost
     - Port: 5000
     - HTTPS: OFF (for local testing)
@@ -165,7 +165,7 @@ def main():
 ║                                                              ║
 ║  Server running at: http://localhost:{port}                   ║
 ║                                                              ║
-║  Configure MagnetRemote with:                               ║
+║  Configure MagnetRelay with:                               ║
 ║    • Host: localhost                                         ║
 ║    • Port: {port}                                              ║
 ║    • HTTPS: OFF                                              ║
