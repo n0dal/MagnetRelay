@@ -24,7 +24,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
 
         if let button = statusItem.button {
-            button.image = NSImage(systemSymbolName: "link.circle.fill", accessibilityDescription: "Magnet Remote")
+            button.image = NSImage(systemSymbolName: "link", accessibilityDescription: "Magnet Remote")
             button.image?.isTemplate = true  // Adapts to menu bar light/dark mode
         }
 
