@@ -146,6 +146,18 @@ struct SettingsView: View {
             MRFieldRow(icon: "app.connected.to.app.below.fill", label: "CLIENT")
 
             MRClientSelector(selection: $config.clientType)
+
+            // Experimental warning
+            if config.clientType.isExperimental {
+                HStack(spacing: MRSpacing.xs) {
+                    Image(systemName: "exclamationmark.triangle.fill")
+                        .font(.system(size: 10))
+                    Text(config.clientType.experimentalWarning ?? "")
+                        .font(Font.MR.caption)
+                }
+                .foregroundColor(Color.MR.warning)
+                .padding(.top, MRSpacing.xxs)
+            }
         }
     }
 

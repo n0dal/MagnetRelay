@@ -132,9 +132,9 @@ Use obviously fake examples to prevent user confusion:
 
 ### Backend Issues To Fix
 1. ~~**No request timeouts**~~ - ✅ Fixed: 30s timeout via BackendSession.shared
-2. **No retry logic** - Single failure = complete failure
+2. ~~**No retry logic**~~ - ✅ Fixed: BackendSession.withRetry() for transient failures
 3. ~~**Generic error messages**~~ - ✅ Fixed: BackendError types with userFriendlyMessage helper
-4. **Session caching wasted** - BackendFactory creates fresh instances each time
+4. **Session caching wasted** - BackendFactory creates fresh instances each time (nice to have)
 
 ## Build & Run
 
@@ -172,15 +172,15 @@ open /Applications/MagnetRemote.app
 
 ### Should Do
 - [x] Fix qBittorrent encoding fallback (now throws BackendError.encodingFailed)
-- [ ] Fix Deluge username parameter (intentionally ignored - Deluge only uses password)
+- [x] Deluge username parameter (N/A - Deluge only uses password by design)
 - [x] Improve error messages with more context (BackendError cases handled in userFriendlyMessage)
-- [ ] Add retry logic for transient network failures
+- [x] Add retry logic for transient network failures (via BackendSession.withRetry)
 
 ### Nice to Have
 - [ ] Backend session reuse (avoid re-auth on every operation)
 - [ ] Request timeout configuration in UI
-- [ ] Mark untested backends as "Experimental" in UI
-- [ ] Add "Recent magnets" history in menu bar
+- [x] Mark untested backends as "Experimental" in UI (yellow dots + warning text)
+- [x] Add "Recent magnets" history in menu bar (shows last 5 with resend option)
 
 ## Testing
 

@@ -50,6 +50,22 @@ enum ClientType: String, CaseIterable, Identifiable, Codable {
         case .synology: return "5000"
         }
     }
+
+    /// Whether this backend has been tested against a real server
+    var isExperimental: Bool {
+        switch self {
+        case .transmission, .rtorrent:
+            return false  // Well tested
+        case .qbittorrent, .deluge, .synology:
+            return true   // Needs real-world testing
+        }
+    }
+
+    /// Warning message for experimental backends
+    var experimentalWarning: String? {
+        guard isExperimental else { return nil }
+        return "This client hasn't been fully tested. Please report issues."
+    }
 }
 
 class ServerConfig: ObservableObject {

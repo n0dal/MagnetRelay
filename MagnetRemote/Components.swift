@@ -64,8 +64,18 @@ struct MRClientChip: View {
     var body: some View {
         Button(action: action) {
             VStack(spacing: MRSpacing.xs + 2) {
-                Image(systemName: client.icon)
-                    .font(.system(size: 22, weight: .medium))
+                ZStack(alignment: .topTrailing) {
+                    Image(systemName: client.icon)
+                        .font(.system(size: 22, weight: .medium))
+
+                    // Experimental indicator
+                    if client.isExperimental {
+                        Circle()
+                            .fill(Color.MR.warning)
+                            .frame(width: 6, height: 6)
+                            .offset(x: 2, y: -2)
+                    }
+                }
 
                 Text(client.shortName)
                     .font(Font.MR.subheadline)
@@ -84,7 +94,7 @@ struct MRClientChip: View {
             )
         }
         .buttonStyle(MRButtonPressStyle())
-        .accessibilityLabel("\(client.displayName) torrent client")
+        .accessibilityLabel("\(client.displayName) torrent client\(client.isExperimental ? ", experimental" : "")")
         .accessibilityHint(isSelected ? "Currently selected" : "Double tap to select")
         .accessibilityAddTraits(isSelected ? .isSelected : [])
     }

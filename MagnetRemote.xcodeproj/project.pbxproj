@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		0CD9095CDAD051599EACABAD /* DesignSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BC8DE88D4E5727AB47683D7 /* DesignSystem.swift */; };
 		0CDAC458074FA1FBADCCD42D /* DelugeBackend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0842FDC87ECD385876810EA0 /* DelugeBackend.swift */; };
+		26CECD59445C757DC2F70F8D /* RecentMagnets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11746696E7F4F2DA66C8EB78 /* RecentMagnets.swift */; };
 		27BAD4B0608CAF9C731C9521 /* RTorrentBackend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C14FCAA5AB3B069A915E600 /* RTorrentBackend.swift */; };
 		2CFA67CA782EF33046BF0E66 /* TransmissionBackend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99AFD7B7C2718F4FA951A200 /* TransmissionBackend.swift */; };
 		466F311223A1B649A6D2CACF /* QBittorrentBackend.swift in Sources */ = {isa = PBXBuildFile; fileRef = C12AFCAEF4BD5A041ED4DDE8 /* QBittorrentBackend.swift */; };
@@ -17,6 +18,7 @@
 		87FB4EB082A382E161663745 /* KeychainService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B19F1ED41E9D8323D7EC85C /* KeychainService.swift */; };
 		8A6C944A9B62C7987C205B6A /* SynologyBackend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3718241CF1850B0B486F027C /* SynologyBackend.swift */; };
 		96EDD9A76D64EFC063D53079 /* TorrentBackend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B51AFBA4C5FA9A7907B9E59 /* TorrentBackend.swift */; };
+		A3EFA599FB9C70983DAAB0A0 /* settings.local.json in Resources */ = {isa = PBXBuildFile; fileRef = AC9436D7E4434E39F313DBFA /* settings.local.json */; };
 		C363D8B1E1C70B7BC9CACBA5 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8373FA484F3A905E44F7E5 /* SettingsView.swift */; };
 		CD736C9F5A597A4547168BD5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD9A67C4C28F3E7C745CA266 /* AppDelegate.swift */; };
 		DDBB60CC944426C3313F1610 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BFAA237107AB6DAAD09E7103 /* Assets.xcassets */; };
@@ -27,6 +29,7 @@
 
 /* Begin PBXFileReference section */
 		0842FDC87ECD385876810EA0 /* DelugeBackend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DelugeBackend.swift; sourceTree = "<group>"; };
+		11746696E7F4F2DA66C8EB78 /* RecentMagnets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentMagnets.swift; sourceTree = "<group>"; };
 		1B51AFBA4C5FA9A7907B9E59 /* TorrentBackend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TorrentBackend.swift; sourceTree = "<group>"; };
 		2937ED0673CAFEE4311043A3 /* MagnetRemote.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MagnetRemote.entitlements; sourceTree = "<group>"; };
 		3718241CF1850B0B486F027C /* SynologyBackend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SynologyBackend.swift; sourceTree = "<group>"; };
@@ -39,6 +42,7 @@
 		953E5F363D88F363CC323F88 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		99AFD7B7C2718F4FA951A200 /* TransmissionBackend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransmissionBackend.swift; sourceTree = "<group>"; };
 		AAB302FD868E6A50F27138B3 /* MagnetRemote.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MagnetRemote.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		AC9436D7E4434E39F313DBFA /* settings.local.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = settings.local.json; sourceTree = "<group>"; };
 		BFAA237107AB6DAAD09E7103 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C12AFCAEF4BD5A041ED4DDE8 /* QBittorrentBackend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QBittorrentBackend.swift; sourceTree = "<group>"; };
 		CD9A67C4C28F3E7C745CA266 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -62,6 +66,14 @@
 				36C99B60F7040D2259E049A1 /* MagnetRemote */,
 				20653E1F28DEE86DBD5B41C9 /* Products */,
 			);
+			sourceTree = "<group>";
+		};
+		268DA7169671DAE2EC37E58D /* .claude */ = {
+			isa = PBXGroup;
+			children = (
+				AC9436D7E4434E39F313DBFA /* settings.local.json */,
+			);
+			path = .claude;
 			sourceTree = "<group>";
 		};
 		2AE96772B6111ED6C474A809 /* Backends */ = {
@@ -88,6 +100,7 @@
 				2937ED0673CAFEE4311043A3 /* MagnetRemote.entitlements */,
 				73DF8C530248F010E8D4EB7F /* MagnetRemoteApp.swift */,
 				FA8373FA484F3A905E44F7E5 /* SettingsView.swift */,
+				268DA7169671DAE2EC37E58D /* .claude */,
 				2AE96772B6111ED6C474A809 /* Backends */,
 				D1769814A40D01C81F30D61E /* Models */,
 				6AE0C679A9AEEC8169863DDF /* Services */,
@@ -101,6 +114,7 @@
 				3B19F1ED41E9D8323D7EC85C /* KeychainService.swift */,
 				8A12A28A7ED0258CB2F9EF91 /* LaunchAtLogin.swift */,
 				FC4963A7D0A4C90729388036 /* MagnetHandler.swift */,
+				11746696E7F4F2DA66C8EB78 /* RecentMagnets.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -174,6 +188,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DDBB60CC944426C3313F1610 /* Assets.xcassets in Resources */,
+				A3EFA599FB9C70983DAAB0A0 /* settings.local.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -194,6 +209,7 @@
 				E85F29CF8D283B28C4DAC316 /* MagnetRemoteApp.swift in Sources */,
 				466F311223A1B649A6D2CACF /* QBittorrentBackend.swift in Sources */,
 				27BAD4B0608CAF9C731C9521 /* RTorrentBackend.swift in Sources */,
+				26CECD59445C757DC2F70F8D /* RecentMagnets.swift in Sources */,
 				56109F67424176EC8F2BC62D /* ServerConfig.swift in Sources */,
 				C363D8B1E1C70B7BC9CACBA5 /* SettingsView.swift in Sources */,
 				8A6C944A9B62C7987C205B6A /* SynologyBackend.swift in Sources */,

@@ -18,12 +18,18 @@ class MagnetHandler {
         let password = KeychainService.getPassword() ?? ""
 
         do {
-            try await backend.addMagnet(
-                magnetURL,
-                url: config.serverURL,
-                username: config.username,
-                password: password
-            )
+            // Use retry logic for transient failures
+            try await BackendSession.withRetry {
+                try await backend.addMagnet(
+                    magnetURL,
+                    url: config.serverURL,
+                    username: config.username,
+                    password: password
+                )
+            }
+
+            // Save to recent magnets on success
+            RecentMagnets.shared.add(magnetURL)
 
             await showNotification(
                 title: "Torrent Added",
