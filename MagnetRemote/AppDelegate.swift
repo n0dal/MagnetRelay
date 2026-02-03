@@ -24,15 +24,19 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
 
         if let button = statusItem.button {
-            button.image = NSImage(systemSymbolName: "link.circle.fill", accessibilityDescription: "Magnet Remote")
+            // Use link.badge.plus - represents receiving/handling links
+            let config = NSImage.SymbolConfiguration(pointSize: 16, weight: .medium)
+            if let image = NSImage(systemSymbolName: "link.badge.plus", accessibilityDescription: "Magnet Remote")?
+                .withSymbolConfiguration(config) {
+                image.isTemplate = true  // Adapts to menu bar light/dark mode
+                button.image = image
+            }
         }
 
         let menu = NSMenu()
         menu.addItem(NSMenuItem(title: "Settings...", action: #selector(openSettings), keyEquivalent: ","))
         menu.addItem(NSMenuItem.separator())
-        menu.addItem(NSMenuItem(title: "Test Connection", action: #selector(testConnection), keyEquivalent: "t"))
-        menu.addItem(NSMenuItem.separator())
-        menu.addItem(NSMenuItem(title: "Quit", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q"))
+        menu.addItem(NSMenuItem(title: "Quit Magnet Remote", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q"))
 
         statusItem.menu = menu
     }
@@ -97,9 +101,4 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         NSApp.activate(ignoringOtherApps: true)
     }
 
-    @objc private func testConnection() {
-        Task {
-            await magnetHandler.testConnection()
-        }
-    }
 }

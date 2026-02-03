@@ -31,43 +31,11 @@ class MagnetHandler {
                 isError: false
             )
         } catch {
+            // Use user-friendly error message
+            let friendlyMessage = ConnectionError.userFriendlyMessage(from: error)
             await showNotification(
                 title: "Failed to Add Torrent",
-                body: error.localizedDescription,
-                isError: true
-            )
-        }
-    }
-
-    func testConnection() async {
-        guard !config.serverURL.isEmpty else {
-            await showNotification(
-                title: "Test Failed",
-                body: "No server URL configured",
-                isError: true
-            )
-            return
-        }
-
-        let backend = BackendFactory.create(for: config.clientType)
-        let password = KeychainService.getPassword() ?? ""
-
-        do {
-            try await backend.testConnection(
-                url: config.serverURL,
-                username: config.username,
-                password: password
-            )
-
-            await showNotification(
-                title: "Connection Successful",
-                body: "Connected to \(config.clientType.displayName)",
-                isError: false
-            )
-        } catch {
-            await showNotification(
-                title: "Connection Failed",
-                body: error.localizedDescription,
+                body: friendlyMessage,
                 isError: true
             )
         }
