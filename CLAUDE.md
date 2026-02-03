@@ -39,7 +39,7 @@ MagnetRemote/
 Tests/
 ├── visual_tests.sh            # Automated visual testing script
 ├── screenshot.sh              # Quick screenshot helper for ad-hoc testing
-└── screenshots/               # Generated test screenshots
+└── screenshots/               # Generated test screenshots (gitignored)
 ```
 
 ## Key Patterns
@@ -79,17 +79,62 @@ protocol TorrentBackend {
 - **Numeric port validation**: Port field filters non-numeric input automatically
 - **User-friendly errors**: `ConnectionError.userFriendlyMessage()` maps technical errors to actionable messages
 - **Dismissible welcome banner**: First-time users can dismiss before completing setup
+- **Cancellable connection test**: Button changes to "Cancel" during test, user can abort and retry
 - **Accessibility**: All interactive elements have `.accessibilityLabel()` and `.accessibilityHint()`
+
+### Menu Bar & Window Conventions
+- **Menu bar icon**: Uses SF Symbol `link` (simple, no background)
+- **Menu items**: "Settings..." opens main window, "Quit Magnet Remote" exits
+- **Window title**: Just "Magnet Remote" (not "Settings" - avoids redundancy with menu item)
+- **Preferences sheet**: Opened via gear icon in main window, contains Launch at Login, Notifications, About
+
+### Placeholder Text Conventions
+Use obviously fake examples to prevent user confusion:
+- Host: `nas.local or IP` (not a real IP like `192.168.1.100`)
+- Username: `username` (not `admin` which could be real)
+- Password: `••••••••` (standard secure placeholder)
 
 ## Supported Backends
 
-| Client | API Type | Status |
-|--------|----------|--------|
-| qBittorrent | REST (Web API v2) | ✅ Tested |
-| Transmission | JSON-RPC | ✅ Implemented |
-| Deluge | JSON-RPC | ✅ Implemented |
-| rTorrent | XML-RPC | ✅ Implemented |
-| Synology Download Station | REST | ✅ Implemented |
+| Client | API Type | Auth Method | Status | Known Issues |
+|--------|----------|-------------|--------|--------------|
+| qBittorrent | REST (Web API v2) | Session Cookie | ⚠️ Needs Testing | Encoding fallback edge case |
+| Transmission | JSON-RPC | HTTP Basic + Session ID | ✅ Most Complete | None - best implementation |
+| Deluge | JSON-RPC | Session Cookie | ⚠️ Needs Testing | Username param ignored |
+| rTorrent | XML-RPC | HTTP Basic | ✅ Solid | None - good XML escaping |
+| Synology | REST | Query String SID | ⚠️ Security Risk | **Credentials in URL** - HTTPS only! |
+
+### Backend Implementation Details
+
+**qBittorrent:**
+- Endpoints: `/api/v2/auth/login`, `/api/v2/torrents/add`
+- Issue: If percent encoding fails, falls back to unencoded magnet (should throw error)
+
+**Transmission:**
+- Endpoint: `/transmission/rpc`
+- Handles 409 response to obtain X-Transmission-Session-Id header
+- Validates `result == "success"` in response
+
+**Deluge:**
+- Endpoint: `/json` (JSON-RPC)
+- Method: `core.add_torrent_magnet`
+- Issue: `username` parameter accepted but ignored in auth
+
+**rTorrent:**
+- Uses XML-RPC protocol
+- Methods: `system.listMethods` (test), `load.start` (add)
+- Properly escapes XML special characters (&, <, >)
+
+**Synology:**
+- Endpoints: `/webapi/auth.cgi`, `/webapi/DownloadStation/task.cgi`
+- **SECURITY WARNING**: Sends credentials as GET query parameters
+- Should only be used over HTTPS, and even then credentials appear in server logs
+
+### Backend Issues To Fix
+1. **No request timeouts** - All backends can hang indefinitely
+2. **No retry logic** - Single failure = complete failure
+3. **Generic error messages** - Don't indicate auth vs network vs server errors
+4. **Session caching wasted** - BackendFactory creates fresh instances each time
 
 ## Build & Run
 
@@ -116,6 +161,26 @@ open /Applications/MagnetRemote.app
 - **Settings window:** Created manually via `NSHostingController` (SwiftUI Settings scene doesn't work reliably in menu bar apps)
 - **Entitlements:** Requires `com.apple.security.network.client` for API calls
 - **URL path bug:** When using `URL.appendingPathComponent()`, don't include leading slash (causes double-slash)
+- **App icon in header:** Use `NSApp.applicationIconImage` to display actual app icon in SwiftUI
+
+## Pre-Release Checklist
+
+### Must Do
+- [ ] Add request timeouts to all backends (currently none - can hang forever)
+- [ ] Test each backend against a real server
+- [ ] Add HTTPS warning/requirement for Synology
+
+### Should Do
+- [ ] Fix qBittorrent encoding fallback (throw error instead of using unencoded)
+- [ ] Fix Deluge username parameter (currently ignored)
+- [ ] Improve error messages with more context
+- [ ] Add retry logic for transient network failures
+
+### Nice to Have
+- [ ] Backend session reuse (avoid re-auth on every operation)
+- [ ] Request timeout configuration in UI
+- [ ] Mark untested backends as "Experimental" in UI
+- [ ] Add "Recent magnets" history in menu bar
 
 ## Testing
 
@@ -197,45 +262,6 @@ Then add `test_my_new_state` to the `main()` function's test list.
 # Screenshots saved to Tests/screenshots/
 ```
 
-**Custom State Testing:**
-```bash
-# Set up specific state before screenshot
-defaults write com.magnetremote.app clientType -string "transmission"
-defaults write com.magnetremote.app serverHost -string "myserver.local"
-./Tests/screenshot.sh custom_state
-```
-
-**Feature Verification Workflow** (for specific features or after changes):
-```bash
-# Run existing test
-./Tests/visual_tests.sh first_launch
-
-# Or run all tests after UI changes
-./Tests/visual_tests.sh
-
-# Screenshots are saved to Tests/screenshots/
-# Read the relevant screenshot file to analyze
-```
-
-**Creating New Tests:**
-
-When a user asks about a feature not covered by existing tests, add it to `Tests/visual_tests.sh`:
-```bash
-test_feature_name() {
-    echo -e "\n${YELLOW}Test: Feature Description${NC}"
-    kill_app
-    reset_defaults
-    # Configure the specific state
-    set_defaults "key" "value"
-    launch_app
-    sleep 1
-    take_screenshot "XX_feature_name"
-    kill_app
-}
-```
-
-Then add `test_feature_name` to the main() function and run it.
-
 **Key Principle:** Always visually verify by taking and analyzing screenshots rather than assuming the UI looks correct.
 
 ## App Store Considerations
@@ -249,4 +275,3 @@ Then add `test_feature_name` to the main() function and run it.
 ## Related Projects
 
 - `~/Developer/MagnetHandler/` - Original simple version (shell script wrapper)
-- `~/Code/ContextAtlas/` - Design system reference
