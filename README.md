@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="MagnetRelay/Assets.xcassets/AppIcon.appiconset/icon_128x128@2x.png" alt="MagnetRelay Icon" width="128" height="128">
+  <img src="MagnetRemote/Assets.xcassets/AppIcon.appiconset/icon_128x128@2x.png" alt="MagnetRelay Icon" width="128" height="128">
 </p>
 
 <h1 align="center">MagnetRelay</h1>
