@@ -69,14 +69,19 @@ struct SettingsView: View {
                 .foregroundColor(Color.MR.accent)
 
             VStack(alignment: .leading, spacing: MRSpacing.xxs) {
-                Text("Welcome! Configure your server below.")
+                Text("Welcome to Magnet Remote!")
                     .font(Font.MR.subheadline)
                     .fontWeight(.medium)
                     .foregroundColor(Color.MR.textPrimary)
 
-                Text("Test the connection to save settings and enable magnet link handling.")
-                    .font(Font.MR.caption)
+                (Text("This app handles ")
                     .foregroundColor(Color.MR.textSecondary)
+                + Text("magnet:")
+                    .foregroundColor(Color.MR.accent)
+                    .fontWeight(.semibold)
+                + Text(" links and sends them to your server. Configure your client below and test the connection to get started.")
+                    .foregroundColor(Color.MR.textSecondary))
+                    .font(Font.MR.caption)
                     .fixedSize(horizontal: false, vertical: true)
             }
 
@@ -392,7 +397,7 @@ struct PreferencesSheet: View {
                         Text("Recent Magnets")
                             .font(Font.MR.subheadline)
                             .foregroundColor(Color.MR.textPrimary)
-                        Text("\(RecentMagnets.shared.items.count) items stored locally")
+                        Text("\(RecentMagnets.shared.items.count) of 5 stored locally")
                             .font(Font.MR.caption)
                             .foregroundColor(Color.MR.textTertiary)
                     }
@@ -426,9 +431,14 @@ struct PreferencesSheet: View {
             MRDivider()
 
             // About
-            Text("Magnet Remote registers as your system handler for magnet: links. Click any magnet link in a browser and it will be sent to your configured server.")
-                .font(Font.MR.caption)
+            (Text("Magnet Remote registers as your system handler for ")
                 .foregroundColor(Color.MR.textTertiary)
+            + Text("magnet:")
+                .foregroundColor(Color.MR.accent)
+                .fontWeight(.semibold)
+            + Text(" links. Click any magnet link in a browser and it will be sent to your configured server.")
+                .foregroundColor(Color.MR.textTertiary))
+                .font(Font.MR.caption)
                 .fixedSize(horizontal: false, vertical: true)
 
             Spacer()

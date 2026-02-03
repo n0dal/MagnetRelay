@@ -9,9 +9,13 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     private var settingsWindow: NSWindow?
     private var cancellables = Set<AnyCancellable>()
 
+    func applicationWillFinishLaunching(_ notification: Notification) {
+        // URL handler MUST be registered early to catch URLs on cold launch
+        setupURLHandler()
+    }
+
     func applicationDidFinishLaunching(_ notification: Notification) {
         setupStatusBar()
-        setupURLHandler()
         requestNotificationPermission()
 
         // Show settings on first launch
@@ -56,17 +60,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
                 menuItem.representedObject = item.magnetURL
                 menuItem.indentationLevel = 1
                 menu.addItem(menuItem)
-            }
-
-            if recentItems.count > 5 {
-                let moreItem = NSMenuItem(
-                    title: "(\(recentItems.count - 5) more...)",
-                    action: nil,
-                    keyEquivalent: ""
-                )
-                moreItem.isEnabled = false
-                moreItem.indentationLevel = 1
-                menu.addItem(moreItem)
             }
 
             menu.addItem(NSMenuItem.separator())

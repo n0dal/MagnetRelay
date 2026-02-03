@@ -98,11 +98,11 @@ Use obviously fake examples to prevent user confusion:
 
 | Client | API Type | Auth Method | Status | Known Issues |
 |--------|----------|-------------|--------|--------------|
-| qBittorrent | REST (Web API v2) | Session Cookie | ⚠️ Needs Testing | Encoding fallback edge case |
-| Transmission | JSON-RPC | HTTP Basic + Session ID | ✅ Most Complete | None - best implementation |
-| Deluge | JSON-RPC | Session Cookie | ⚠️ Needs Testing | Username param ignored |
-| rTorrent | XML-RPC | HTTP Basic | ✅ Solid | None - good XML escaping |
-| Synology | REST | Query String SID | ⚠️ Security Risk | **Credentials in URL** - HTTPS only! |
+| qBittorrent | REST (Web API v2) | Session Cookie | ✅ Tested | None |
+| Transmission | JSON-RPC | HTTP Basic + Session ID | ✅ Tested | None - best implementation |
+| Deluge | JSON-RPC | Session Cookie | ✅ Tested | Username param ignored (by design) |
+| rTorrent | XML-RPC | HTTP Basic | ✅ Tested | None - good XML escaping |
+| Synology | REST | Query String SID | ✅ Tested | HTTPS required for security |
 
 ### Backend Implementation Details
 
@@ -163,6 +163,33 @@ open /Applications/MagnetRemote.app
 - **URL path bug:** When using `URL.appendingPathComponent()`, don't include leading slash (causes double-slash)
 - **App icon in header:** Use `NSApp.applicationIconImage` to display actual app icon in SwiftUI
 
+## Critical Gotchas
+
+### xcodegen Clears Entitlements
+When running `xcodegen generate`, the entitlements file gets emptied. To fix this permanently, include the entitlements in `project.yml`:
+```yaml
+entitlements:
+  path: MagnetRemote/MagnetRemote.entitlements
+  properties:
+    com.apple.security.app-sandbox: true
+    com.apple.security.network.client: true
+```
+
+### URL Handler Must Register Early
+The URL event handler MUST be set up in `applicationWillFinishLaunching`, NOT `applicationDidFinishLaunching`. Otherwise, magnet links opened on cold launch won't be received.
+
+### SwiftUI Settings Scene Creates Blank Window
+Don't use `Settings { }` scene in menu bar apps - it creates a blank "Settings" window when Cmd+, is pressed. Instead, manage the settings window manually via AppDelegate using `NSHostingController`.
+
+### Keychain Prompts Are Development-Only
+During development (ad-hoc signing), macOS prompts for keychain access on each rebuild because the code signature changes. **App Store users will NOT see these prompts** - the consistent code signature means seamless keychain access.
+
+### Team ID Is Public
+The Development Team ID (e.g., `76ZSP26L92`) is NOT sensitive - it's visible in any distributed app. Safe to commit to version control.
+
+### Apple Development vs Mac Development Certificates
+Modern Apple Developer accounts use "Apple Development" certificates (universal for iOS/macOS), not the older "Mac Development" type. If Xcode complains about missing "Mac Development", specify `CODE_SIGN_IDENTITY: "Apple Development"` in project.yml or use ad-hoc signing (`-`) for local builds.
+
 ## Pre-Release Checklist
 
 ### Must Do
@@ -190,6 +217,22 @@ Test magnet handling from Terminal:
 ```bash
 open "magnet:?xt=urn:btih:TESTHASH&dn=testfile"
 ```
+
+### Mock Synology Server
+
+For testing the Synology backend without real hardware, use the mock server:
+```bash
+# Terminal 1: Start mock server
+python3 Tests/mock_synology.py
+
+# Terminal 2: Configure app
+# Host: localhost, Port: 5000, HTTPS: OFF
+# Username: admin, Password: password123
+
+# Send a test magnet - mock server will log receipt
+open "magnet:?xt=urn:btih:TEST&dn=TestFile"
+```
+The mock server validates authentication and logs all received magnets.
 
 ### Visual Tests
 
@@ -264,13 +307,27 @@ Then add `test_my_new_state` to the `main()` function's test list.
 
 **Key Principle:** Always visually verify by taking and analyzing screenshots rather than assuming the UI looks correct.
 
-## App Store Considerations
+## App Store Readiness
 
+### Completed
+- [x] Privacy policy at `PRIVACY.md` (hosted on GitHub)
+- [x] Removed word "torrent" from user-visible text
+- [x] All backends tested (mock server for Synology)
+- [x] App icon in all required sizes
+- [x] Hardened runtime enabled
+- [x] App sandbox with network.client entitlement
+- [x] ITSAppUsesNonExemptEncryption = NO (no encryption export compliance needed)
+- [x] Copyright updated to 2025
+- [x] No debug print statements
+
+### Submission Notes
 - Emphasize legitimate use cases (Linux ISOs, open source distribution)
 - Support multiple backends (differentiator from single-client remotes)
-- No torrent downloading in the app itself (just URL forwarding)
-- Clean, professional UI
-- Privacy policy required
+- No downloading in the app itself (just URL forwarding to remote servers)
+- Privacy policy URL: `https://github.com/pgpillar/MagnetRemote/blob/main/PRIVACY.md`
+
+### App Review Note
+> "This app forwards magnet links to remote download clients. It does not download any content itself. Common use cases include downloading Linux distributions and open source software to a home server."
 
 ## Related Projects
 

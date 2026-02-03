@@ -4,7 +4,7 @@ import Foundation
 class RecentMagnets: ObservableObject {
     static let shared = RecentMagnets()
 
-    private let maxItems = 10
+    private let maxItems = 5
     private let storageKey = "recentMagnets"
 
     @Published private(set) var items: [MagnetItem] = []

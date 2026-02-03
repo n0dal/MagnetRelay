@@ -53,12 +53,8 @@ enum ClientType: String, CaseIterable, Identifiable, Codable {
 
     /// Whether this backend has been tested against a real server
     var isExperimental: Bool {
-        switch self {
-        case .transmission, .rtorrent, .qbittorrent, .deluge:
-            return false  // Tested
-        case .synology:
-            return true   // Needs real-world testing
-        }
+        // All backends have been tested
+        return false
     }
 
     /// Warning message for experimental backends
