@@ -38,8 +38,8 @@ def get_magnetremote_window_id():
 
     for window in window_list:
         owner = window.get('kCGWindowOwnerName', '')
-        # Match "Magnet Remote" (the app's display name)
-        if owner != 'Magnet Remote':
+        # Match "MagnetRemote" (the app's display name)
+        if owner != 'MagnetRemote':
             continue
 
         bounds = window.get('kCGWindowBounds', {})

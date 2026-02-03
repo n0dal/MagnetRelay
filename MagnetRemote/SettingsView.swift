@@ -69,7 +69,7 @@ struct SettingsView: View {
                 .foregroundColor(Color.MR.accent)
 
             VStack(alignment: .leading, spacing: MRSpacing.xxs) {
-                Text("Welcome to Magnet Remote!")
+                Text("Welcome to MagnetRemote!")
                     .font(Font.MR.subheadline)
                     .fontWeight(.medium)
                     .foregroundColor(Color.MR.textPrimary)
@@ -124,7 +124,7 @@ struct SettingsView: View {
                     .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
 
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("Magnet Remote")
+                    Text("MagnetRemote")
                         .font(Font.MR.title3)
                         .foregroundColor(Color.MR.textPrimary)
 
@@ -431,7 +431,7 @@ struct PreferencesSheet: View {
             MRDivider()
 
             // About
-            (Text("Magnet Remote registers as your system handler for ")
+            (Text("MagnetRemote registers as your system handler for ")
                 .foregroundColor(Color.MR.textTertiary)
             + Text("magnet:")
                 .foregroundColor(Color.MR.accent)

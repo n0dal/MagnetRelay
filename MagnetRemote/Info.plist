@@ -5,9 +5,9 @@
     <key>CFBundleIdentifier</key>
     <string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
     <key>CFBundleName</key>
-    <string>Magnet Remote</string>
+    <string>MagnetRemote</string>
     <key>CFBundleDisplayName</key>
-    <string>Magnet Remote</string>
+    <string>MagnetRemote</string>
     <key>CFBundleExecutable</key>
     <string>$(EXECUTABLE_NAME)</string>
     <key>CFBundleVersion</key>

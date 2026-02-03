@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Visual Tests for Magnet Remote
+# Visual Tests for MagnetRemote
 # This script captures screenshots of all app states for visual verification
 # Uses proper window capture with rounded corners and shadows
 #
@@ -259,7 +259,7 @@ test_empty_config() {
 
 main() {
     echo "========================================"
-    echo "Magnet Remote Visual Tests"
+    echo "MagnetRemote Visual Tests"
     echo "========================================"
     echo "Timestamp: $TIMESTAMP"
     echo "Screenshots: $SCREENSHOT_DIR/"

@@ -1,14 +1,14 @@
-# Privacy Policy for Magnet Remote
+# Privacy Policy for MagnetRemote
 
 **Last Updated:** February 2025
 
 ## Overview
 
-Magnet Remote is a macOS utility that forwards magnet links to your personal download server. We are committed to protecting your privacy.
+MagnetRemote is a macOS utility that forwards magnet links to your personal download server. We are committed to protecting your privacy.
 
 ## Data Collection
 
-**We do not collect any data.** Magnet Remote:
+**We do not collect any data.** MagnetRemote:
 
 - Does not collect personal information
 - Does not use analytics or tracking
@@ -27,7 +27,7 @@ The following data is stored **locally on your device only**:
 
 ## Network Activity
 
-Magnet Remote only connects to:
+MagnetRemote only connects to:
 
 - **Your configured download server** - To send magnet links and test connections
 
@@ -47,7 +47,7 @@ You can:
 
 ## Children's Privacy
 
-Magnet Remote does not knowingly collect information from children under 13.
+MagnetRemote does not knowingly collect information from children under 13.
 
 ## Changes to This Policy
 
@@ -59,4 +59,4 @@ For privacy questions, please open an issue at: https://github.com/pgpillar/Magn
 
 ---
 
-**Summary:** Magnet Remote runs entirely on your device. Your data stays on your device. We don't collect, store, or transmit any of your information.
+**Summary:** MagnetRemote runs entirely on your device. Your data stays on your device. We don't collect, store, or transmit any of your information.

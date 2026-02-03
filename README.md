@@ -1,8 +1,8 @@
 <p align="center">
-  <img src="MagnetRemote/Assets.xcassets/AppIcon.appiconset/icon_128x128@2x.png" alt="Magnet Remote Icon" width="128" height="128">
+  <img src="MagnetRemote/Assets.xcassets/AppIcon.appiconset/icon_128x128@2x.png" alt="MagnetRemote Icon" width="128" height="128">
 </p>
 
-<h1 align="center">Magnet Remote</h1>
+<h1 align="center">MagnetRemote</h1>
 
 <p align="center">
   <strong>Forward magnet links to your home server with one click</strong>
@@ -25,12 +25,12 @@
 ---
 
 <p align="center">
-  <img src="assets/screenshot-main.png" alt="Magnet Remote Screenshot" width="400">
+  <img src="assets/screenshot-main.png" alt="MagnetRemote Screenshot" width="400">
 </p>
 
-## What is Magnet Remote?
+## What is MagnetRemote?
 
-**Magnet Remote** is a lightweight macOS menu bar app that registers as your system's `magnet:` link handler. When you click a magnet link anywhere—in your browser, email, or any app—it's automatically forwarded to your configured download server.
+**MagnetRemote** is a lightweight macOS menu bar app that registers as your system's `magnet:` link handler. When you click a magnet link anywhere—in your browser, email, or any app—it's automatically forwarded to your configured download server.
 
 Perfect for:
 - 🐧 **Linux distributions** — Download ISOs directly to your NAS
@@ -82,7 +82,7 @@ cp -r ~/Library/Developer/Xcode/DerivedData/MagnetRemote-*/Build/Products/Debug/
 
 ## Usage
 
-1. **Launch** Magnet Remote from your Applications folder
+1. **Launch** MagnetRemote from your Applications folder
 2. **Configure** your download client (host, port, credentials)
 3. **Test** the connection to verify everything works
 4. **Click** any magnet link — it's automatically sent to your server!
@@ -93,7 +93,7 @@ cp -r ~/Library/Developer/Xcode/DerivedData/MagnetRemote-*/Build/Products/Debug/
 
 ### Menu Bar
 
-Magnet Remote lives in your menu bar. Click the icon to:
+MagnetRemote lives in your menu bar. Click the icon to:
 - View recent magnet links
 - Resend a previous magnet
 - Open settings
@@ -101,7 +101,7 @@ Magnet Remote lives in your menu bar. Click the icon to:
 
 ## Privacy
 
-**Magnet Remote does not collect any data.**
+**MagnetRemote does not collect any data.**
 
 - ✅ No analytics or tracking
 - ✅ No network calls except to your configured server

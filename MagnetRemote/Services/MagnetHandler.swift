@@ -7,7 +7,7 @@ class MagnetHandler {
     func handleMagnet(_ magnetURL: String) async {
         guard !config.serverURL.isEmpty else {
             await showNotification(
-                title: "Magnet Remote",
+                title: "MagnetRemote",
                 body: "No server configured. Open Settings to set up.",
                 isError: true
             )

@@ -1,10 +1,10 @@
-# Magnet Remote
+# MagnetRemote
 
 A macOS menu bar app that handles `magnet:` URLs and forwards them to remote download clients.
 
 ## Project Overview
 
-Magnet Remote registers as the system-wide handler for `magnet:` URL scheme. When a user clicks a magnet link in any app (browser, email, etc.), macOS routes it to this app, which forwards it to the user's configured download server.
+MagnetRemote registers as the system-wide handler for `magnet:` URL scheme. When a user clicks a magnet link in any app (browser, email, etc.), macOS routes it to this app, which forwards it to the user's configured download server.
 
 **Target:** macOS 13.0+ (Sonoma)
 **Language:** Swift 5.9, SwiftUI
@@ -84,8 +84,8 @@ protocol RemoteClient {
 
 ### Menu Bar & Window Conventions
 - **Menu bar icon**: Uses SF Symbol `link` (simple, no background)
-- **Menu items**: "Settings..." opens main window, "Quit Magnet Remote" exits
-- **Window title**: Just "Magnet Remote" (not "Settings" - avoids redundancy with menu item)
+- **Menu items**: "Settings..." opens main window, "Quit MagnetRemote" exits
+- **Window title**: Just "MagnetRemote" (not "Settings" - avoids redundancy with menu item)
 - **Preferences sheet**: Opened via gear icon in main window, contains Launch at Login, Notifications, About
 
 ### Placeholder Text Conventions
