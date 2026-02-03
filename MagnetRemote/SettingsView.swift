@@ -7,6 +7,7 @@ struct SettingsView: View {
     @State private var isTesting = false
     @State private var showPreferences = false
     @State private var isInitialLoad = true
+    @State private var connectionTask: Task<Void, Never>?
 
     enum TestResult {
         case success
@@ -212,13 +213,30 @@ struct SettingsView: View {
     private var connectionSection: some View {
         VStack(spacing: MRSpacing.md) {
             HStack(spacing: MRSpacing.md) {
-                MRPrimaryButton(
-                    title: "Test Connection",
-                    icon: "bolt.fill",
-                    isLoading: isTesting,
-                    isDisabled: config.serverHost.isEmpty
-                ) {
-                    testConnection()
+                if isTesting {
+                    // Cancel button while testing
+                    MRSecondaryButton(
+                        title: "Cancel",
+                        icon: "xmark"
+                    ) {
+                        cancelTest()
+                    }
+                } else {
+                    // Test connection button
+                    MRPrimaryButton(
+                        title: "Test Connection",
+                        icon: "bolt.fill",
+                        isLoading: false,
+                        isDisabled: config.serverHost.isEmpty
+                    ) {
+                        testConnection()
+                    }
+                }
+
+                if isTesting {
+                    ProgressView()
+                        .scaleEffect(0.8)
+                        .frame(width: 20, height: 20)
                 }
 
                 if let result = testResult {
@@ -226,10 +244,16 @@ struct SettingsView: View {
                         .transition(.scale.combined(with: .opacity))
                 }
             }
+            .animation(.mrSpring, value: isTesting)
             .animation(.mrSpring, value: testResult != nil)
 
-            if testResult == nil {
+            if testResult == nil && !isTesting {
                 Text("Click any magnet link and it will be sent to your server")
+                    .font(Font.MR.caption)
+                    .foregroundColor(Color.MR.textTertiary)
+                    .multilineTextAlignment(.center)
+            } else if isTesting {
+                Text("Testing connection...")
                     .font(Font.MR.caption)
                     .foregroundColor(Color.MR.textTertiary)
                     .multilineTextAlignment(.center)
@@ -253,7 +277,7 @@ struct SettingsView: View {
         isTesting = true
         testResult = nil
 
-        Task {
+        connectionTask = Task {
             do {
                 let backend = BackendFactory.create(for: config.clientType)
                 try await backend.testConnection(
@@ -261,6 +285,10 @@ struct SettingsView: View {
                     username: config.username,
                     password: password
                 )
+
+                // Check if cancelled before updating UI
+                if Task.isCancelled { return }
+
                 await MainActor.run {
                     testResult = .success
                     isTesting = false
@@ -274,6 +302,9 @@ struct SettingsView: View {
                     }
                 }
             } catch {
+                // Check if cancelled before showing error
+                if Task.isCancelled { return }
+
                 await MainActor.run {
                     // Use user-friendly error message
                     let friendlyMessage = ConnectionError.userFriendlyMessage(from: error)
@@ -282,6 +313,13 @@ struct SettingsView: View {
                 }
             }
         }
+    }
+
+    private func cancelTest() {
+        connectionTask?.cancel()
+        connectionTask = nil
+        isTesting = false
+        testResult = .failure("Test cancelled")
     }
 }
 
