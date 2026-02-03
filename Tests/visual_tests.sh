@@ -2,6 +2,7 @@
 
 # Visual Tests for Magnet Remote
 # This script captures screenshots of all app states for visual verification
+# Uses proper window capture with rounded corners and shadows
 #
 # Usage: ./Tests/visual_tests.sh [test_name]
 #   Run all tests:     ./Tests/visual_tests.sh
@@ -12,6 +13,7 @@ set -e
 APP_BUNDLE_ID="com.magnetremote.app"
 APP_PATH="/Applications/MagnetRemote.app"
 SCREENSHOT_DIR="Tests/screenshots"
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 TIMESTAMP=$(date +%Y%m%d_%H%M%S)
 
 # Colors for output
@@ -39,10 +41,10 @@ kill_app() {
 # Launch app and open settings window
 launch_app() {
     open "$APP_PATH"
-    sleep 1
+    sleep 1.5
 
     # Click menu bar item to open Settings (in case window didn't auto-open)
-    osascript <<'EOF'
+    osascript <<'EOF' 2>/dev/null || true
 tell application "System Events"
     tell process "MagnetRemote"
         try
@@ -54,20 +56,38 @@ tell application "System Events"
 end tell
 EOF
     sleep 1
+
+    # Activate to bring window to front
+    osascript -e 'tell application "MagnetRemote" to activate' 2>/dev/null || true
+    sleep 0.5
 }
 
-# Take screenshot with label
-# Captures just the app window (not full screen) using window bounds
+# Take screenshot with proper window capture (rounded corners + shadow)
 take_screenshot() {
     local name=$1
     local filename="${SCREENSHOT_DIR}/${name}.png"
     mkdir -p "$SCREENSHOT_DIR"
 
     # Bring window to front
-    osascript -e 'tell application "MagnetRemote" to activate' 2>/dev/null
+    osascript -e 'tell application "MagnetRemote" to activate' 2>/dev/null || true
     sleep 0.3
 
-    # Get window bounds and capture just the window
+    # Use Python helper for proper window capture
+    if python3 "$SCRIPT_DIR/window_capture.py" --capture "$filename" 2>/dev/null; then
+        echo -e "${GREEN}✓${NC} Screenshot: $filename"
+        return 0
+    fi
+
+    # Fallback: Try to get window ID and capture
+    local window_id=$(python3 "$SCRIPT_DIR/window_capture.py" --get-id 2>/dev/null)
+
+    if [ -n "$window_id" ]; then
+        screencapture -l"$window_id" -x "$filename"
+        echo -e "${GREEN}✓${NC} Screenshot: $filename"
+        return 0
+    fi
+
+    # Last resort fallback: region capture
     local pos=$(osascript -e 'tell application "System Events" to get position of first window of process "MagnetRemote"' 2>/dev/null)
     local size=$(osascript -e 'tell application "System Events" to get size of first window of process "MagnetRemote"' 2>/dev/null)
 
@@ -77,12 +97,11 @@ take_screenshot() {
         local w=$(echo "$size" | cut -d',' -f1 | tr -d ' ')
         local h=$(echo "$size" | cut -d',' -f2 | tr -d ' ')
         screencapture -R"${x},${y},${w},${h}" -x "$filename"
+        echo -e "${YELLOW}⚠${NC} Screenshot (region fallback): $filename"
     else
-        # Fallback to full screen
         screencapture -x "$filename"
+        echo -e "${YELLOW}⚠${NC} Screenshot (full screen fallback): $filename"
     fi
-
-    echo -e "${GREEN}✓${NC} Screenshot: $filename"
 }
 
 # Reset all user defaults to clean state
@@ -119,6 +138,7 @@ setup_sample_config() {
     set_defaults "username" "admin"
     set_defaults "useHTTPS" "false" bool
     set_defaults "hasCompletedSetup" "true" bool
+    set_defaults "bannerDismissed" "true" bool
 }
 
 # ============================================================================
@@ -226,6 +246,7 @@ test_empty_config() {
     kill_app
     reset_defaults
     set_defaults "hasCompletedSetup" "true" bool
+    set_defaults "bannerDismissed" "true" bool
     launch_app
     sleep 1
     take_screenshot "09_empty_config"

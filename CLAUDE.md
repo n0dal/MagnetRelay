@@ -236,7 +236,12 @@ The mock server validates authentication and logs all received magnets.
 
 ### Visual Tests
 
-The `Tests/` directory contains automated visual testing tools that capture screenshots of all app states.
+The `Tests/` directory contains automated visual testing tools that capture screenshots of all app states with proper macOS window styling (rounded corners, shadows).
+
+**Screenshot System:**
+- `window_capture.py` - Python helper using Quartz framework for proper window capture
+- `screenshot.sh` - Quick single screenshot helper
+- `visual_tests.sh` - Comprehensive test suite for all app states
 
 ```bash
 # Run all visual tests (captures screenshots of every app state)
@@ -246,7 +251,14 @@ The `Tests/` directory contains automated visual testing tools that capture scre
 ./Tests/visual_tests.sh first_launch
 ./Tests/visual_tests.sh normal_settings
 ./Tests/visual_tests.sh client_transmission
+
+# Quick screenshot of current state
+./Tests/screenshot.sh my_feature
+./Tests/screenshot.sh --reset first_launch  # Reset to first-launch state
+./Tests/screenshot.sh --no-shadow clean     # Without window shadow
 ```
+
+**Requires:** `pip3 install pyobjc-framework-Quartz` (auto-installed on first run)
 
 **Available Tests:**
 
