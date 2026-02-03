@@ -35,6 +35,11 @@ MagnetRemote/
 ├── Assets.xcassets/           # App icon (magnet themed, purple/blue)
 ├── Info.plist                 # URL scheme registration (magnet:)
 └── MagnetRemote.entitlements  # Sandbox + network client
+
+Tests/
+├── visual_tests.sh            # Automated visual testing script
+├── screenshot.sh              # Quick screenshot helper for ad-hoc testing
+└── screenshots/               # Generated test screenshots
 ```
 
 ## Key Patterns
@@ -95,6 +100,7 @@ open /Applications/MagnetRemote.app
 
 ## Important Notes
 
+- **Bundle ID:** `com.magnetremote.app` (used for defaults, keychain, etc.)
 - **Menu bar only:** No Dock icon (`LSUIElement: true`)
 - **Settings window:** Created manually via `NSHostingController` (SwiftUI Settings scene doesn't work reliably in menu bar apps)
 - **Entitlements:** Requires `com.apple.security.network.client` for API calls
@@ -102,10 +108,124 @@ open /Applications/MagnetRemote.app
 
 ## Testing
 
+### Manual Testing
+
 Test magnet handling from Terminal:
 ```bash
 open "magnet:?xt=urn:btih:TESTHASH&dn=testfile"
 ```
+
+### Visual Tests
+
+The `Tests/` directory contains automated visual testing tools that capture screenshots of all app states.
+
+```bash
+# Run all visual tests (captures screenshots of every app state)
+./Tests/visual_tests.sh
+
+# Run a specific test
+./Tests/visual_tests.sh first_launch
+./Tests/visual_tests.sh normal_settings
+./Tests/visual_tests.sh client_transmission
+```
+
+**Available Tests:**
+
+| Test Name | Description |
+|-----------|-------------|
+| `first_launch` | First-time user experience with welcome banner |
+| `normal_settings` | Standard settings view after setup complete |
+| `client_qbittorrent` | qBittorrent client selected |
+| `client_transmission` | Transmission client selected |
+| `client_deluge` | Deluge client selected |
+| `client_rtorrent` | rTorrent client selected |
+| `client_synology` | Synology Download Station selected |
+| `https_enabled` | HTTPS protocol toggle enabled |
+| `empty_config` | Settings with no server configured |
+
+**Screenshots Location:** `Tests/screenshots/`
+
+**Adding New Tests:**
+
+To add a new visual test, add a function to `Tests/visual_tests.sh`:
+```bash
+test_my_new_state() {
+    echo -e "\n${YELLOW}Test: My New State${NC}"
+    kill_app
+    reset_defaults
+    # Set up the specific state using set_defaults
+    set_defaults "someKey" "someValue"
+    launch_app
+    sleep 1
+    take_screenshot "10_my_new_state"
+    kill_app
+}
+```
+
+Then add `test_my_new_state` to the `main()` function's test list.
+
+### UI Debugging & Visual Verification
+
+**IMPORTANT: When the user asks to see something in the app or references a UI feature:**
+
+1. **Check if a relevant test exists** in `Tests/visual_tests.sh`
+2. **If yes:** Run that test, read the screenshot, analyze it
+3. **If no:** Create a new test for that state, run it, analyze the screenshot
+
+**Quick Screenshot** (captures just the app window, not full screen):
+```bash
+# Screenshot current app state
+./Tests/screenshot.sh
+
+# Reset to first-launch state, then screenshot
+./Tests/screenshot.sh --reset
+
+# Custom named screenshot
+./Tests/screenshot.sh my_feature_test
+
+# Screenshots saved to Tests/screenshots/
+```
+
+**Custom State Testing:**
+```bash
+# Set up specific state before screenshot
+defaults write com.magnetremote.app clientType -string "transmission"
+defaults write com.magnetremote.app serverHost -string "myserver.local"
+./Tests/screenshot.sh custom_state
+```
+
+**Feature Verification Workflow** (for specific features or after changes):
+```bash
+# Run existing test
+./Tests/visual_tests.sh first_launch
+
+# Or run all tests after UI changes
+./Tests/visual_tests.sh
+
+# Screenshots are saved to Tests/screenshots/
+# Read the relevant screenshot file to analyze
+```
+
+**Creating New Tests:**
+
+When a user asks about a feature not covered by existing tests, add it to `Tests/visual_tests.sh`:
+```bash
+test_feature_name() {
+    echo -e "\n${YELLOW}Test: Feature Description${NC}"
+    kill_app
+    reset_defaults
+    # Configure the specific state
+    set_defaults "key" "value"
+    launch_app
+    sleep 1
+    take_screenshot "XX_feature_name"
+    kill_app
+}
+```
+
+Then add `test_feature_name` to the main() function and run it.
+
+**Key Principle:** Always visually verify by taking and analyzing screenshots rather than assuming the UI looks correct.
 
 ## App Store Considerations
 
