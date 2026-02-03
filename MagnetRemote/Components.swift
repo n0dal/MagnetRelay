@@ -131,12 +131,6 @@ struct MRInputField: View {
     @Binding var text: String
     var isSecure: Bool = false
     var width: CGFloat? = nil
-    var keyboardType: KeyboardType = .default
-
-    enum KeyboardType {
-        case `default`
-        case numbers
-    }
 
     @FocusState private var isFocused: Bool
 
@@ -145,49 +139,57 @@ struct MRInputField: View {
 
     var body: some View {
         HStack(spacing: MRSpacing.sm) {
-            // Icon
-            Image(systemName: icon)
-                .font(.system(size: 14, weight: .medium))
-                .foregroundColor(isFocused ? Color.MR.accent : Color.MR.textTertiary)
-                .frame(width: 20)
-                .animation(.mrQuick, value: isFocused)
+            // Icon with background circle
+            ZStack {
+                Circle()
+                    .fill(isFocused ? Color.MR.accent.opacity(0.15) : Color.MR.textTertiary.opacity(0.1))
+                    .frame(width: 28, height: 28)
+
+                Image(systemName: icon)
+                    .font(.system(size: 12, weight: .semibold))
+                    .foregroundColor(isFocused ? Color.MR.accent : Color.MR.textTertiary)
+            }
+            .animation(.mrQuick, value: isFocused)
 
             // Field container
-            VStack(alignment: .leading, spacing: 0) {
-                // Floating label
-                if showFloatingLabel {
-                    Text(label)
-                        .font(Font.MR.caption)
-                        .foregroundColor(isFocused ? Color.MR.accent : Color.MR.textTertiary)
-                        .transition(.opacity.combined(with: .move(edge: .bottom)))
-                }
+            VStack(alignment: .leading, spacing: 2) {
+                // Always show label
+                Text(label)
+                    .font(.system(size: 9, weight: .semibold))
+                    .foregroundColor(isFocused ? Color.MR.accent : Color.MR.textTertiary)
+                    .textCase(.uppercase)
+                    .tracking(0.5)
 
                 // Input
                 Group {
                     if isSecure {
-                        SecureField(showFloatingLabel ? "" : placeholder, text: $text)
+                        SecureField(placeholder, text: $text)
                     } else {
-                        TextField(showFloatingLabel ? "" : placeholder, text: $text)
+                        TextField(placeholder, text: $text)
                     }
                 }
                 .font(Font.MR.body)
+                .foregroundColor(Color.MR.textPrimary)
                 .focused($isFocused)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
         }
         .padding(.horizontal, MRSpacing.md)
-        .padding(.vertical, MRSpacing.sm + 2)
+        .padding(.vertical, MRSpacing.sm)
         .frame(width: width)
-        .frame(minHeight: 44)
-        .background(Color.MR.surface)
-        .clipShape(RoundedRectangle(cornerRadius: MRRadius.lg, style: .continuous))
+        .frame(minHeight: 48)
+        .background(
+            RoundedRectangle(cornerRadius: MRRadius.lg, style: .continuous)
+                .fill(isFocused ? Color.MR.inputBackgroundFocused : Color.MR.inputBackground)
+        )
         .overlay(
             RoundedRectangle(cornerRadius: MRRadius.lg, style: .continuous)
-                .stroke(isFocused ? Color.MR.accent : Color.MR.border, lineWidth: isFocused ? 1.5 : 1)
+                .stroke(
+                    isFocused ? Color.MR.accent : Color.MR.border.opacity(0.5),
+                    lineWidth: isFocused ? 1.5 : 1
+                )
         )
-        .shadow(color: .black.opacity(0.04), radius: 2, x: 0, y: 1)
         .animation(.mrQuick, value: isFocused)
-        .animation(.mrQuick, value: showFloatingLabel)
     }
 }
 
@@ -203,18 +205,24 @@ struct MRCompactInput: View {
     var body: some View {
         TextField(placeholder, text: $text)
             .font(Font.MR.body)
+            .foregroundColor(Color.MR.textPrimary)
             .multilineTextAlignment(width != nil ? .center : .leading)
             .focused($isFocused)
             .padding(.horizontal, MRSpacing.md)
-            .padding(.vertical, MRSpacing.sm + 2)
+            .padding(.vertical, MRSpacing.sm + 4)
             .frame(width: width)
-            .background(Color.MR.surface)
-            .clipShape(RoundedRectangle(cornerRadius: MRRadius.lg, style: .continuous))
+            .frame(minHeight: 48)
+            .background(
+                RoundedRectangle(cornerRadius: MRRadius.lg, style: .continuous)
+                    .fill(isFocused ? Color.MR.inputBackgroundFocused : Color.MR.inputBackground)
+            )
             .overlay(
                 RoundedRectangle(cornerRadius: MRRadius.lg, style: .continuous)
-                    .stroke(isFocused ? Color.MR.accent : Color.MR.border, lineWidth: isFocused ? 1.5 : 1)
+                    .stroke(
+                        isFocused ? Color.MR.accent : Color.MR.border.opacity(0.5),
+                        lineWidth: isFocused ? 1.5 : 1
+                    )
             )
-            .shadow(color: .black.opacity(0.04), radius: 2, x: 0, y: 1)
             .animation(.mrQuick, value: isFocused)
     }
 }
