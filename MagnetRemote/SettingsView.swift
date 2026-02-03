@@ -102,19 +102,21 @@ struct SettingsView: View {
             HStack(spacing: MRSpacing.sm) {
                 MRProtocolToggle(useHTTPS: $config.useHTTPS)
 
-                MRCompactField(
+                MRInputField(
+                    icon: "globe",
+                    label: "Host",
                     placeholder: "192.168.1.100",
                     text: $config.serverHost
                 )
 
                 Text(":")
-                    .font(Font.MR.body)
+                    .font(Font.MR.title3)
                     .foregroundColor(Color.MR.textTertiary)
 
-                MRCompactField(
-                    placeholder: "8080",
+                MRCompactInput(
+                    placeholder: "Port",
                     text: $config.serverPort,
-                    width: 70
+                    width: 72
                 )
             }
         }
@@ -127,13 +129,17 @@ struct SettingsView: View {
             MRFieldRow(icon: "person.badge.key", label: "CREDENTIALS")
 
             HStack(spacing: MRSpacing.sm) {
-                MRCompactField(
-                    placeholder: "Username",
+                MRInputField(
+                    icon: "person",
+                    label: "Username",
+                    placeholder: "admin",
                     text: $config.username
                 )
 
-                MRCompactField(
-                    placeholder: "Password",
+                MRInputField(
+                    icon: "key",
+                    label: "Password",
+                    placeholder: "••••••••",
                     text: $password,
                     isSecure: true
                 )

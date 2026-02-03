@@ -122,32 +122,100 @@ struct MRProtocolToggle: View {
     }
 }
 
-// MARK: - Compact Text Field
+// MARK: - Input Field
 
-struct MRCompactField: View {
+struct MRInputField: View {
+    let icon: String
+    let label: String
     let placeholder: String
     @Binding var text: String
     var isSecure: Bool = false
     var width: CGFloat? = nil
+    var keyboardType: KeyboardType = .default
+
+    enum KeyboardType {
+        case `default`
+        case numbers
+    }
+
+    @FocusState private var isFocused: Bool
+
+    private var hasContent: Bool { !text.isEmpty }
+    private var showFloatingLabel: Bool { isFocused || hasContent }
 
     var body: some View {
-        Group {
-            if isSecure {
-                SecureField(placeholder, text: $text)
-            } else {
-                TextField(placeholder, text: $text)
+        HStack(spacing: MRSpacing.sm) {
+            // Icon
+            Image(systemName: icon)
+                .font(.system(size: 14, weight: .medium))
+                .foregroundColor(isFocused ? Color.MR.accent : Color.MR.textTertiary)
+                .frame(width: 20)
+                .animation(.mrQuick, value: isFocused)
+
+            // Field container
+            VStack(alignment: .leading, spacing: 0) {
+                // Floating label
+                if showFloatingLabel {
+                    Text(label)
+                        .font(Font.MR.caption)
+                        .foregroundColor(isFocused ? Color.MR.accent : Color.MR.textTertiary)
+                        .transition(.opacity.combined(with: .move(edge: .bottom)))
+                }
+
+                // Input
+                Group {
+                    if isSecure {
+                        SecureField(showFloatingLabel ? "" : placeholder, text: $text)
+                    } else {
+                        TextField(showFloatingLabel ? "" : placeholder, text: $text)
+                    }
+                }
+                .font(Font.MR.body)
+                .focused($isFocused)
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
         }
-        .font(Font.MR.body)
         .padding(.horizontal, MRSpacing.md)
         .padding(.vertical, MRSpacing.sm + 2)
         .frame(width: width)
-        .background(Color.MR.background)
-        .clipShape(RoundedRectangle(cornerRadius: MRRadius.md, style: .continuous))
+        .frame(minHeight: 44)
+        .background(Color.MR.surface)
+        .clipShape(RoundedRectangle(cornerRadius: MRRadius.lg, style: .continuous))
         .overlay(
-            RoundedRectangle(cornerRadius: MRRadius.md, style: .continuous)
-                .stroke(Color.MR.border, lineWidth: 1)
+            RoundedRectangle(cornerRadius: MRRadius.lg, style: .continuous)
+                .stroke(isFocused ? Color.MR.accent : Color.MR.border, lineWidth: isFocused ? 1.5 : 1)
         )
+        .shadow(color: .black.opacity(0.04), radius: 2, x: 0, y: 1)
+        .animation(.mrQuick, value: isFocused)
+        .animation(.mrQuick, value: showFloatingLabel)
+    }
+}
+
+// MARK: - Compact Input (for inline fields like port)
+
+struct MRCompactInput: View {
+    let placeholder: String
+    @Binding var text: String
+    var width: CGFloat? = nil
+
+    @FocusState private var isFocused: Bool
+
+    var body: some View {
+        TextField(placeholder, text: $text)
+            .font(Font.MR.body)
+            .multilineTextAlignment(width != nil ? .center : .leading)
+            .focused($isFocused)
+            .padding(.horizontal, MRSpacing.md)
+            .padding(.vertical, MRSpacing.sm + 2)
+            .frame(width: width)
+            .background(Color.MR.surface)
+            .clipShape(RoundedRectangle(cornerRadius: MRRadius.lg, style: .continuous))
+            .overlay(
+                RoundedRectangle(cornerRadius: MRRadius.lg, style: .continuous)
+                    .stroke(isFocused ? Color.MR.accent : Color.MR.border, lineWidth: isFocused ? 1.5 : 1)
+            )
+            .shadow(color: .black.opacity(0.04), radius: 2, x: 0, y: 1)
+            .animation(.mrQuick, value: isFocused)
     }
 }
 
