@@ -24,13 +24,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
 
         if let button = statusItem.button {
-            // Use link.badge.plus - represents receiving/handling links
-            let config = NSImage.SymbolConfiguration(pointSize: 16, weight: .medium)
-            if let image = NSImage(systemSymbolName: "link.badge.plus", accessibilityDescription: "Magnet Remote")?
-                .withSymbolConfiguration(config) {
-                image.isTemplate = true  // Adapts to menu bar light/dark mode
-                button.image = image
-            }
+            button.image = createMagnetIcon()
+            button.image?.isTemplate = true  // Adapts to menu bar light/dark mode
         }
 
         let menu = NSMenu()
@@ -39,6 +34,79 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         menu.addItem(NSMenuItem(title: "Quit Magnet Remote", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q"))
 
         statusItem.menu = menu
+    }
+
+    /// Creates a horseshoe magnet icon for the menu bar
+    private func createMagnetIcon() -> NSImage {
+        let size = NSSize(width: 18, height: 18)
+        let image = NSImage(size: size, flipped: false) { rect in
+            let path = NSBezierPath()
+
+            // Magnet dimensions
+            let magnetWidth: CGFloat = 12
+            let magnetHeight: CGFloat = 14
+            let armWidth: CGFloat = 3.5
+            let cornerRadius: CGFloat = 2
+            let topRadius: CGFloat = (magnetWidth - armWidth) / 2
+
+            // Center the magnet in the icon
+            let offsetX = (rect.width - magnetWidth) / 2
+            let offsetY = (rect.height - magnetHeight) / 2 - 0.5
+
+            // Left arm
+            let leftArm = NSBezierPath(roundedRect: NSRect(
+                x: offsetX,
+                y: offsetY,
+                width: armWidth,
+                height: magnetHeight - topRadius
+            ), xRadius: cornerRadius, yRadius: cornerRadius)
+            path.append(leftArm)
+
+            // Right arm
+            let rightArm = NSBezierPath(roundedRect: NSRect(
+                x: offsetX + magnetWidth - armWidth,
+                y: offsetY,
+                width: armWidth,
+                height: magnetHeight - topRadius
+            ), xRadius: cornerRadius, yRadius: cornerRadius)
+            path.append(rightArm)
+
+            // Top arc connecting the arms
+            let arcPath = NSBezierPath()
+            let arcCenter = NSPoint(x: rect.width / 2, y: offsetY + magnetHeight - topRadius)
+            let outerRadius = magnetWidth / 2
+            let innerRadius = outerRadius - armWidth
+
+            // Outer arc (top of magnet)
+            arcPath.appendArc(
+                withCenter: arcCenter,
+                radius: outerRadius,
+                startAngle: 0,
+                endAngle: 180,
+                clockwise: false
+            )
+
+            // Inner arc (creates the horseshoe opening)
+            arcPath.appendArc(
+                withCenter: arcCenter,
+                radius: innerRadius,
+                startAngle: 180,
+                endAngle: 0,
+                clockwise: true
+            )
+
+            arcPath.close()
+            path.append(arcPath)
+
+            // Fill the path
+            NSColor.black.setFill()
+            path.fill()
+
+            return true
+        }
+
+        image.isTemplate = true
+        return image
     }
 
     private func setupURLHandler() {
