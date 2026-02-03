@@ -97,7 +97,11 @@ class SynologyBackend: RemoteClient {
             throw BackendError.invalidURL
         }
 
-        if urlComponents.scheme?.lowercased() != "https" {
+        let host = urlComponents.host?.lowercased() ?? ""
+        let isLocalhost = host == "localhost" || host == "127.0.0.1"
+
+        // Allow HTTP for localhost (testing), require HTTPS for remote
+        if urlComponents.scheme?.lowercased() != "https" && !isLocalhost {
             throw BackendError.insecureConnection(
                 "Synology requires HTTPS. Credentials would be visible in URL."
             )
