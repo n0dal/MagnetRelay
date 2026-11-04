@@ -8,7 +8,7 @@ options:
 settings:
   MARKETING_VERSION: "1.0.0"
   CURRENT_PROJECT_VERSION: "2"
-  DEVELOPMENT_TEAM: "76ZSP26L92"
+  DEVELOPMENT_TEAM: "CY37XHX499"
 
 targets:
   MagnetRelay:
@@ -34,3 +34,22 @@ targets:
       properties:
         com.apple.security.app-sandbox: true
         com.apple.security.network.client: true
+  MagnetRelayTests:
+    type: bundle.unit-test
+    platform: macOS
+    sources:
+      - MagnetRelayTests
+    dependencies:
+      - target: MagnetRelay
+    settings:
+      TEST_HOST: "$(BUILT_PRODUCTS_DIR)/MagnetRelay.app/Contents/MacOS/MagnetRelay"
+      BUNDLE_LOADER: "$(TEST_HOST)"
+
+schemes:
+  MagnetRelay:
+    build:
+      targets:
+        MagnetRelay: all
+    test:
+      targets:
+        - MagnetRelayTests
