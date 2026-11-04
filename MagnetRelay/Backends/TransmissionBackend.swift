@@ -1,89 +1,56 @@
 import Foundation
 
-class TransmissionBackend: RemoteClient {
-    private var sessionId: String?
+final class TransmissionBackend: RemoteClient {
+    private let session: URLSession
 
-    func testConnection(url: String, username: String, password: String) async throws {
-        // Transmission requires a session ID obtained via 409 response
-        try await getSessionId(url: url, username: username, password: password)
+    init(session: URLSession = BackendSession.shared) {
+        self.session = session
     }
 
-    func addMagnet(_ magnet: String, url: String, username: String, password: String) async throws {
-        try await getSessionId(url: url, username: username, password: password)
+    func testConnection(_ endpoint: ServerEndpoint) async throws {
+        _ = try await getSessionId(endpoint)
+    }
 
-        guard let baseURL = URL(string: url) else {
-            throw BackendError.invalidURL
-        }
+    func addMagnet(_ magnet: String, to endpoint: ServerEndpoint) async throws {
+        let sessionId = try await getSessionId(endpoint)
 
-        let rpcURL = baseURL.appendingPathComponent("/transmission/rpc")
-
-        var request = URLRequest(url: rpcURL)
-        request.httpMethod = "POST"
+        var request = rpcRequest(endpoint)
         request.setValue(sessionId, forHTTPHeaderField: "X-Transmission-Session-Id")
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-
-        if !username.isEmpty {
-            let credentials = "\(username):\(password)"
-            if let data = credentials.data(using: .utf8) {
-                request.setValue("Basic \(data.base64EncodedString())", forHTTPHeaderField: "Authorization")
-            }
-        }
-
         let payload: [String: Any] = [
             "method": "torrent-add",
             "arguments": ["filename": magnet]
         ]
         request.httpBody = try JSONSerialization.data(withJSONObject: payload)
 
-        let (data, response) = try await BackendSession.shared.data(for: request)
-
-        guard let httpResponse = response as? HTTPURLResponse,
-              (200...299).contains(httpResponse.statusCode) else {
-            throw BackendError.serverError("Failed to send magnet")
-        }
+        let (data, response) = try await session.data(for: request)
+        guard let http = response as? HTTPURLResponse else { throw BackendError.connectionFailed("No response") }
+        if http.statusCode == 401 { throw BackendError.authenticationFailed }
+        guard (200...299).contains(http.statusCode) else { throw BackendError.httpStatus(http.statusCode) }
 
         if let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
-           let result = json["result"] as? String,
-           result != "success" {
+           let result = json["result"] as? String, result != "success" {
             throw BackendError.serverError(result)
         }
     }
 
-    private func getSessionId(url: String, username: String, password: String) async throws {
-        guard let baseURL = URL(string: url) else {
-            throw BackendError.invalidURL
-        }
-
-        let rpcURL = baseURL.appendingPathComponent("/transmission/rpc")
-
-        var request = URLRequest(url: rpcURL)
+    private func rpcRequest(_ endpoint: ServerEndpoint) -> URLRequest {
+        var request = URLRequest(url: endpoint.url("transmission", "rpc"))
         request.httpMethod = "POST"
+        request.setBasicAuth(username: endpoint.username, password: endpoint.password)
+        return request
+    }
 
-        if !username.isEmpty {
-            let credentials = "\(username):\(password)"
-            if let data = credentials.data(using: .utf8) {
-                request.setValue("Basic \(data.base64EncodedString())", forHTTPHeaderField: "Authorization")
-            }
+    /// Transmission hands out its session id on a 409 response.
+    private func getSessionId(_ endpoint: ServerEndpoint) async throws -> String {
+        let (_, response) = try await session.data(for: rpcRequest(endpoint))
+        guard let http = response as? HTTPURLResponse else { throw BackendError.connectionFailed("No response") }
+
+        if http.statusCode == 401 { throw BackendError.authenticationFailed }
+        if http.statusCode == 409 || http.statusCode == 200,
+           let id = http.value(forHTTPHeaderField: "X-Transmission-Session-Id") {
+            return id
         }
-
-        let (_, response) = try await BackendSession.shared.data(for: request)
-
-        guard let httpResponse = response as? HTTPURLResponse else {
-            throw BackendError.connectionFailed("No response")
-        }
-
-        // Transmission returns 409 with session ID header on first request
-        if httpResponse.statusCode == 409 || httpResponse.statusCode == 200 {
-            if let newSessionId = httpResponse.value(forHTTPHeaderField: "X-Transmission-Session-Id") {
-                sessionId = newSessionId
-                return
-            }
-        }
-
-        if httpResponse.statusCode == 401 {
-            throw BackendError.authenticationFailed
-        }
-
-        throw BackendError.connectionFailed("Status: \(httpResponse.statusCode)")
+        throw BackendError.httpStatus(http.statusCode)
     }
 }

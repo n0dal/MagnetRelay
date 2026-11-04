@@ -1,86 +1,65 @@
 import Foundation
 
-class RRemoteClient: RemoteClient {
-    func testConnection(url: String, username: String, password: String) async throws {
-        guard let baseURL = URL(string: url) else {
-            throw BackendError.invalidURL
-        }
+final class RTorrentBackend: RemoteClient {
+    private let session: URLSession
 
-        // rTorrent uses XML-RPC, test with system.listMethods
-        var request = URLRequest(url: baseURL)
-        request.httpMethod = "POST"
-        request.setValue("text/xml", forHTTPHeaderField: "Content-Type")
+    init(session: URLSession = BackendSession.shared) {
+        self.session = session
+    }
 
-        if !username.isEmpty {
-            let credentials = "\(username):\(password)"
-            if let data = credentials.data(using: .utf8) {
-                request.setValue("Basic \(data.base64EncodedString())", forHTTPHeaderField: "Authorization")
-            }
-        }
-
-        let xml = """
+    func testConnection(_ endpoint: ServerEndpoint) async throws {
+        try await send("""
         <?xml version="1.0"?>
         <methodCall>
             <methodName>system.listMethods</methodName>
             <params></params>
         </methodCall>
-        """
-        request.httpBody = xml.data(using: .utf8)
-
-        let (_, response) = try await BackendSession.shared.data(for: request)
-
-        guard let httpResponse = response as? HTTPURLResponse else {
-            throw BackendError.connectionFailed("No response")
-        }
-
-        if httpResponse.statusCode == 401 {
-            throw BackendError.authenticationFailed
-        }
-
-        if !(200...299).contains(httpResponse.statusCode) {
-            throw BackendError.connectionFailed("Status: \(httpResponse.statusCode)")
-        }
+        """, to: endpoint)
     }
 
-    func addMagnet(_ magnet: String, url: String, username: String, password: String) async throws {
-        guard let baseURL = URL(string: url) else {
-            throw BackendError.invalidURL
-        }
-
-        var request = URLRequest(url: baseURL)
-        request.httpMethod = "POST"
-        request.setValue("text/xml", forHTTPHeaderField: "Content-Type")
-
-        if !username.isEmpty {
-            let credentials = "\(username):\(password)"
-            if let data = credentials.data(using: .utf8) {
-                request.setValue("Basic \(data.base64EncodedString())", forHTTPHeaderField: "Authorization")
-            }
-        }
-
-        // Escape XML special characters in magnet URL
-        let escapedMagnet = magnet
+    func addMagnet(_ magnet: String, to endpoint: ServerEndpoint) async throws {
+        let escaped = magnet
             .replacingOccurrences(of: "&", with: "&amp;")
             .replacingOccurrences(of: "<", with: "&lt;")
             .replacingOccurrences(of: ">", with: "&gt;")
 
-        let xml = """
+        try await send("""
         <?xml version="1.0"?>
         <methodCall>
             <methodName>load.start</methodName>
             <params>
                 <param><value><string></string></value></param>
-                <param><value><string>\(escapedMagnet)</string></value></param>
+                <param><value><string>\(escaped)</string></value></param>
             </params>
         </methodCall>
-        """
+        """, to: endpoint)
+    }
+
+    private func send(_ xml: String, to endpoint: ServerEndpoint) async throws {
+        var request = URLRequest(url: endpoint.url())
+        request.httpMethod = "POST"
+        request.setValue("text/xml", forHTTPHeaderField: "Content-Type")
+        request.setBasicAuth(username: endpoint.username, password: endpoint.password)
         request.httpBody = xml.data(using: .utf8)
 
-        let (_, response) = try await BackendSession.shared.data(for: request)
+        let (data, response) = try await session.data(for: request)
+        guard let http = response as? HTTPURLResponse else { throw BackendError.connectionFailed("No response") }
+        if http.statusCode == 401 { throw BackendError.authenticationFailed }
+        guard (200...299).contains(http.statusCode) else { throw BackendError.httpStatus(http.statusCode) }
 
-        guard let httpResponse = response as? HTTPURLResponse,
-              (200...299).contains(httpResponse.statusCode) else {
-            throw BackendError.serverError("Failed to send magnet")
+        // XML-RPC reports failures as HTTP 200 with a <fault> body.
+        let body = String(data: data, encoding: .utf8) ?? ""
+        if body.contains("<fault>") {
+            throw BackendError.serverError(Self.faultString(in: body))
         }
+    }
+
+    private static func faultString(in body: String) -> String {
+        guard let r = body.range(of: "faultString"),
+              let open = body.range(of: "<string>", range: r.upperBound..<body.endIndex),
+              let close = body.range(of: "</string>", range: open.upperBound..<body.endIndex) else {
+            return "rTorrent reported an error"
+        }
+        return String(body[open.upperBound..<close.lowerBound])
     }
 }

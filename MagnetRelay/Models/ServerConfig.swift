@@ -160,7 +160,4 @@ class ServerConfig: ObservableObject {
         formatter.unitsStyle = .abbreviated
         return formatter.localizedString(for: date, relativeTo: Date())
     }
-
-    // TEMP: removed in Task 3
-    var serverURL: String { endpoint()?.baseURL.absoluteString ?? "" }
 }

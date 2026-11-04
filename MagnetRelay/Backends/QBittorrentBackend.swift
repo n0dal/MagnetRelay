@@ -1,72 +1,51 @@
 import Foundation
 
-class QBittorrentBackend: RemoteClient {
-    private var sessionCookie: String?
+final class QBittorrentBackend: RemoteClient {
+    private let session: URLSession
 
-    func testConnection(url: String, username: String, password: String) async throws {
-        try await authenticate(url: url, username: username, password: password)
+    init(session: URLSession = BackendSession.shared) {
+        self.session = session
     }
 
-    func addMagnet(_ magnet: String, url: String, username: String, password: String) async throws {
-        try await authenticate(url: url, username: username, password: password)
-
-        guard let baseURL = URL(string: url) else {
-            throw BackendError.invalidURL
-        }
-
-        let addURL = baseURL.appendingPathComponent("api/v2/torrents/add")
-
-        var request = URLRequest(url: addURL)
-        request.httpMethod = "POST"
-        request.setValue(sessionCookie, forHTTPHeaderField: "Cookie")
-        request.setValue(url, forHTTPHeaderField: "Referer")
-        request.setValue(url, forHTTPHeaderField: "Origin")
-        request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
-
-        guard let encodedMagnet = magnet.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else {
-            throw BackendError.encodingFailed
-        }
-        let body = "urls=\(encodedMagnet)"
-        request.httpBody = body.data(using: .utf8)
-
-        let (_, response) = try await BackendSession.shared.data(for: request)
-
-        guard let httpResponse = response as? HTTPURLResponse,
-              (200...299).contains(httpResponse.statusCode) else {
-            throw BackendError.serverError("Failed to send magnet")
-        }
+    func testConnection(_ endpoint: ServerEndpoint) async throws {
+        _ = try await authenticate(endpoint)
     }
 
-    private func authenticate(url: String, username: String, password: String) async throws {
-        guard let baseURL = URL(string: url) else {
-            throw BackendError.invalidURL
-        }
+    func addMagnet(_ magnet: String, to endpoint: ServerEndpoint) async throws {
+        let cookie = try await authenticate(endpoint)
 
-        let loginURL = baseURL.appendingPathComponent("api/v2/auth/login")
+        var request = makeRequest(endpoint.url("api", "v2", "torrents", "add"), endpoint: endpoint)
+        if let cookie { request.setValue(cookie, forHTTPHeaderField: "Cookie") }
+        request.httpBody = FormEncoding.encode([("urls", magnet)]).data(using: .utf8)
 
-        var request = URLRequest(url: loginURL)
+        let (_, response) = try await session.data(for: request)
+        guard let http = response as? HTTPURLResponse else { throw BackendError.connectionFailed("No response") }
+        if http.statusCode == 403 || http.statusCode == 401 { throw BackendError.authenticationFailed }
+        guard (200...299).contains(http.statusCode) else { throw BackendError.httpStatus(http.statusCode) }
+    }
+
+    private func makeRequest(_ url: URL, endpoint: ServerEndpoint) -> URLRequest {
+        var request = URLRequest(url: url)
         request.httpMethod = "POST"
-        request.setValue(url, forHTTPHeaderField: "Referer")
-        request.setValue(url, forHTTPHeaderField: "Origin")
+        let origin = endpoint.baseURL.absoluteString
+        request.setValue(origin, forHTTPHeaderField: "Referer")
+        request.setValue(origin, forHTTPHeaderField: "Origin")
         request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+        return request
+    }
 
-        let body = "username=\(username)&password=\(password)"
-        request.httpBody = body.data(using: .utf8)
+    /// Logs in and returns the session cookie (`SID=...`), if any.
+    private func authenticate(_ endpoint: ServerEndpoint) async throws -> String? {
+        var request = makeRequest(endpoint.url("api", "v2", "auth", "login"), endpoint: endpoint)
+        request.httpBody = FormEncoding.encode([("username", endpoint.username),
+                                                ("password", endpoint.password)]).data(using: .utf8)
 
-        let (data, response) = try await BackendSession.shared.data(for: request)
+        let (data, response) = try await session.data(for: request)
+        guard let http = response as? HTTPURLResponse else { throw BackendError.connectionFailed("No response") }
+        if http.statusCode == 403 { throw BackendError.authenticationFailed }
+        guard (200...299).contains(http.statusCode) else { throw BackendError.httpStatus(http.statusCode) }
 
-        guard let httpResponse = response as? HTTPURLResponse else {
-            throw BackendError.connectionFailed("No response")
-        }
-
-        let responseText = String(data: data, encoding: .utf8) ?? ""
-
-        if responseText != "Ok." {
-            throw BackendError.authenticationFailed
-        }
-
-        if let cookie = httpResponse.value(forHTTPHeaderField: "Set-Cookie") {
-            sessionCookie = cookie.components(separatedBy: ";").first
-        }
+        guard String(data: data, encoding: .utf8)?.trimmed == "Ok." else { throw BackendError.authenticationFailed }
+        return http.value(forHTTPHeaderField: "Set-Cookie")?.components(separatedBy: ";").first
     }
 }

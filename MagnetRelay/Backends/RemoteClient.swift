@@ -1,8 +1,8 @@
 import Foundation
 
 protocol RemoteClient {
-    func testConnection(url: String, username: String, password: String) async throws
-    func addMagnet(_ magnet: String, url: String, username: String, password: String) async throws
+    func testConnection(_ endpoint: ServerEndpoint) async throws
+    func addMagnet(_ magnet: String, to endpoint: ServerEndpoint) async throws
 }
 
 enum BackendError: LocalizedError {
@@ -11,7 +11,9 @@ enum BackendError: LocalizedError {
     case connectionFailed(String)
     case serverError(String)
     case timeout
-    case insecureConnection(String)
+    case insecureConnection
+    case daemonNotConnected
+    case httpStatus(Int)
     case encodingFailed
 
     var errorDescription: String? {
@@ -26,8 +28,12 @@ enum BackendError: LocalizedError {
             return "Server error: \(reason)"
         case .timeout:
             return "Connection timed out"
-        case .insecureConnection(let reason):
-            return "Insecure connection: \(reason)"
+        case .insecureConnection:
+            return "Insecure connection: this client requires HTTPS"
+        case .daemonNotConnected:
+            return "The download client is not connected to its daemon"
+        case .httpStatus(let code):
+            return "Unexpected response (HTTP \(code))"
         case .encodingFailed:
             return "Failed to encode magnet URL"
         }
@@ -111,18 +117,18 @@ enum BackendSession {
 }
 
 class BackendFactory {
-    static func create(for type: ClientType) -> RemoteClient {
+    static func create(for type: ClientType, session: URLSession = BackendSession.shared) -> RemoteClient {
         switch type {
         case .qbittorrent:
-            return QBittorrentBackend()
+            return QBittorrentBackend(session: session)
         case .transmission:
-            return TransmissionBackend()
+            return TransmissionBackend(session: session)
         case .deluge:
-            return DelugeBackend()
+            return DelugeBackend(session: session)
         case .rtorrent:
-            return RRemoteClient()
+            return RTorrentBackend(session: session)
         case .synology:
-            return SynologyBackend()
+            return SynologyBackend(session: session)
         }
     }
 }

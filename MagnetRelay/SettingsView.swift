@@ -296,12 +296,11 @@ struct SettingsView: View {
 
         connectionTask = Task {
             do {
+                var draft = config.draft()
+                draft.password = password
+                guard let endpoint = draft.endpoint() else { throw BackendError.invalidURL }
                 let backend = BackendFactory.create(for: config.clientType)
-                try await backend.testConnection(
-                    url: config.serverURL,
-                    username: config.username,
-                    password: password
-                )
+                try await backend.testConnection(endpoint)
 
                 // Check if cancelled before updating UI
                 if Task.isCancelled { return }

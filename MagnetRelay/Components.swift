@@ -645,8 +645,12 @@ enum ConnectionError {
             switch backendError {
             case .timeout:
                 return "Connection timed out. Is server running?"
-            case .insecureConnection(let reason):
-                return reason
+            case .insecureConnection:
+                return "This client requires HTTPS for servers outside your local network."
+            case .daemonNotConnected:
+                return "The download client is not connected to its daemon."
+            case .httpStatus(let code):
+                return "Unexpected response (HTTP \(code))."
             case .encodingFailed:
                 return "Failed to process magnet URL."
             case .invalidURL:

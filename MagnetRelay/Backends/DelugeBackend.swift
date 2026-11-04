@@ -1,79 +1,60 @@
 import Foundation
 
-class DelugeBackend: RemoteClient {
+final class DelugeBackend: RemoteClient {
+    private let session: URLSession
     private var sessionCookie: String?
 
-    func testConnection(url: String, username: String, password: String) async throws {
-        try await authenticate(url: url, password: password)
+    init(session: URLSession = BackendSession.shared) {
+        self.session = session
     }
 
-    func addMagnet(_ magnet: String, url: String, username: String, password: String) async throws {
-        try await authenticate(url: url, password: password)
-
-        guard let baseURL = URL(string: url) else {
-            throw BackendError.invalidURL
-        }
-
-        let apiURL = baseURL.appendingPathComponent("/json")
-
-        var request = URLRequest(url: apiURL)
-        request.httpMethod = "POST"
-        request.setValue(sessionCookie, forHTTPHeaderField: "Cookie")
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-
-        let payload: [String: Any] = [
-            "method": "core.add_torrent_magnet",
-            "params": [magnet, [String: Any]()],
-            "id": Int.random(in: 1...9999)
-        ]
-        request.httpBody = try JSONSerialization.data(withJSONObject: payload)
-
-        let (data, response) = try await BackendSession.shared.data(for: request)
-
-        guard let httpResponse = response as? HTTPURLResponse,
-              (200...299).contains(httpResponse.statusCode) else {
-            throw BackendError.serverError("Failed to send magnet")
-        }
-
-        if let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
-           let error = json["error"] as? [String: Any],
-           let message = error["message"] as? String {
-            throw BackendError.serverError(message)
-        }
+    func testConnection(_ endpoint: ServerEndpoint) async throws {
+        try await authenticate(endpoint)
+        try await ensureDaemonConnected(endpoint)
     }
 
-    private func authenticate(url: String, password: String) async throws {
-        guard let baseURL = URL(string: url) else {
-            throw BackendError.invalidURL
-        }
+    func addMagnet(_ magnet: String, to endpoint: ServerEndpoint) async throws {
+        try await authenticate(endpoint)
+        try await ensureDaemonConnected(endpoint)
+        _ = try await call("core.add_torrent_magnet", params: [magnet, [String: Any]()], endpoint)
+    }
 
-        let apiURL = baseURL.appendingPathComponent("/json")
+    /// Deluge username is ignored by design; only the password is used.
+    private func authenticate(_ endpoint: ServerEndpoint) async throws {
+        let result = try await call("auth.login", params: [endpoint.password], endpoint)
+        if let ok = result as? Bool, !ok { throw BackendError.authenticationFailed }
+    }
 
-        var request = URLRequest(url: apiURL)
+    /// The Web UI must be attached to a daemon before core.* calls work.
+    private func ensureDaemonConnected(_ endpoint: ServerEndpoint) async throws {
+        if try await call("web.connected", params: [], endpoint) as? Bool == true { return }
+
+        let hosts = try await call("web.get_hosts", params: [], endpoint) as? [[Any]] ?? []
+        guard let hostId = hosts.first?.first as? String else { throw BackendError.daemonNotConnected }
+        _ = try await call("web.connect", params: [hostId], endpoint)
+    }
+
+    private func call(_ method: String, params: [Any], _ endpoint: ServerEndpoint) async throws -> Any? {
+        var request = URLRequest(url: endpoint.url("json"))
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        if let sessionCookie { request.setValue(sessionCookie, forHTTPHeaderField: "Cookie") }
+        request.httpBody = try JSONSerialization.data(withJSONObject: [
+            "method": method, "params": params, "id": 1
+        ] as [String: Any])
 
-        let payload: [String: Any] = [
-            "method": "auth.login",
-            "params": [password],
-            "id": Int.random(in: 1...9999)
-        ]
-        request.httpBody = try JSONSerialization.data(withJSONObject: payload)
+        let (data, response) = try await session.data(for: request)
+        guard let http = response as? HTTPURLResponse else { throw BackendError.connectionFailed("No response") }
+        guard (200...299).contains(http.statusCode) else { throw BackendError.httpStatus(http.statusCode) }
 
-        let (data, response) = try await BackendSession.shared.data(for: request)
-
-        guard let httpResponse = response as? HTTPURLResponse else {
-            throw BackendError.connectionFailed("No response")
-        }
-
-        if let cookie = httpResponse.value(forHTTPHeaderField: "Set-Cookie") {
+        if let cookie = http.value(forHTTPHeaderField: "Set-Cookie") {
             sessionCookie = cookie.components(separatedBy: ";").first
         }
 
-        if let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
-           let result = json["result"] as? Bool,
-           !result {
-            throw BackendError.authenticationFailed
+        let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any]
+        if let error = json?["error"] as? [String: Any], let message = error["message"] as? String {
+            throw BackendError.serverError(message)
         }
+        return json?["result"]
     }
 }

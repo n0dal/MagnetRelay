@@ -1,110 +1,75 @@
 import Foundation
 
-class SynologyBackend: RemoteClient {
-    private var sid: String?
+final class SynologyBackend: RemoteClient {
+    private let session: URLSession
 
-    func testConnection(url: String, username: String, password: String) async throws {
-        // Synology sends credentials as GET query parameters - require HTTPS
-        try validateSecureConnection(url: url)
-        try await authenticate(url: url, username: username, password: password)
+    init(session: URLSession = BackendSession.shared) {
+        self.session = session
     }
 
-    func addMagnet(_ magnet: String, url: String, username: String, password: String) async throws {
-        try validateSecureConnection(url: url)
-        try await authenticate(url: url, username: username, password: password)
+    func testConnection(_ endpoint: ServerEndpoint) async throws {
+        // Synology sends credentials as GET query parameters: HTTPS unless on the LAN.
+        try validateSecureConnection(endpoint)
+        _ = try await authenticate(endpoint)
+    }
 
-        guard let baseURL = URL(string: url),
-              var components = URLComponents(url: baseURL.appendingPathComponent("/webapi/DownloadStation/task.cgi"), resolvingAgainstBaseURL: false) else {
-            throw BackendError.invalidURL
-        }
+    func addMagnet(_ magnet: String, to endpoint: ServerEndpoint) async throws {
+        try validateSecureConnection(endpoint)
+        let sid = try await authenticate(endpoint)
 
-        components.queryItems = [
-            URLQueryItem(name: "api", value: "SYNO.DownloadStation.Task"),
-            URLQueryItem(name: "version", value: "1"),
-            URLQueryItem(name: "method", value: "create"),
-            URLQueryItem(name: "_sid", value: sid),
-            URLQueryItem(name: "uri", value: magnet)
-        ]
-
-        guard let requestURL = components.url else {
-            throw BackendError.invalidURL
-        }
-
-        var request = URLRequest(url: requestURL)
-        request.httpMethod = "GET"
-
-        let (data, response) = try await BackendSession.shared.data(for: request)
-
-        guard let httpResponse = response as? HTTPURLResponse,
-              (200...299).contains(httpResponse.statusCode) else {
-            throw BackendError.serverError("Failed to send magnet")
-        }
+        let data = try await get(endpoint.url("webapi", "DownloadStation", "task.cgi"), query: [
+            ("api", "SYNO.DownloadStation.Task"),
+            ("version", "1"),
+            ("method", "create"),
+            ("_sid", sid),
+            ("uri", magnet)
+        ])
 
         if let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
-           let success = json["success"] as? Bool,
-           !success {
-            let errorCode = (json["error"] as? [String: Any])?["code"] as? Int ?? 0
-            throw BackendError.serverError("Error code: \(errorCode)")
+           let success = json["success"] as? Bool, !success {
+            let code = (json["error"] as? [String: Any])?["code"] as? Int ?? 0
+            throw BackendError.serverError("Error code: \(code)")
         }
     }
 
-    private func authenticate(url: String, username: String, password: String) async throws {
-        guard let baseURL = URL(string: url),
-              var components = URLComponents(url: baseURL.appendingPathComponent("/webapi/auth.cgi"), resolvingAgainstBaseURL: false) else {
+    private func get(_ url: URL, query: [(String, String)]) async throws -> Data {
+        guard var comps = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
             throw BackendError.invalidURL
         }
-
-        components.queryItems = [
-            URLQueryItem(name: "api", value: "SYNO.API.Auth"),
-            URLQueryItem(name: "version", value: "2"),
-            URLQueryItem(name: "method", value: "login"),
-            URLQueryItem(name: "account", value: username),
-            URLQueryItem(name: "passwd", value: password),
-            URLQueryItem(name: "session", value: "DownloadStation"),
-            URLQueryItem(name: "format", value: "sid")
-        ]
-
-        guard let requestURL = components.url else {
-            throw BackendError.invalidURL
-        }
+        comps.percentEncodedQuery = FormEncoding.encode(query)
+        guard let requestURL = comps.url else { throw BackendError.invalidURL }
 
         var request = URLRequest(url: requestURL)
         request.httpMethod = "GET"
-
-        let (data, response) = try await BackendSession.shared.data(for: request)
-
-        guard let httpResponse = response as? HTTPURLResponse,
-              (200...299).contains(httpResponse.statusCode) else {
-            throw BackendError.connectionFailed("No response")
-        }
-
-        guard let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
-              let success = json["success"] as? Bool,
-              success,
-              let dataObj = json["data"] as? [String: Any],
-              let sessionId = dataObj["sid"] as? String else {
-            throw BackendError.authenticationFailed
-        }
-
-        sid = sessionId
+        let (data, response) = try await session.data(for: request)
+        guard let http = response as? HTTPURLResponse else { throw BackendError.connectionFailed("No response") }
+        guard (200...299).contains(http.statusCode) else { throw BackendError.httpStatus(http.statusCode) }
+        return data
     }
 
-    /// Validates that the connection uses HTTPS
-    /// Synology API sends credentials as GET query parameters which are visible in server logs
-    /// and can be intercepted on insecure connections
-    private func validateSecureConnection(url: String) throws {
-        guard let urlComponents = URLComponents(string: url) else {
-            throw BackendError.invalidURL
+    private func authenticate(_ endpoint: ServerEndpoint) async throws -> String {
+        let data = try await get(endpoint.url("webapi", "auth.cgi"), query: [
+            ("api", "SYNO.API.Auth"),
+            ("version", "2"),
+            ("method", "login"),
+            ("account", endpoint.username),
+            ("passwd", endpoint.password),
+            ("session", "DownloadStation"),
+            ("format", "sid")
+        ])
+
+        guard let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+              json["success"] as? Bool == true,
+              let sid = (json["data"] as? [String: Any])?["sid"] as? String else {
+            throw BackendError.authenticationFailed
         }
+        return sid
+    }
 
-        let host = urlComponents.host?.lowercased() ?? ""
-        let isLocalhost = host == "localhost" || host == "127.0.0.1"
-
-        // Allow HTTP for localhost (testing), require HTTPS for remote
-        if urlComponents.scheme?.lowercased() != "https" && !isLocalhost {
-            throw BackendError.insecureConnection(
-                "Synology requires HTTPS. Credentials would be visible in URL."
-            )
+    private func validateSecureConnection(_ endpoint: ServerEndpoint) throws {
+        let isHTTPS = endpoint.baseURL.scheme?.lowercased() == "https"
+        if !isHTTPS && !NetworkAddress.isLocal(host: endpoint.baseURL.host ?? "") {
+            throw BackendError.insecureConnection
         }
     }
 }

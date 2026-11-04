@@ -39,6 +39,14 @@ final class HTTPTests: XCTestCase {
         XCTAssertNil(draft(host: "").endpoint())
     }
 
+    func testHostWithoutSchemeButPort() {
+        XCTAssertEqual(draft(host: "nas:9091", port: "8080").endpoint()!.baseURL.absoluteString, "http://nas:9091")
+        XCTAssertEqual(draft(host: "nas/qbt", port: "8080", https: true).endpoint()!.baseURL.absoluteString,
+                       "https://nas:8080/qbt")
+        XCTAssertEqual(draft(host: "192.168.0.100", port: "8080").endpoint()!.baseURL.absoluteString,
+                       "http://192.168.0.100:8080")
+    }
+
     func testHTTPSFlag() {
         XCTAssertEqual(draft(https: true).endpoint() == nil, false)
         XCTAssertEqual(draft(port: "5001", https: true).endpoint()!.baseURL.absoluteString, "https://nas:5001")

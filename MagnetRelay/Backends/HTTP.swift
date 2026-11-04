@@ -54,6 +54,10 @@ struct ConnectionDraft: Equatable {
         var portValue = Int(port.trimmed)
         var pathValue = path
 
+        if !raw.contains("://"), raw.contains("/") || raw.filter({ $0 == ":" }).count == 1 {
+            raw = (useHTTPS ? "https://" : "http://") + raw
+        }
+
         if raw.contains("://") {
             guard let parsed = URLComponents(string: raw), let h = parsed.host, !h.isEmpty,
                   let s = parsed.scheme?.lowercased(), s == "http" || s == "https" else { return nil }
@@ -71,6 +75,13 @@ struct ConnectionDraft: Equatable {
         comps.path = segments.isEmpty ? "" : "/" + segments.joined(separator: "/")
         guard let url = comps.url, url.host != nil else { return nil }
         return ServerEndpoint(baseURL: url, username: username, password: password)
+    }
+}
+
+extension URLRequest {
+    mutating func setBasicAuth(username: String, password: String) {
+        guard !username.isEmpty, let data = "\(username):\(password)".data(using: .utf8) else { return }
+        setValue("Basic \(data.base64EncodedString())", forHTTPHeaderField: "Authorization")
     }
 }
 

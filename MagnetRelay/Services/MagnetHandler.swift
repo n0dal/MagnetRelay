@@ -5,7 +5,7 @@ class MagnetHandler {
     private let config = ServerConfig.shared
 
     func handleMagnet(_ magnetURL: String) async {
-        guard !config.serverURL.isEmpty else {
+        guard let endpoint = config.endpoint() else {
             await showNotification(
                 title: "MagnetRelay",
                 body: "No server configured. Open Settings to set up.",
@@ -15,17 +15,11 @@ class MagnetHandler {
         }
 
         let backend = BackendFactory.create(for: config.clientType)
-        let password = KeychainService.getPassword() ?? ""
 
         do {
             // Use retry logic for transient failures
             try await BackendSession.withRetry {
-                try await backend.addMagnet(
-                    magnetURL,
-                    url: config.serverURL,
-                    username: config.username,
-                    password: password
-                )
+                try await backend.addMagnet(magnetURL, to: endpoint)
             }
 
             // Save to recent magnets on success
