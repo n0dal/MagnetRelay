@@ -94,6 +94,5 @@ final class KeychainPasswordStore: PasswordStoring {
     func password() -> String? { KeychainService.getPassword() }
     @discardableResult func setPassword(_ p: String) -> Bool {
         KeychainService.setPassword(p)
-        return true
     }
 }

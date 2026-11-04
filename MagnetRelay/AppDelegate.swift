@@ -16,6 +16,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     }
 
     func applicationDidFinishLaunching(_ notification: Notification) {
+        // The hosted XCTest runner must not do first-launch UI at startup.
+        if ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil { return }
+
         UNUserNotificationCenter.current().delegate = notifier
         setupEditMenu()
         setupStatusBar()

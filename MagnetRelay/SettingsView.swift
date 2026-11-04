@@ -343,6 +343,7 @@ struct SettingsView: View {
 
 struct PreferencesSheet: View {
     @ObservedObject var config: ServerConfig
+    @ObservedObject private var loginItem = LaunchAtLogin.shared
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
@@ -371,11 +372,11 @@ struct PreferencesSheet: View {
                     title: "Launch at Login",
                     subtitle: "Start automatically when you log in",
                     icon: "power",
-                    isOn: $config.launchAtLogin
+                    isOn: Binding(
+                        get: { loginItem.isEnabled },
+                        set: { loginItem.set($0) }
+                    )
                 )
-                .onChange(of: config.launchAtLogin) { newValue in
-                    LaunchAtLogin.setEnabled(newValue)
-                }
 
                 MRDivider()
 

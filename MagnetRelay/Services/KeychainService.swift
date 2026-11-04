@@ -1,27 +1,28 @@
 import Foundation
 import Security
-import LocalAuthentication
 
 enum KeychainService {
     private static let service = "com.magnetrelay.server"
     private static let account = "password"
 
-    static func setPassword(_ password: String) {
-        guard let data = password.data(using: .utf8) else { return }
+    @discardableResult
+    static func setPassword(_ password: String) -> Bool {
+        guard let data = password.data(using: .utf8) else { return false }
 
-        // Delete existing item first
-        deletePassword()
-
-        // Create access control - allow access when unlocked, no prompts needed
-        let query: [String: Any] = [
+        let match: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
             kSecAttrService as String: service,
-            kSecAttrAccount as String: account,
-            kSecValueData as String: data,
-            kSecAttrAccessible as String: kSecAttrAccessibleWhenUnlockedThisDeviceOnly
+            kSecAttrAccount as String: account
         ]
 
-        SecItemAdd(query as CFDictionary, nil)
+        let updateStatus = SecItemUpdate(match as CFDictionary, [kSecValueData as String: data] as CFDictionary)
+        if updateStatus == errSecSuccess { return true }
+        guard updateStatus == errSecItemNotFound else { return false }
+
+        var add = match
+        add[kSecValueData as String] = data
+        add[kSecAttrAccessible as String] = kSecAttrAccessibleWhenUnlockedThisDeviceOnly
+        return SecItemAdd(add as CFDictionary, nil) == errSecSuccess
     }
 
     static func getPassword() -> String? {

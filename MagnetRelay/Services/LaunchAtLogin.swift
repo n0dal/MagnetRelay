@@ -1,8 +1,18 @@
 import Foundation
 import ServiceManagement
 
-enum LaunchAtLogin {
-    static func setEnabled(_ enabled: Bool) {
+/// Launch-at-login state, read from the system rather than stored locally.
+final class LaunchAtLogin: ObservableObject {
+    static let shared = LaunchAtLogin()
+
+    @Published private(set) var isEnabled: Bool
+
+    private init() {
+        isEnabled = SMAppService.mainApp.status == .enabled
+    }
+
+    /// Registers or unregisters, then re-reads the real status so a failure reverts the switch.
+    func set(_ enabled: Bool) {
         do {
             if enabled {
                 try SMAppService.mainApp.register()
@@ -10,11 +20,8 @@ enum LaunchAtLogin {
                 try SMAppService.mainApp.unregister()
             }
         } catch {
-            // Silently handle - not critical if login item fails
+            // Fall through: the status re-read below reflects what actually happened.
         }
-    }
-
-    static var isEnabled: Bool {
-        SMAppService.mainApp.status == .enabled
+        isEnabled = SMAppService.mainApp.status == .enabled
     }
 }
