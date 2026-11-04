@@ -4,8 +4,10 @@ import XCTest
 final class FlowClient: RemoteClient {
     var error: Error?
     var hangs = false
+    var finished = false
     func testConnection(_ endpoint: ServerEndpoint) async throws {
         if hangs { try await Task.sleep(nanoseconds: 60_000_000_000) }
+        finished = true
         if let error { throw error }
     }
     func addMagnet(_ magnet: String, to endpoint: ServerEndpoint) async throws {}
@@ -138,8 +140,10 @@ final class SetupFlowModelTests: XCTestCase {
         m.draft.host = "other"; m.draft.username = "u"
         m.step = .signIn
         let task = Task { await m.connect() }
-        while !m.isConnecting { await Task.yield() }
-        m.cancelConnect()   // client returns immediately and ignores cancellation
+        // Wait until the client has returned, then cancel with no suspension in between,
+        // so the cancel lands before connect() resumes on the main actor.
+        while !client.finished { await Task.yield() }
+        m.cancelConnect()
         await task.value
         XCTAssertEqual(config.serverHost, "old")
         XCTAssertFalse(config.hasCompletedSetup)
