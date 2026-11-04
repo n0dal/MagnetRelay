@@ -22,7 +22,7 @@ extension Color {
 
 extension Font {
     enum Relay {
-        /// Apply with `.tracking(RelayMetrics.headingTracking)` (−0.02em at 22pt).
+        /// Prefer `.relayHeading()`, which also applies the −0.02em tracking.
         static let heading = Font.system(size: 22, weight: .semibold)
         static let body = Font.system(size: 13)
         static let secondary = Font.system(size: 12)
@@ -37,9 +37,22 @@ enum RelayMetrics {
     static let cardRadius: CGFloat = 10
     static let rowHeight: CGFloat = 40
     static let windowSize = CGSize(width: 460, height: 430)
+    /// The window's content area: `windowSize` less the 28pt title bar (as in the mockup).
+    static let contentSize = CGSize(width: windowSize.width, height: windowSize.height - 28)
     /// −0.02em at the 22pt heading size.
     static let headingTracking: CGFloat = -0.44
     static let hairlineWidth: CGFloat = 0.5
+}
+
+// MARK: - Heading
+
+extension View {
+    /// 22pt semibold `ink` with −0.02em tracking.
+    func relayHeading() -> some View {
+        font(Font.Relay.heading)
+            .tracking(RelayMetrics.headingTracking)
+            .foregroundStyle(Color.Relay.ink)
+    }
 }
 
 // MARK: - Color Initializers

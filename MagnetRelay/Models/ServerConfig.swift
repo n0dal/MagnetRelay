@@ -20,27 +20,6 @@ enum ClientType: String, CaseIterable, Identifiable, Codable {
         }
     }
 
-    // Shorter names for compact UI (client chips)
-    var shortName: String {
-        switch self {
-        case .qbittorrent: return "qBit"
-        case .transmission: return "Trans"
-        case .deluge: return "Deluge"
-        case .rtorrent: return "rTorrent"
-        case .synology: return "Synology"
-        }
-    }
-
-    var icon: String {
-        switch self {
-        case .qbittorrent: return "arrow.down.to.line.circle.fill"
-        case .transmission: return "gear.circle.fill"
-        case .deluge: return "drop.circle.fill"
-        case .rtorrent: return "terminal.fill"
-        case .synology: return "externaldrive.fill.badge.wifi"
-        }
-    }
-
     func defaultPort(https: Bool) -> String {
         switch self {
         case .qbittorrent: return "8080"
@@ -49,18 +28,6 @@ enum ClientType: String, CaseIterable, Identifiable, Codable {
         case .rtorrent: return "8080"
         case .synology: return https ? "5001" : "5000"
         }
-    }
-
-    /// Whether this backend has been tested against a real server
-    var isExperimental: Bool {
-        // All backends have been tested
-        return false
-    }
-
-    /// Warning message for experimental backends
-    var experimentalWarning: String? {
-        guard isExperimental else { return nil }
-        return "This client hasn't been fully tested. Please report issues."
     }
 }
 
@@ -73,11 +40,9 @@ class ServerConfig: ObservableObject {
     @AppStorage("serverPort") var serverPort: String = "8080"
     @AppStorage("serverPath") var serverPath: String = ""
     @AppStorage("username") var username: String = ""
-    @AppStorage("launchAtLogin") var launchAtLogin: Bool = false
     @AppStorage("showNotifications") var showNotifications: Bool = true
     @AppStorage("hasCompletedSetup") var hasCompletedSetup: Bool = false
     @AppStorage("lastConnectedAt") var lastConnectedAt: Double = 0
-    @AppStorage("bannerDismissed") var bannerDismissed: Bool = false
 
     // Stores the config fingerprint when connection was last tested
     @AppStorage("lastTestedConfigHash") var lastTestedConfigHash: String = ""
@@ -93,11 +58,9 @@ class ServerConfig: ObservableObject {
         _serverPort = AppStorage(wrappedValue: "8080", "serverPort", store: store)
         _serverPath = AppStorage(wrappedValue: "", "serverPath", store: store)
         _username = AppStorage(wrappedValue: "", "username", store: store)
-        _launchAtLogin = AppStorage(wrappedValue: false, "launchAtLogin", store: store)
         _showNotifications = AppStorage(wrappedValue: true, "showNotifications", store: store)
         _hasCompletedSetup = AppStorage(wrappedValue: false, "hasCompletedSetup", store: store)
         _lastConnectedAt = AppStorage(wrappedValue: 0, "lastConnectedAt", store: store)
-        _bannerDismissed = AppStorage(wrappedValue: false, "bannerDismissed", store: store)
         _lastTestedConfigHash = AppStorage(wrappedValue: "", "lastTestedConfigHash", store: store)
 
         // @AppStorage inside an ObservableObject doesn't publish changes on its own.
@@ -119,14 +82,18 @@ class ServerConfig: ObservableObject {
                         path: serverPath, username: username, password: passwords.password() ?? "")
     }
 
-    func apply(_ draft: ConnectionDraft, savePassword: Bool = true) {
+    /// Writes the draft. When `savePassword` is true the password goes to the Keychain first;
+    /// if that write fails nothing else is changed and this returns false.
+    @discardableResult
+    func apply(_ draft: ConnectionDraft, savePassword: Bool = true) -> Bool {
+        if savePassword, !passwords.setPassword(draft.password) { return false }
         clientType = draft.clientType
         serverHost = draft.host
         serverPort = draft.port
         useHTTPS = draft.useHTTPS
         serverPath = draft.path
         username = draft.username
-        if savePassword { passwords.setPassword(draft.password) }
+        return true
     }
 
     func endpoint() -> ServerEndpoint? { draft().endpoint() }

@@ -15,6 +15,9 @@ final class SetupFlowModel: ObservableObject {
 
     var onFinish: (Outcome) -> Void = { _ in }
 
+    /// Editing a draft of a working config (step 1's left button is Cancel).
+    var isChangingServer: Bool { mode == .changeServer }
+
     private let mode: Mode
     private let config: ServerConfig
     private let clientFactory: (ClientType) -> RemoteClient
@@ -101,7 +104,10 @@ final class SetupFlowModel: ObservableObject {
             guard connectTask == task else { return }
             connectTask = nil
             isConnecting = false
-            config.apply(draft)
+            guard config.apply(draft) else {
+                errorMessage = "Couldn't save your password to the Keychain. Try again."
+                return
+            }
             config.markConfigAsTested()
             config.hasCompletedSetup = true
             onFinish(.connected)

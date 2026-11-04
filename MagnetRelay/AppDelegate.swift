@@ -3,7 +3,7 @@ import SwiftUI
 import UserNotifications
 import Combine
 
-class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
+class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSWindowDelegate {
     private var statusItem: NSStatusItem!
     private var magnetHandler: MagnetHandler!
     private let notifier = Notifier()
@@ -36,8 +36,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
 
         if let button = statusItem.button {
-            button.image = NSImage(systemSymbolName: "link", accessibilityDescription: "MagnetRelay")
-            button.image?.isTemplate = true  // Adapts to menu bar light/dark mode
+            button.image = MagnetMarkImage.menuBarImage()  // Template: adapts to menu bar appearance
         }
 
         let menu = NSMenu()
@@ -53,7 +52,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         // Recent magnets section
         let recentItems = RecentMagnets.shared.items
         if !recentItems.isEmpty {
-            let headerItem = NSMenuItem(title: "Recent Magnets", action: nil, keyEquivalent: "")
+            let headerItem = NSMenuItem(title: "Recent Links", action: nil, keyEquivalent: "")
             headerItem.isEnabled = false
             menu.addItem(headerItem)
 
@@ -72,13 +71,17 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         }
 
         // Standard menu items
-        menu.addItem(NSMenuItem(title: "Settings...", action: #selector(openSettings), keyEquivalent: ","))
+        menu.addItem(NSMenuItem(title: "Settings…", action: #selector(openSettings), keyEquivalent: ","))
         menu.addItem(NSMenuItem.separator())
         menu.addItem(NSMenuItem(title: "Quit MagnetRelay", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q"))
     }
 
     @objc private func resendMagnet(_ sender: NSMenuItem) {
         guard let magnetURL = sender.representedObject as? String else { return }
+        resend(magnetURL)
+    }
+
+    private func resend(_ magnetURL: String) {
         Task {
             await magnetHandler.handleMagnet(magnetURL)
         }
@@ -136,7 +139,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
             return
         }
 
-        let settingsView = SettingsView()
+        let settingsView = SettingsRootView(resend: { [weak self] in self?.resend($0) })
         let hostingController = NSHostingController(rootView: settingsView)
 
         let window = NSWindow(contentViewController: hostingController)
@@ -145,6 +148,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         window.center()
         window.setFrameAutosaveName("SettingsWindow")
         window.isReleasedWhenClosed = false
+        window.delegate = self
 
         // Ensure window moves to current space and can become key
         window.collectionBehavior = [.moveToActiveSpace, .participatesInCycle]
@@ -162,4 +166,13 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         NSApp.activate(ignoringOtherApps: true)
     }
 
+    // MARK: - NSWindowDelegate
+
+    /// Tear the content down on close so the next open starts fresh (Ready, or step 1 on first run)
+    /// and any in-flight connection test is cancelled.
+    func windowWillClose(_ notification: Notification) {
+        guard let window = notification.object as? NSWindow, window === settingsWindow else { return }
+        window.contentViewController = nil
+        settingsWindow = nil
+    }
 }

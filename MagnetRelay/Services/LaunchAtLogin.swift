@@ -22,6 +22,11 @@ final class LaunchAtLogin: ObservableObject {
         } catch {
             // Fall through: the status re-read below reflects what actually happened.
         }
+        refresh()
+    }
+
+    /// Re-reads the system status (the user may have changed it in System Settings).
+    func refresh() {
         isEnabled = SMAppService.mainApp.status == .enabled
     }
 }

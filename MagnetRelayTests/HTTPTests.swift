@@ -3,8 +3,13 @@ import XCTest
 
 final class FakePasswordStore: PasswordStoring {
     var stored: String?
+    var failsWrites = false
     func password() -> String? { stored }
-    @discardableResult func setPassword(_ p: String) -> Bool { stored = p; return true }
+    @discardableResult func setPassword(_ p: String) -> Bool {
+        if failsWrites { return false }
+        stored = p
+        return true
+    }
 }
 
 final class HTTPTests: XCTestCase {

@@ -43,6 +43,7 @@ struct PoleTipsShape: Shape {
 /// Used at 30pt in the setup header and 56pt on the Ready screen.
 struct MagnetMark: View {
     var size: CGFloat
+    @Environment(\.colorScheme) private var colorScheme
 
     /// The tile colour is fixed: the mark looks the same in both appearances.
     static let tileColor = Color(nsColor: NSColor(hex: "1D1D1F"))
@@ -52,9 +53,13 @@ struct MagnetMark: View {
     var body: some View {
         let glyph = size * Self.glyphFraction
         let style = StrokeStyle(lineWidth: size * 2.6 / 24 * Self.glyphFraction, lineCap: .round, lineJoin: .round)
+        let tile = RoundedRectangle(cornerRadius: size * 0.24, style: .continuous)
         ZStack {
-            RoundedRectangle(cornerRadius: size * 0.24, style: .continuous)
-                .fill(Self.tileColor)
+            tile.fill(Self.tileColor)
+            // In dark mode the tile is close to the window background; a hairline keeps its edge.
+            if colorScheme == .dark {
+                tile.strokeBorder(Color.Relay.hairline, lineWidth: RelayMetrics.hairlineWidth)
+            }
             ZStack {
                 MagnetShape().stroke(Color.white, style: style)
                 PoleTipsShape().stroke(Color.Relay.accent, style: style)
@@ -72,8 +77,9 @@ enum MagnetMarkImage {
         let size = NSSize(width: 18, height: 18)
         let image = NSImage(size: size, flipped: true) { _ in
             guard let context = NSGraphicsContext.current?.cgContext else { return false }
-            // The glyph's inked area spans roughly x 4.7…19.3, y 2.7…19.3 in design units, so map
-            // the design space at 1pt per unit offset by (3, 2): the magnet fills the 18pt canvas.
+            // With the 2.2pt stroke the inked area spans x 4.9…19.1, y 2.9…19.1 in design units.
+            // Mapping the design space at 1pt per unit, shifted by (−3, −2), centres that 14.2×16.2pt
+            // glyph in the 18pt canvas (about 1.9pt clear left/right, 0.9pt top/bottom).
             let designRect = CGRect(x: -3, y: -2, width: 24, height: 24)
             var path = MagnetShape().path(in: designRect)
             path.addPath(PoleTipsShape().path(in: designRect))

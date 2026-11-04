@@ -150,4 +150,20 @@ final class SetupFlowModelTests: XCTestCase {
         XCTAssertTrue(outcomes.isEmpty)
         XCTAssertNil(m.errorMessage)
     }
+
+    func testKeychainFailureOnConnectIsNotSuccess() async {
+        passwords.failsWrites = true
+        config.serverHost = "old"
+        let m = model(.changeServer)
+        m.draft.host = "other"; m.draft.username = "u"; m.draft.password = "p"
+        m.step = .signIn
+        await m.connect()
+        XCTAssertEqual(m.errorMessage, "Couldn't save your password to the Keychain. Try again.")
+        XCTAssertFalse(m.isConnecting)
+        XCTAssertEqual(m.step, .signIn)
+        XCTAssertEqual(config.serverHost, "old")
+        XCTAssertFalse(config.hasCompletedSetup)
+        XCTAssertFalse(config.isCurrentConfigTested)
+        XCTAssertTrue(outcomes.isEmpty)
+    }
 }
