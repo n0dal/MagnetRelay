@@ -131,4 +131,19 @@ final class SetupFlowModelTests: XCTestCase {
         m.draft.clientType = .deluge
         XCTAssertTrue(m.canContinue)
     }
+
+    func testCancelAfterSuccessBeforeResumeDoesNotApply() async {
+        config.serverHost = "old"
+        let m = model(.changeServer)
+        m.draft.host = "other"; m.draft.username = "u"
+        m.step = .signIn
+        let task = Task { await m.connect() }
+        while !m.isConnecting { await Task.yield() }
+        m.cancelConnect()   // client returns immediately and ignores cancellation
+        await task.value
+        XCTAssertEqual(config.serverHost, "old")
+        XCTAssertFalse(config.hasCompletedSetup)
+        XCTAssertTrue(outcomes.isEmpty)
+        XCTAssertNil(m.errorMessage)
+    }
 }

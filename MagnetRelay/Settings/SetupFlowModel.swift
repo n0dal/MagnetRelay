@@ -98,7 +98,7 @@ final class SetupFlowModel: ObservableObject {
         connectTask = task
         do {
             try await task.value
-            guard !task.isCancelled else { return }
+            guard connectTask == task else { return }
             connectTask = nil
             isConnecting = false
             config.apply(draft)
