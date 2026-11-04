@@ -22,7 +22,7 @@ final class DelugeBackend: RemoteClient {
     /// Deluge username is ignored by design; only the password is used.
     private func authenticate(_ endpoint: ServerEndpoint) async throws {
         let result = try await call("auth.login", params: [endpoint.password], endpoint)
-        if let ok = result as? Bool, !ok { throw BackendError.authenticationFailed }
+        guard result as? Bool == true else { throw BackendError.authenticationFailed }
     }
 
     /// The Web UI must be attached to a daemon before core.* calls work.

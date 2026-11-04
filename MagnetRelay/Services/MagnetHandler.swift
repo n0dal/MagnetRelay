@@ -32,7 +32,7 @@ class MagnetHandler {
             )
         } catch {
             // Use user-friendly error message
-            let friendlyMessage = ConnectionError.userFriendlyMessage(from: error)
+            let friendlyMessage = ConnectionError.message(for: error, client: ServerConfig.shared.clientType)
             await showNotification(
                 title: "Failed to Send",
                 body: friendlyMessage,

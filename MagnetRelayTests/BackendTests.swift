@@ -59,6 +59,19 @@ final class BackendTests: XCTestCase {
         } catch { XCTFail("\(error)") }
     }
 
+    func testQBittorrentAddFailsBodyThrows() async {
+        StubURLProtocol.handler = { req in
+            if req.url!.path == "/api/v2/auth/login" { return self.response(req, "Ok.") }
+            return self.response(req, "Fails.")
+        }
+        do {
+            try await QBittorrentBackend(session: StubURLProtocol.session()).addMagnet(M, to: endpoint())
+            XCTFail("expected throw")
+        } catch BackendError.serverError(let m) {
+            XCTAssertEqual(m, "qBittorrent rejected the link")
+        } catch { XCTFail("\(error)") }
+    }
+
     // MARK: Transmission
 
     func testTransmissionSessionHandshake() async throws {
@@ -125,6 +138,15 @@ final class BackendTests: XCTestCase {
             try await DelugeBackend(session: StubURLProtocol.session()).addMagnet(M, to: endpoint())
             XCTFail("expected throw")
         } catch BackendError.daemonNotConnected {
+        } catch { XCTFail("\(error)") }
+    }
+
+    func testDelugeNonBoolLoginThrowsAuth() async {
+        StubURLProtocol.handler = { self.response($0, #"{"result":null,"error":null,"id":1}"#) }
+        do {
+            try await DelugeBackend(session: StubURLProtocol.session()).testConnection(endpoint())
+            XCTFail("expected throw")
+        } catch BackendError.authenticationFailed {
         } catch { XCTFail("\(error)") }
     }
 

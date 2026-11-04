@@ -8,6 +8,9 @@ enum NetworkAddress {
         if h == "localhost" || h.hasSuffix(".local") || h == "::1" { return true }
         if h.hasPrefix("fe8") || h.hasPrefix("fe9") || h.hasPrefix("fea") || h.hasPrefix("feb"), h.contains(":") { return true }
 
+        // Single-label names (e.g. "diskstation") only resolve on the local network.
+        if !h.contains("."), !h.contains(":"), !h.isEmpty { return true }
+
         let parts = h.split(separator: ".", omittingEmptySubsequences: false).map { Int($0) }
         guard parts.count == 4, parts.allSatisfy({ $0 != nil && (0...255).contains($0!) }) else { return false }
         let o = parts.map { $0! }

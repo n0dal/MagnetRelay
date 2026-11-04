@@ -14,7 +14,6 @@ enum BackendError: LocalizedError {
     case insecureConnection
     case daemonNotConnected
     case httpStatus(Int)
-    case encodingFailed
 
     var errorDescription: String? {
         switch self {
@@ -34,8 +33,6 @@ enum BackendError: LocalizedError {
             return "The download client is not connected to its daemon"
         case .httpStatus(let code):
             return "Unexpected response (HTTP \(code))"
-        case .encodingFailed:
-            return "Failed to encode magnet URL"
         }
     }
 }

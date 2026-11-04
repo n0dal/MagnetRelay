@@ -18,10 +18,13 @@ final class QBittorrentBackend: RemoteClient {
         if let cookie { request.setValue(cookie, forHTTPHeaderField: "Cookie") }
         request.httpBody = FormEncoding.encode([("urls", magnet)]).data(using: .utf8)
 
-        let (_, response) = try await session.data(for: request)
+        let (data, response) = try await session.data(for: request)
         guard let http = response as? HTTPURLResponse else { throw BackendError.connectionFailed("No response") }
         if http.statusCode == 403 || http.statusCode == 401 { throw BackendError.authenticationFailed }
         guard (200...299).contains(http.statusCode) else { throw BackendError.httpStatus(http.statusCode) }
+        if String(data: data, encoding: .utf8)?.trimmed == "Fails." {
+            throw BackendError.serverError("qBittorrent rejected the link")
+        }
     }
 
     private func makeRequest(_ url: URL, endpoint: ServerEndpoint) -> URLRequest {

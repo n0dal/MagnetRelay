@@ -323,7 +323,7 @@ struct SettingsView: View {
 
                 await MainActor.run {
                     // Use user-friendly error message
-                    let friendlyMessage = ConnectionError.userFriendlyMessage(from: error)
+                    let friendlyMessage = ConnectionError.message(for: error, client: ServerConfig.shared.clientType)
                     testResult = .failure(friendlyMessage)
                     isTesting = false
                 }
