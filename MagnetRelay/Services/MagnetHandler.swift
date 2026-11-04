@@ -1,60 +1,48 @@
 import Foundation
-import UserNotifications
 
-class MagnetHandler {
-    private let config = ServerConfig.shared
+final class MagnetHandler {
+    private let config: ServerConfig
+    private let recent: RecentMagnets
+    private let notifier: Notifying
+    private let clientFactory: (ClientType) -> RemoteClient
+    private let openSettings: () -> Void
 
-    func handleMagnet(_ magnetURL: String) async {
-        guard let endpoint = config.endpoint() else {
-            await showNotification(
-                title: "MagnetRelay",
-                body: "No server configured. Open Settings to set up.",
-                isError: true
-            )
-            return
-        }
-
-        let backend = BackendFactory.create(for: config.clientType)
-
-        do {
-            // Use retry logic for transient failures
-            try await BackendSession.withRetry {
-                try await backend.addMagnet(magnetURL, to: endpoint)
-            }
-
-            // Save to recent magnets on success
-            RecentMagnets.shared.add(magnetURL)
-
-            await showNotification(
-                title: "Magnet Sent",
-                body: "Sent to \(config.clientType.displayName)",
-                isError: false
-            )
-        } catch {
-            // Use user-friendly error message
-            let friendlyMessage = ConnectionError.message(for: error, client: ServerConfig.shared.clientType)
-            await showNotification(
-                title: "Failed to Send",
-                body: friendlyMessage,
-                isError: true
-            )
-        }
+    init(config: ServerConfig = .shared,
+         recent: RecentMagnets = .shared,
+         notifier: Notifying,
+         clientFactory: @escaping (ClientType) -> RemoteClient = { BackendFactory.create(for: $0) },
+         openSettings: @escaping () -> Void) {
+        self.config = config
+        self.recent = recent
+        self.notifier = notifier
+        self.clientFactory = clientFactory
+        self.openSettings = openSettings
     }
 
-    private func showNotification(title: String, body: String, isError: Bool) async {
-        guard config.showNotifications else { return }
+    func handleMagnet(_ magnetURL: String) async {
+        let magnet = magnetURL.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard MagnetLink.isMagnet(magnet) else { return }
 
-        let content = UNMutableNotificationContent()
-        content.title = title
-        content.body = body
-        content.sound = isError ? .defaultCritical : .default
+        // Capture everything up front so a settings change mid-send can't mislabel the result.
+        let client = config.clientType
+        guard config.isConfigured, let endpoint = config.endpoint() else {
+            await notifier.post(title: "MagnetRelay", body: "Set up MagnetRelay to start sending links.")
+            await MainActor.run { openSettings() }
+            return
+        }
+        let notifyOnSuccess = config.showNotifications
+        let backend = clientFactory(client)
 
-        let request = UNNotificationRequest(
-            identifier: UUID().uuidString,
-            content: content,
-            trigger: nil
-        )
-
-        try? await UNUserNotificationCenter.current().add(request)
+        do {
+            try await BackendSession.withRetry {
+                try await backend.addMagnet(magnet, to: endpoint)
+            }
+            await MainActor.run { recent.add(magnet) }
+            if notifyOnSuccess {
+                await notifier.post(title: "Sent to \(client.displayName)", body: MagnetLink.displayName(from: magnet))
+            }
+        } catch {
+            await notifier.post(title: "Couldn't send link", body: ConnectionError.message(for: error, client: client))
+        }
     }
 }

@@ -6,6 +6,7 @@ import Combine
 class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     private var statusItem: NSStatusItem!
     private var magnetHandler: MagnetHandler!
+    private let notifier = Notifier()
     private var settingsWindow: NSWindow?
     private var cancellables = Set<AnyCancellable>()
 
@@ -15,6 +16,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     }
 
     func applicationDidFinishLaunching(_ notification: Notification) {
+        UNUserNotificationCenter.current().delegate = notifier
         setupEditMenu()
         setupStatusBar()
         requestNotificationPermission()
@@ -80,7 +82,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     }
 
     private func setupURLHandler() {
-        magnetHandler = MagnetHandler()
+        magnetHandler = MagnetHandler(notifier: notifier, openSettings: { [weak self] in self?.openSettings() })
 
         NSAppleEventManager.shared().setEventHandler(
             self,
