@@ -119,14 +119,14 @@ class ServerConfig: ObservableObject {
                         path: serverPath, username: username, password: passwords.password() ?? "")
     }
 
-    func apply(_ draft: ConnectionDraft) {
+    func apply(_ draft: ConnectionDraft, savePassword: Bool = true) {
         clientType = draft.clientType
         serverHost = draft.host
         serverPort = draft.port
         useHTTPS = draft.useHTTPS
         serverPath = draft.path
         username = draft.username
-        passwords.setPassword(draft.password)
+        if savePassword { passwords.setPassword(draft.password) }
     }
 
     func endpoint() -> ServerEndpoint? { draft().endpoint() }
