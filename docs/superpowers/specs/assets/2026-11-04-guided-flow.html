@@ -1,0 +1,105 @@
+<style>
+  .row{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:26px;align-items:start}
+  .cap{font-size:12px;opacity:.7;margin:0 0 8px;text-transform:uppercase;letter-spacing:.06em}
+  .win{--bg:#F6F5F3;--card:#FFFFFF;--ink:#1D1D1F;--sub:#6E6E73;--line:rgba(0,0,0,.09);--acc:#E5484D;--ok:#2DA44E;
+       font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text",system-ui,sans-serif;background:var(--bg);color:var(--ink);
+       border-radius:12px;overflow:hidden;box-shadow:0 0 0 .5px rgba(0,0,0,.25),0 18px 50px rgba(0,0,0,.18);height:430px;display:flex;flex-direction:column}
+  .tb{height:28px;display:flex;gap:8px;align-items:center;padding:0 12px;flex:none}
+  .tb i{width:12px;height:12px;border-radius:50%;display:block;background:#ff5f57}.tb i+i{background:#febc2e}.tb i+i+i{background:#28c840}
+  .pad{padding:6px 24px 22px;flex:1;display:flex;flex-direction:column}
+  .brand{display:flex;align-items:center;gap:10px}
+  .mark{width:30px;height:30px;border-radius:8px;background:#1D1D1F;display:grid;place-items:center;flex:none}
+  .mark.lg{width:56px;height:56px;border-radius:14px}
+  .bn{font-size:13px;font-weight:600}
+  .steps{display:flex;gap:6px;margin-left:auto;width:90px}.steps i{height:3px;flex:1;border-radius:2px;background:#E2E1DE}.steps i.on{background:var(--acc)}
+  .h{font-size:22px;font-weight:600;letter-spacing:-.02em;margin:22px 0 4px}
+  .p{font-size:13px;color:var(--sub);line-height:1.45}
+  .tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:18px}
+  .tile{background:var(--card);border-radius:10px;box-shadow:0 0 0 .5px var(--line);height:62px;display:flex;align-items:flex-end;padding:10px;font-size:13px;font-weight:500}
+  .tile.on{box-shadow:0 0 0 2px var(--acc)}
+  .group{background:var(--card);border-radius:10px;box-shadow:0 0 0 .5px var(--line);margin-top:18px}
+  .r{display:flex;align-items:center;justify-content:space-between;height:40px;padding:0 14px;font-size:13px;border-top:.5px solid var(--line)}
+  .r:first-child{border-top:0}.r .v{color:var(--sub)}.r .v.in{color:var(--ink)}
+  .sw{width:30px;height:18px;border-radius:9px;background:#D9D8D5;position:relative}.sw:after{content:"";position:absolute;left:2px;top:2px;width:14px;height:14px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.2)}
+  .sw.on{background:var(--ok)}.sw.on:after{left:14px}
+  .more{font-size:12.5px;color:var(--sub);margin:10px 2px 0}
+  .foot{display:flex;justify-content:space-between;align-items:center;margin-top:auto;font-size:13px;color:var(--sub)}
+  .btn{height:32px;border-radius:8px;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;padding:0 18px}
+  .ghost{color:var(--ink)}
+  .err{display:flex;gap:8px;margin-top:12px;font-size:12.5px;line-height:1.4;color:var(--ink)}
+  .err i{width:7px;height:7px;border-radius:50%;background:var(--acc);margin-top:5px;flex:none}
+  .ready{text-align:center;display:flex;flex-direction:column;align-items:center;margin-top:18px}
+  .status{display:inline-flex;align-items:center;gap:7px;font-size:12px;color:var(--sub);background:var(--card);box-shadow:0 0 0 .5px var(--line);border-radius:20px;padding:4px 10px;margin-top:14px}
+  .dot{width:7px;height:7px;border-radius:50%;background:var(--ok)}
+  .recent{margin-top:auto}
+  .recent .r{height:34px;font-size:12.5px}
+</style>
+
+<h2>C · Guided, then gone — with the magnet mark</h2>
+<p class="subtitle">The full first-run flow, then what you see every time after. The mark (black tile, white magnet, red pole tips) leads every screen and would become the new app icon.</p>
+
+<div class="row">
+
+<div>
+  <p class="cap">1 · Client</p>
+  <div class="win"><div class="tb"><i></i><i></i><i></i></div><div class="pad">
+    <div class="brand"><div class="mark"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round"><path d="M6 4v8a6 6 0 0 0 12 0V4"/><path d="M6 4h3M15 4h3" stroke="#E5484D"/></svg></div><span class="bn">MagnetRelay</span><div class="steps"><i class="on"></i><i></i><i></i></div></div>
+    <div class="h">Which app runs your downloads?</div>
+    <div class="p">Pick the one on your server or NAS. You can change it later.</div>
+    <div class="tiles">
+      <div class="tile on">qBittorrent</div><div class="tile">Transmission</div><div class="tile">Deluge</div>
+      <div class="tile">rTorrent</div><div class="tile">Synology</div>
+    </div>
+    <div class="foot"><span>Step 1 of 3</span><div class="btn">Continue</div></div>
+  </div></div>
+</div>
+
+<div>
+  <p class="cap">2 · Address</p>
+  <div class="win"><div class="tb"><i></i><i></i><i></i></div><div class="pad">
+    <div class="brand"><div class="mark"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round"><path d="M6 4v8a6 6 0 0 0 12 0V4"/><path d="M6 4h3M15 4h3" stroke="#E5484D"/></svg></div><span class="bn">MagnetRelay</span><div class="steps"><i class="on"></i><i class="on"></i><i></i></div></div>
+    <div class="h">Where is qBittorrent?</div>
+    <div class="p">The address you'd type in a browser to open its web page.</div>
+    <div class="group">
+      <div class="r"><span>Address</span><span class="v in">192.168.0.100</span></div>
+      <div class="r"><span>Port</span><span class="v in">8080</span></div>
+      <div class="r"><span>Use HTTPS</span><span class="sw"></span></div>
+    </div>
+    <div class="more">Behind a reverse proxy? <u>Add a path</u></div>
+    <div class="foot"><span class="ghost">Back</span><div class="btn">Continue</div></div>
+  </div></div>
+</div>
+
+<div>
+  <p class="cap">3 · Sign in (failed attempt shown)</p>
+  <div class="win"><div class="tb"><i></i><i></i><i></i></div><div class="pad">
+    <div class="brand"><div class="mark"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round"><path d="M6 4v8a6 6 0 0 0 12 0V4"/><path d="M6 4h3M15 4h3" stroke="#E5484D"/></svg></div><span class="bn">MagnetRelay</span><div class="steps"><i class="on"></i><i class="on"></i><i class="on"></i></div></div>
+    <div class="h">Sign in to qBittorrent</div>
+    <div class="p">The same login you use on its web page. Saved in your Keychain.</div>
+    <div class="group">
+      <div class="r"><span>Username</span><span class="v in">admin</span></div>
+      <div class="r"><span>Password</span><span class="v in">••••••••</span></div>
+    </div>
+    <div class="err"><i></i><span>qBittorrent said the username or password is wrong. Check them on its web page and try again.</span></div>
+    <div class="foot"><span class="ghost">Back</span><div class="btn">Connect</div></div>
+  </div></div>
+</div>
+
+<div>
+  <p class="cap">Every time after · Ready</p>
+  <div class="win"><div class="tb"><i></i><i></i><i></i></div><div class="pad">
+    <div class="ready">
+      <div class="mark lg"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round"><path d="M6 4v8a6 6 0 0 0 12 0V4"/><path d="M6 4h3M15 4h3" stroke="#E5484D"/></svg></div>
+      <div class="h" style="margin-top:14px">You're all set.</div>
+      <div class="p">Click any magnet link and it goes to your server.</div>
+      <div class="status"><span class="dot"></span>qBittorrent · 192.168.0.100:8080 · checked 2 min ago</div>
+    </div>
+    <div class="group" style="margin-top:20px">
+      <div class="r"><span>Open at login</span><span class="sw on"></span></div>
+      <div class="r"><span>Notify when a link is sent</span><span class="sw on"></span></div>
+    </div>
+    <div class="foot" style="margin-top:auto;padding-top:14px"><span class="ghost">Recent links ›</span><div class="btn" style="background:#fff;color:#1D1D1F;box-shadow:0 0 0 .5px rgba(0,0,0,.15)">Change server</div></div>
+  </div></div>
+</div>
+
+</div>
