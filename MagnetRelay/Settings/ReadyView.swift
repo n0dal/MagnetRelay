@@ -10,7 +10,7 @@ struct ReadyView: View {
     @State private var showsRecent = false
 
     private static let privacyURL = URL(string: "https://github.com/n0dal/MagnetRelay/blob/main/PRIVACY.md")!
-    private static let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? ""
+    private static let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
 
     var body: some View {
         VStack(spacing: 0) {
@@ -74,8 +74,10 @@ struct ReadyView: View {
 
             HStack(spacing: 4) {
                 Link("Privacy Policy", destination: Self.privacyURL)
-                Text("·")
-                Text("v\(Self.version)")
+                if let version = Self.version, !version.isEmpty {
+                    Text("·")
+                    Text("v\(version)")
+                }
             }
             .font(.system(size: 11))
             .foregroundStyle(Color.Relay.secondary)

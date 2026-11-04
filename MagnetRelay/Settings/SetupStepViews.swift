@@ -150,10 +150,10 @@ private struct AddressStepView: View {
                         subtitle: "The address you'd type in a browser to open its web page.")
             RelayCard {
                 RelayRow(title: "Address") {
-                    RowTextField(placeholder: "192.168.0.100", text: $model.draft.host)
+                    RowTextField(label: "Address", placeholder: "192.168.0.100", text: $model.draft.host)
                 }
                 RelayRow(title: "Port") {
-                    RowTextField(placeholder: model.draft.clientType.defaultPort(https: model.draft.useHTTPS),
+                    RowTextField(label: "Port", placeholder: model.draft.clientType.defaultPort(https: model.draft.useHTTPS),
                                  text: portBinding)
                 }
                 RelayRow(title: "Use HTTPS") {
@@ -165,7 +165,7 @@ private struct AddressStepView: View {
                 }
                 if model.showsPath {
                     RelayRow(title: "Path") {
-                        RowTextField(placeholder: model.draft.clientType == .rtorrent ? "/RPC2" : "/qbittorrent",
+                        RowTextField(label: "Path", placeholder: model.draft.clientType == .rtorrent ? "/RPC2" : "/qbittorrent",
                                      text: $model.draft.path)
                     }
                 }
@@ -222,14 +222,14 @@ private struct SignInStepView: View {
             RelayCard {
                 if !isDeluge {
                     RelayRow(title: "Username") {
-                        RowTextField(placeholder: "admin", text: $model.draft.username)
+                        RowTextField(label: "Username", placeholder: "admin", text: $model.draft.username)
                     }
                 }
                 RelayRow(title: "Password") {
                     HStack(spacing: 6) {
                         Group {
                             if showsPassword {
-                                RowTextField(placeholder: "Required", text: $model.draft.password)
+                                RowTextField(label: "Password", placeholder: "Required", text: $model.draft.password)
                             } else {
                                 SecureField("Required", text: $model.draft.password)
                                     .textFieldStyle(.plain)
@@ -275,6 +275,8 @@ private struct SignInStepView: View {
 
 /// A plain, right-aligned text field for the trailing side of a `RelayRow`.
 private struct RowTextField: View {
+    /// What VoiceOver reads (the row title), rather than the placeholder.
+    let label: String
     let placeholder: String
     @Binding var text: String
 
@@ -285,6 +287,7 @@ private struct RowTextField: View {
             .foregroundStyle(Color.Relay.ink)
             .autocorrectionDisabled()
             .frame(maxWidth: 240)
+            .accessibilityLabel(label)
     }
 }
 

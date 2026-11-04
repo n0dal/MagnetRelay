@@ -173,6 +173,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSWindowDele
     func windowWillClose(_ notification: Notification) {
         guard let window = notification.object as? NSWindow, window === settingsWindow else { return }
         window.contentViewController = nil
+        // Free the autosave name (the frame is already saved) so the next window can claim it.
+        window.setFrameAutosaveName("")
         settingsWindow = nil
     }
 }
