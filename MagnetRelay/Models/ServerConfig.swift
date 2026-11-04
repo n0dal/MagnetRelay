@@ -41,13 +41,13 @@ enum ClientType: String, CaseIterable, Identifiable, Codable {
         }
     }
 
-    var defaultPort: String {
+    func defaultPort(https: Bool) -> String {
         switch self {
         case .qbittorrent: return "8080"
         case .transmission: return "9091"
         case .deluge: return "8112"
         case .rtorrent: return "8080"
-        case .synology: return "5000"
+        case .synology: return https ? "5001" : "5000"
         }
     }
 
@@ -71,6 +71,7 @@ class ServerConfig: ObservableObject {
     @AppStorage("useHTTPS") var useHTTPS: Bool = false
     @AppStorage("serverHost") var serverHost: String = ""
     @AppStorage("serverPort") var serverPort: String = "8080"
+    @AppStorage("serverPath") var serverPath: String = ""
     @AppStorage("username") var username: String = ""
     @AppStorage("launchAtLogin") var launchAtLogin: Bool = false
     @AppStorage("showNotifications") var showNotifications: Bool = true
@@ -81,9 +82,58 @@ class ServerConfig: ObservableObject {
     // Stores the config fingerprint when connection was last tested
     @AppStorage("lastTestedConfigHash") var lastTestedConfigHash: String = ""
 
-    /// Fingerprint of current connection settings (client, host, port, https, username)
+    private let passwords: PasswordStoring
+    private var defaultsObserver: NSObjectProtocol?
+
+    init(store: UserDefaults = .standard, passwords: PasswordStoring = KeychainPasswordStore()) {
+        self.passwords = passwords
+        _clientType = AppStorage(wrappedValue: .qbittorrent, "clientType", store: store)
+        _useHTTPS = AppStorage(wrappedValue: false, "useHTTPS", store: store)
+        _serverHost = AppStorage(wrappedValue: "", "serverHost", store: store)
+        _serverPort = AppStorage(wrappedValue: "8080", "serverPort", store: store)
+        _serverPath = AppStorage(wrappedValue: "", "serverPath", store: store)
+        _username = AppStorage(wrappedValue: "", "username", store: store)
+        _launchAtLogin = AppStorage(wrappedValue: false, "launchAtLogin", store: store)
+        _showNotifications = AppStorage(wrappedValue: true, "showNotifications", store: store)
+        _hasCompletedSetup = AppStorage(wrappedValue: false, "hasCompletedSetup", store: store)
+        _lastConnectedAt = AppStorage(wrappedValue: 0, "lastConnectedAt", store: store)
+        _bannerDismissed = AppStorage(wrappedValue: false, "bannerDismissed", store: store)
+        _lastTestedConfigHash = AppStorage(wrappedValue: "", "lastTestedConfigHash", store: store)
+
+        // @AppStorage inside an ObservableObject doesn't publish changes on its own.
+        defaultsObserver = NotificationCenter.default.addObserver(
+            forName: UserDefaults.didChangeNotification, object: store, queue: .main
+        ) { [weak self] _ in
+            self?.objectWillChange.send()
+        }
+    }
+
+    deinit {
+        if let o = defaultsObserver { NotificationCenter.default.removeObserver(o) }
+    }
+
+    var isConfigured: Bool { !serverHost.trimmed.isEmpty }
+
+    func draft() -> ConnectionDraft {
+        ConnectionDraft(clientType: clientType, host: serverHost, port: serverPort, useHTTPS: useHTTPS,
+                        path: serverPath, username: username, password: passwords.password() ?? "")
+    }
+
+    func apply(_ draft: ConnectionDraft) {
+        clientType = draft.clientType
+        serverHost = draft.host
+        serverPort = draft.port
+        useHTTPS = draft.useHTTPS
+        serverPath = draft.path
+        username = draft.username
+        passwords.setPassword(draft.password)
+    }
+
+    func endpoint() -> ServerEndpoint? { draft().endpoint() }
+
+    /// Fingerprint of current connection settings (client, host, port, https, path, username)
     var currentConfigHash: String {
-        "\(clientType.rawValue)|\(serverHost)|\(serverPort)|\(useHTTPS)|\(username)"
+        "\(clientType.rawValue)|\(serverHost)|\(serverPort)|\(useHTTPS)|\(serverPath)|\(username)"
     }
 
     /// Whether the current config matches the last successfully tested config
@@ -111,24 +161,6 @@ class ServerConfig: ObservableObject {
         return formatter.localizedString(for: date, relativeTo: Date())
     }
 
-    // Legacy support - computed property
-    var serverURL: String {
-        get {
-            let proto = useHTTPS ? "https" : "http"
-            let port = serverPort.isEmpty ? "" : ":\(serverPort)"
-            return "\(proto)://\(serverHost)\(port)"
-        }
-        set {
-            // Parse URL for backwards compatibility
-            if let url = URL(string: newValue) {
-                useHTTPS = url.scheme == "https"
-                serverHost = url.host ?? ""
-                if let port = url.port {
-                    serverPort = String(port)
-                }
-            }
-        }
-    }
-
-    private init() {}
+    // TEMP: removed in Task 3
+    var serverURL: String { endpoint()?.baseURL.absoluteString ?? "" }
 }

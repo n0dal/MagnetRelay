@@ -50,9 +50,9 @@ struct SettingsView: View {
         }
         .onChange(of: config.clientType) { newValue in
             // Update port to client default if port is empty or matches another client's default
-            let allDefaults = ClientType.allCases.map { $0.defaultPort }
+            let allDefaults = ClientType.allCases.map { $0.defaultPort(https: false) }
             if config.serverPort.isEmpty || allDefaults.contains(config.serverPort) {
-                config.serverPort = newValue.defaultPort
+                config.serverPort = newValue.defaultPort(https: false)
             }
         }
         .sheet(isPresented: $showPreferences) {

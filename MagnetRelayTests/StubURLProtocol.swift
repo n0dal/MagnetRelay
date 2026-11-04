@@ -1,12 +1,27 @@
 import Foundation
 
 final class StubURLProtocol: URLProtocol {
-    static var handler: ((URLRequest) throws -> (HTTPURLResponse, Data))?
-    static private(set) var requests: [URLRequest] = []
+    private static let lock = NSLock()
+    private static var _handler: ((URLRequest) throws -> (HTTPURLResponse, Data))?
+    private static var _requests: [URLRequest] = []
+
+    static var handler: ((URLRequest) throws -> (HTTPURLResponse, Data))? {
+        get { lock.lock(); defer { lock.unlock() }; return _handler }
+        set { lock.lock(); defer { lock.unlock() }; _handler = newValue }
+    }
+
+    static var requests: [URLRequest] {
+        lock.lock(); defer { lock.unlock() }; return _requests
+    }
+
+    private static func record(_ r: URLRequest) {
+        lock.lock(); defer { lock.unlock() }; _requests.append(r)
+    }
 
     static func reset() {
-        handler = nil
-        requests = []
+        lock.lock(); defer { lock.unlock() }
+        _handler = nil
+        _requests = []
     }
 
     static func session() -> URLSession {
@@ -32,7 +47,7 @@ final class StubURLProtocol: URLProtocol {
             stream.close()
             recorded.httpBody = data
         }
-        StubURLProtocol.requests.append(recorded)
+        StubURLProtocol.record(recorded)
 
         guard let handler = StubURLProtocol.handler else {
             client?.urlProtocol(self, didFailWithError: URLError(.badServerResponse))
