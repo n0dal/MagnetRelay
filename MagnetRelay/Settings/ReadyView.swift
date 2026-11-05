@@ -86,7 +86,7 @@ struct ReadyView: View {
             .padding(.top, 12)
         }
         .padding(.horizontal, RelayMetrics.gutter)
-        .padding(.top, 6)
+        .padding(.top, RelayMetrics.panelTopInset)
         .padding(.bottom, 16)
         .onAppear { launchAtLogin.refresh() }
     }

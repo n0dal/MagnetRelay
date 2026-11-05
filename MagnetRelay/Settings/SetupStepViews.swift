@@ -24,7 +24,7 @@ struct SetupFlowView: View {
             footer
         }
         .padding(.horizontal, RelayMetrics.gutter)
-        .padding(.top, 6)
+        .padding(.top, RelayMetrics.panelTopInset)
         .padding(.bottom, 22)
         .onDisappear { model.cancelConnect() }
     }

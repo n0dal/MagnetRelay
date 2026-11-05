@@ -6,7 +6,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSWindowDele
     private var statusItem: NSStatusItem!
     private var magnetHandler: MagnetHandler!
     private let notifier = Notifier()
-    private var settingsWindow: NSWindow?
+    private var settingsWindow: SettingsPanel?
+    /// The screen the settings panel shows; decides whether clicking away closes it.
+    private var settingsScreen: SettingsScreen = .ready
 
     func applicationWillFinishLaunching(_ notification: Notification) {
         // URL handler MUST be registered early to catch URLs on cold launch
@@ -18,8 +20,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSWindowDele
         if ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil { return }
 
         UNUserNotificationCenter.current().delegate = notifier
-        setupEditMenu()
+        setupMainMenu()
         setupStatusBar()
+        observeAppDeactivation()
         requestNotificationPermission()
 
         // Show settings on first launch
@@ -100,9 +103,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSWindowDele
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound]) { _, _ in }
     }
 
-    /// Add a hidden Edit menu so standard keyboard shortcuts (Cmd+C/V/X/A) work in text fields.
-    /// `.commandsRemoved()` in the SwiftUI scene strips all menus including Edit.
-    private func setupEditMenu() {
+    /// Add a hidden Edit menu so standard keyboard shortcuts (Cmd+C/V/X/A) work in text fields,
+    /// and a hidden Window menu for ⌘W (Close). `.commandsRemoved()` in the SwiftUI scene strips
+    /// all menus including Edit.
+    private func setupMainMenu() {
         let editMenu = NSMenu(title: "Edit")
         editMenu.addItem(withTitle: "Cut", action: #selector(NSText.cut(_:)), keyEquivalent: "x")
         editMenu.addItem(withTitle: "Copy", action: #selector(NSText.copy(_:)), keyEquivalent: "c")
@@ -112,10 +116,30 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSWindowDele
         let editMenuItem = NSMenuItem()
         editMenuItem.submenu = editMenu
 
+        let windowMenu = NSMenu(title: "Window")
+        windowMenu.addItem(withTitle: "Close", action: #selector(NSWindow.performClose(_:)), keyEquivalent: "w")
+
+        let windowMenuItem = NSMenuItem()
+        windowMenuItem.submenu = windowMenu
+
         if NSApp.mainMenu == nil {
             NSApp.mainMenu = NSMenu()
         }
         NSApp.mainMenu?.addItem(editMenuItem)
+        NSApp.mainMenu?.addItem(windowMenuItem)
+    }
+
+    /// Clicking away (another app or the desktop) closes the panel, but only on the Ready screen.
+    /// Key-window changes inside the app (e.g. the Recent links popover) don't resign active.
+    private func observeAppDeactivation() {
+        NotificationCenter.default.addObserver(
+            self, selector: #selector(appDidResignActive), name: NSApplication.didResignActiveNotification, object: nil
+        )
+    }
+
+    @objc private func appDidResignActive() {
+        guard let window = settingsWindow, window.isVisible, settingsScreen.closesWhenAppDeactivates else { return }
+        window.performClose(nil)
     }
 
     @objc private func handleURLEvent(_ event: NSAppleEventDescriptor, withReply reply: NSAppleEventDescriptor) {
@@ -137,19 +161,18 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSWindowDele
             return
         }
 
-        let settingsView = SettingsRootView(resend: { [weak self] in self?.resend($0) })
+        settingsScreen = ServerConfig.shared.hasCompletedSetup ? .ready : .setup
+        let settingsView = SettingsRootView(
+            resend: { [weak self] in self?.resend($0) },
+            close: { [weak self] in self?.settingsWindow?.performClose(nil) },
+            onScreenChange: { [weak self] in self?.settingsScreen = $0 }
+        )
         let hostingController = NSHostingController(rootView: settingsView)
 
-        let window = NSWindow(contentViewController: hostingController)
-        window.title = "MagnetRelay"
-        window.styleMask = [.titled, .closable]
+        // Borderless floating panel, centred each time it opens (Spotlight style).
+        let window = SettingsPanel(contentViewController: hostingController)
         window.center()
-        window.setFrameAutosaveName("SettingsWindow")
-        window.isReleasedWhenClosed = false
         window.delegate = self
-
-        // Ensure window moves to current space and can become key
-        window.collectionBehavior = [.moveToActiveSpace, .participatesInCycle]
 
         self.settingsWindow = window
         bringWindowToFront(window)
@@ -171,8 +194,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSWindowDele
     func windowWillClose(_ notification: Notification) {
         guard let window = notification.object as? NSWindow, window === settingsWindow else { return }
         window.contentViewController = nil
-        // Free the autosave name (the frame is already saved) so the next window can claim it.
-        window.setFrameAutosaveName("")
         settingsWindow = nil
+        settingsScreen = .ready
     }
 }

@@ -10,7 +10,7 @@ MagnetRelay is a menu bar app (`LSUIElement`), Swift 5.9 and SwiftUI, macOS 13+.
 | `MagnetRelay/AppDelegate.swift` | Menu bar item, the `magnet:` URL event handler, the settings window. |
 | `MagnetRelay/MagnetRelayApp.swift` | App entry point. |
 | `MagnetRelay/Design/` | `Theme.swift` (the `Relay` colour and type tokens), `MagnetMark.swift` (the mark), `Controls.swift` (buttons, cards, tiles). |
-| `MagnetRelay/Settings/` | The window: `SettingsRootView`, `SetupStepViews` (client, address, sign in), `ReadyView`, `RecentLinksView`, and `SetupFlowModel` (step state and the draft config). |
+| `MagnetRelay/Settings/` | The window: `SettingsPanel` (borderless panel; Esc, ⌘W, or clicking away on Ready closes it), `SettingsRootView`, `SetupStepViews` (client, address, sign in), `ReadyView`, `RecentLinksView`, and `SetupFlowModel` (step state and the draft config). |
 | `MagnetRelay/Models/ServerConfig.swift` | Saved server settings, plus the draft used by "Change server". |
 | `MagnetRelay/Backends/` | One file per client behind the `RemoteClient` protocol, plus shared URL and form helpers in `HTTP.swift`. |
 | `MagnetRelay/Services/` | `MagnetHandler` (send flow), `MagnetLink`, `Notifier`, `ConnectionError`, `NetworkAddress`, `KeychainService`, `LaunchAtLogin`, `RecentMagnets`. |

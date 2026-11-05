@@ -1,0 +1,105 @@
+import XCTest
+import AppKit
+@testable import MagnetRelay
+
+private final class CloseRecorder: NSObject, NSWindowDelegate {
+    var allowsClose = true
+    var closes = 0
+    func windowShouldClose(_ sender: NSWindow) -> Bool { allowsClose }
+    func windowWillClose(_ notification: Notification) { closes += 1 }
+}
+
+@MainActor
+final class SettingsPanelTests: XCTestCase {
+    private var panel: SettingsPanel!
+    private var recorder: CloseRecorder!
+
+    override func setUp() {
+        panel = SettingsPanel(contentViewController: NSViewController(nibName: nil, bundle: nil))
+        panel.contentViewController?.view = NSView(frame: NSRect(origin: .zero, size: RelayMetrics.windowSize))
+        recorder = CloseRecorder()
+        panel.delegate = recorder
+        panel.orderFront(nil)
+    }
+
+    override func tearDown() {
+        panel.delegate = nil
+        panel.orderOut(nil)
+        panel = nil
+    }
+
+    private func key(_ chars: String, code: UInt16, mods: NSEvent.ModifierFlags = []) -> NSEvent {
+        NSEvent.keyEvent(with: .keyDown, location: .zero, modifierFlags: mods, timestamp: 0,
+                         windowNumber: panel.windowNumber, context: nil, characters: chars,
+                         charactersIgnoringModifiers: chars, isARepeat: false, keyCode: code)!
+    }
+
+    // MARK: Click-away policy
+
+    func testClickAwayClosesOnlyOnReady() {
+        XCTAssertTrue(SettingsScreen.ready.closesWhenAppDeactivates)
+        XCTAssertFalse(SettingsScreen.setup.closesWhenAppDeactivates)
+    }
+
+    // MARK: Panel setup
+
+    func testIsBorderlessNormalLevelAndCanBecomeKey() {
+        XCTAssertEqual(panel.styleMask, [.borderless])
+        XCTAssertFalse(panel.styleMask.contains(.titled))
+        XCTAssertTrue(panel.canBecomeKey)
+        XCTAssertTrue(panel.canBecomeMain)
+        XCTAssertEqual(panel.level, .normal)
+        XCTAssertFalse(panel.hidesOnDeactivate)
+        XCTAssertFalse(panel.isFloatingPanel)
+        XCTAssertFalse(panel.isOpaque)
+        XCTAssertTrue(panel.hasShadow)
+        XCTAssertFalse(panel.isReleasedWhenClosed)
+        XCTAssertEqual(panel.frame.size, RelayMetrics.windowSize)
+    }
+
+    // MARK: Closing
+
+    func testPerformCloseClosesDespiteNoCloseButton() {
+        panel.performClose(nil)
+        XCTAssertEqual(recorder.closes, 1)
+        XCTAssertFalse(panel.isVisible)
+    }
+
+    func testPerformCloseRespectsWindowShouldClose() {
+        recorder.allowsClose = false
+        panel.performClose(nil)
+        XCTAssertEqual(recorder.closes, 0)
+        XCTAssertTrue(panel.isVisible)
+    }
+
+    func testCancelOperationCloses() {
+        panel.cancelOperation(nil)
+        XCTAssertEqual(recorder.closes, 1)
+    }
+
+    func testEscapeKeyCloses() {
+        panel.sendEvent(key("\u{1b}", code: 53))
+        XCTAssertEqual(recorder.closes, 1)
+    }
+
+    func testEscapeWithModifierOrOtherKeysDoNotClose() {
+        XCTAssertFalse(SettingsPanel.isPlainEscape(key("\u{1b}", code: 53, mods: .shift)))
+        XCTAssertFalse(SettingsPanel.isPlainEscape(key("a", code: 0)))
+        XCTAssertTrue(SettingsPanel.isPlainEscape(key("\u{1b}", code: 53)))
+        panel.sendEvent(key("a", code: 0))
+        XCTAssertEqual(recorder.closes, 0)
+    }
+
+    func testCloseMenuItemIsEnabled() {
+        let item = NSMenuItem(title: "Close", action: #selector(NSWindow.performClose(_:)), keyEquivalent: "w")
+        XCTAssertTrue(panel.validateMenuItem(item))
+    }
+
+    func testCommandWClosesThroughMenu() {
+        let menu = NSMenu()
+        let item = menu.addItem(withTitle: "Close", action: #selector(NSWindow.performClose(_:)), keyEquivalent: "w")
+        item.target = panel
+        XCTAssertTrue(menu.performKeyEquivalent(with: key("w", code: 13, mods: .command)))
+        XCTAssertEqual(recorder.closes, 1)
+    }
+}

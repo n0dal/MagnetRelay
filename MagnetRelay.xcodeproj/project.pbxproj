@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0C071639F0B16DE00E24A126 /* SettingsPanelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDB5F0A64AC8AACAD6E35545 /* SettingsPanelTests.swift */; };
 		0E708630F0EB7A5ADAC8D029 /* KeychainService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5C9D37721B2AB041A7E4AC2 /* KeychainService.swift */; };
 		19106B309B28CEC5A052A4C7 /* MagnetRelayApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EE326CE8F096CD6E93D0DEF /* MagnetRelayApp.swift */; };
 		1BDFBA63BF390396440A1B6B /* HTTP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F07FE4A22F0A382B1445B9F /* HTTP.swift */; };
@@ -15,6 +16,7 @@
 		322FD3C1B940184A9DB1FE1C /* SetupFlowModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F610687024014E2783313B8 /* SetupFlowModelTests.swift */; };
 		3DD9554AD7BAD483F696262C /* MagnetLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD905FB39951D50FACF5A34C /* MagnetLink.swift */; };
 		3F3172F7ABA9609FB8C243BE /* Controls.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACD2B010C5B121C8754BAFAD /* Controls.swift */; };
+		4458821D9DD1032DA18A2CC2 /* SettingsPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 059E790ED4393B029536850E /* SettingsPanel.swift */; };
 		4C36E0BF99DFCE997A7D846C /* SetupStepViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15675763B48B25BC57DEEA98 /* SetupStepViews.swift */; };
 		4D2454FD4CCEF2D4A22A20AE /* MagnetLinkTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84E4D67A20C567767389DFA2 /* MagnetLinkTests.swift */; };
 		4FF62B07B21A2CA203CF29FE /* SetupFlowModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A8359976793DE94E8C1C8F1 /* SetupFlowModel.swift */; };
@@ -57,6 +59,7 @@
 
 /* Begin PBXFileReference section */
 		0521F13659742EDAD59525F1 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		059E790ED4393B029536850E /* SettingsPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsPanel.swift; sourceTree = "<group>"; };
 		0BBED09F99FB260E9E12C211 /* MagnetRelay.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MagnetRelay.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		12B1BED5B429D8E502F164C8 /* TransmissionBackend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransmissionBackend.swift; sourceTree = "<group>"; };
 		131320D5764DF643210B937A /* ConnectionErrorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionErrorTests.swift; sourceTree = "<group>"; };
@@ -86,6 +89,7 @@
 		B5AB35688E2F456E2AC5BDD0 /* SettingsRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsRootView.swift; sourceTree = "<group>"; };
 		BC1B88B68751EB75293CA1CB /* MagnetHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagnetHandler.swift; sourceTree = "<group>"; };
 		BC2135966ED49B94C333FAD9 /* RemoteClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteClient.swift; sourceTree = "<group>"; };
+		BDB5F0A64AC8AACAD6E35545 /* SettingsPanelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsPanelTests.swift; sourceTree = "<group>"; };
 		BE5B74C6154F84830468BE75 /* ConnectionError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionError.swift; sourceTree = "<group>"; };
 		C511B40C6488A1AE1497E2FC /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		CBA25C4999CA534805671FEA /* SynologyBackend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SynologyBackend.swift; sourceTree = "<group>"; };
@@ -134,6 +138,7 @@
 				7556746266AA9BDAE11256E1 /* MagnetHandlerTests.swift */,
 				84E4D67A20C567767389DFA2 /* MagnetLinkTests.swift */,
 				FDB5F17AEDEE307792944D74 /* NetworkAddressTests.swift */,
+				BDB5F0A64AC8AACAD6E35545 /* SettingsPanelTests.swift */,
 				7F610687024014E2783313B8 /* SetupFlowModelTests.swift */,
 				133C9EE3921175414E334D0A /* SmokeTests.swift */,
 				6ED404F938E7F3E19FF5D3C9 /* StubURLProtocol.swift */,
@@ -192,6 +197,7 @@
 			children = (
 				E252477A5B30F52938A53B29 /* ReadyView.swift */,
 				8ED2879851B6D5C31DDF33D3 /* RecentLinksView.swift */,
+				059E790ED4393B029536850E /* SettingsPanel.swift */,
 				B5AB35688E2F456E2AC5BDD0 /* SettingsRootView.swift */,
 				4A8359976793DE94E8C1C8F1 /* SetupFlowModel.swift */,
 				15675763B48B25BC57DEEA98 /* SetupStepViews.swift */,
@@ -322,6 +328,7 @@
 				89CF2D2BE14C365E684D3771 /* RecentMagnets.swift in Sources */,
 				8F2ADB09640985599CF1ECEF /* RemoteClient.swift in Sources */,
 				751092A0C3EB83158532D54D /* ServerConfig.swift in Sources */,
+				4458821D9DD1032DA18A2CC2 /* SettingsPanel.swift in Sources */,
 				88017DC3F0E4B25878CF94EF /* SettingsRootView.swift in Sources */,
 				4FF62B07B21A2CA203CF29FE /* SetupFlowModel.swift in Sources */,
 				4C36E0BF99DFCE997A7D846C /* SetupStepViews.swift in Sources */,
@@ -341,6 +348,7 @@
 				92B75054B8AA17483BE2F081 /* MagnetHandlerTests.swift in Sources */,
 				4D2454FD4CCEF2D4A22A20AE /* MagnetLinkTests.swift in Sources */,
 				A00A07073B8DEFCB92C5F328 /* NetworkAddressTests.swift in Sources */,
+				0C071639F0B16DE00E24A126 /* SettingsPanelTests.swift in Sources */,
 				322FD3C1B940184A9DB1FE1C /* SetupFlowModelTests.swift in Sources */,
 				9B242B7735503DF02690196A /* SmokeTests.swift in Sources */,
 				761DB7D33F0B945D64176831 /* StubURLProtocol.swift in Sources */,

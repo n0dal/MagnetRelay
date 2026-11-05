@@ -36,9 +36,12 @@ enum RelayMetrics {
     static let gutter: CGFloat = 24
     static let cardRadius: CGFloat = 10
     static let rowHeight: CGFloat = 40
-    static let windowSize = CGSize(width: 460, height: 430)
-    /// The window's content area: `windowSize` less the 28pt title bar (as in the mockup).
-    static let contentSize = CGSize(width: windowSize.width, height: windowSize.height - 28)
+    /// The settings panel (borderless, so this is also its content size).
+    static let windowSize = CGSize(width: 460, height: 424)
+    /// Continuous corner radius of the settings panel.
+    static let panelCornerRadius: CGFloat = 16
+    /// Top padding of the panel's screens, clearing the "esc" hint in the top-right corner.
+    static let panelTopInset: CGFloat = 30
     /// −0.02em at the 22pt heading size.
     static let headingTracking: CGFloat = -0.44
     static let hairlineWidth: CGFloat = 0.5
