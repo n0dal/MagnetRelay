@@ -9,6 +9,16 @@ private final class CloseRecorder: NSObject, NSWindowDelegate {
     func windowWillClose(_ notification: Notification) { closes += 1 }
 }
 
+/// Stands in for the Recent links popover window: records the Esc it is handed and closes.
+private final class ChildWindow: NSWindow {
+    var escapes = 0
+    override func sendEvent(_ event: NSEvent) {
+        if event.type == .keyDown, event.keyCode == 53 { escapes += 1; orderOut(nil); return }
+        super.sendEvent(event)
+    }
+    override func cancelOperation(_ sender: Any?) { escapes += 1; orderOut(nil) }
+}
+
 @MainActor
 final class SettingsPanelTests: XCTestCase {
     private var panel: SettingsPanel!
@@ -101,5 +111,38 @@ final class SettingsPanelTests: XCTestCase {
         item.target = panel
         XCTAssertTrue(menu.performKeyEquivalent(with: key("w", code: 13, mods: .command)))
         XCTAssertEqual(recorder.closes, 1)
+    }
+
+    // MARK: Child windows (Recent links popover)
+
+    private func addChild() -> ChildWindow {
+        let child = ChildWindow(contentRect: NSRect(x: 0, y: 0, width: 200, height: 120),
+                                styleMask: [.borderless], backing: .buffered, defer: false)
+        child.isReleasedWhenClosed = false
+        panel.addChildWindow(child, ordered: .above)
+        child.orderFront(nil)
+        return child
+    }
+
+    func testEscapeDismissesOpenChildWindowNotThePanel() {
+        let child = addChild()
+        defer { panel.removeChildWindow(child); child.orderOut(nil) }
+        panel.sendEvent(key("\u{1b}", code: 53))
+        XCTAssertEqual(child.escapes, 1)
+        XCTAssertFalse(child.isVisible)
+        XCTAssertEqual(recorder.closes, 0)
+        XCTAssertTrue(panel.isVisible)
+
+        // With the child gone, the next Esc closes the panel.
+        panel.sendEvent(key("\u{1b}", code: 53))
+        XCTAssertEqual(recorder.closes, 1)
+    }
+
+    func testCancelOperationGoesToOpenChildWindow() {
+        let child = addChild()
+        defer { panel.removeChildWindow(child); child.orderOut(nil) }
+        panel.cancelOperation(nil)
+        XCTAssertEqual(child.escapes, 1)
+        XCTAssertEqual(recorder.closes, 0)
     }
 }

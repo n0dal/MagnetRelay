@@ -37,9 +37,20 @@ final class SettingsPanel: NSPanel {
     override var canBecomeKey: Bool { true }
     override var canBecomeMain: Bool { true }
 
-    /// Esc (when nothing more specific handles it, e.g. an open completion list).
+    /// Esc (when nothing more specific handles it, e.g. an open completion list). With the
+    /// Recent links popover (or another child window) open, Esc dismisses that instead.
     override func cancelOperation(_ sender: Any?) {
+        if let child = visibleChildWindow {
+            child.cancelOperation(sender)
+            return
+        }
         performClose(sender)
+    }
+
+    /// The popover, sheet or other child window on top of the panel, if one is showing.
+    var visibleChildWindow: NSWindow? {
+        if let sheet = attachedSheet, sheet.isVisible { return sheet }
+        return childWindows?.last { $0.isVisible }
     }
 
     /// A borderless window has no close button, so the default `performClose` would only beep.
@@ -61,10 +72,16 @@ final class SettingsPanel: NSPanel {
 
     /// Esc always closes, even while a text field is being edited (the field editor would
     /// otherwise turn Esc into "complete"). Text input composition (marked text) keeps its Esc.
+    /// While a child window such as the Recent links popover is open, the panel stays key and
+    /// Esc goes to that child, which dismisses itself; a second Esc then closes the panel.
     override func sendEvent(_ event: NSEvent) {
         if event.type == .keyDown, SettingsPanel.isPlainEscape(event),
            !((firstResponder as? NSTextView)?.hasMarkedText() ?? false) {
-            performClose(nil)
+            if let child = visibleChildWindow {
+                child.sendEvent(event)
+            } else {
+                performClose(nil)
+            }
             return
         }
         super.sendEvent(event)

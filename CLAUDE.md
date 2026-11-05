@@ -90,7 +90,7 @@ protocol RemoteClient {
 ### Menu Bar & Window Conventions
 - Menu bar icon: template magnet (`MagnetMark`), monochrome
 - Menu items: recent links, "Settings..." and "Quit MagnetRelay"
-- Window title: "MagnetRelay"
+- Settings window: a borderless panel (`SettingsPanel`), no title bar or window buttons, 16pt continuous corners, a quiet "esc" hint top-right. Esc or ⌘W closes it (Esc first dismisses the Recent links popover if it is open); clicking away closes it only on the Ready screen, never mid-setup. Its accessibility title is "MagnetRelay".
 - Open at login and notification switches live on the Ready screen
 
 ## Supported Backends
@@ -148,13 +148,15 @@ open "magnet:?xt=urn:btih:TEST&dn=TestFile"
 ./Tests/screenshot.sh my_feature
 ```
 
+Captures are the panel alone (no shadow, transparent outside the rounded corners). README screenshots, hero, social card and App Store images: see `docs/DEVELOPMENT.md`.
+
 Available tests: `first_launch`, `client_qbittorrent`, `client_transmission`, `client_deluge`, `client_rtorrent`, `client_synology`, `signin_deluge`, `signin_error`, `ready`, `ready_unchecked`, `ready_dark`
 
 ## Important Notes
 
 - **Bundle ID:** `com.magnetrelay.app`
 - **Menu bar only:** No Dock icon (`LSUIElement: true`)
-- **Settings window:** Created manually via `NSHostingController` (SwiftUI Settings scene doesn't work reliably in menu bar apps)
+- **Settings window:** A `SettingsPanel` created manually with an `NSHostingController` (SwiftUI Settings scene doesn't work reliably in menu bar apps)
 - **Entitlements:** Requires `com.apple.security.network.client` for API calls
 - **URL path bug:** Don't include leading slash with `URL.appendingPathComponent()` (causes double-slash)
 
