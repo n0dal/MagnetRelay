@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <!-- MagnetRelay app icon (reference copy; tools/render_brand.swift is the source of truth). -->
+  <!-- macOS icon grid: 824×824 tile centred on a 1024 canvas, corner radius 185. -->
+  <rect x="100" y="100" width="824" height="824" rx="185" ry="185" fill="#1D1D1F"/>
+  <!-- Glyph: 24×24 design space scaled to 58% of the tile. -->
+  <g transform="translate(273.040 273.040) scale(19.913)" fill="none" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M6 4v8a6 6 0 0 0 12 0V4" stroke="#FFFFFF"/>
+    <path d="M6 4h3M15 4h3" stroke="#E5484D"/>
+  </g>
+</svg>
