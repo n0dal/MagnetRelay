@@ -1,10 +1,12 @@
 import XCTest
+import Security
 @testable import MagnetRelay
 
 final class FakePasswordStore: PasswordStoring {
     var stored: String?
     var failsWrites = false
-    func password() -> String? { stored }
+    var reads = 0
+    func password() -> String? { reads += 1; return stored }
     @discardableResult func setPassword(_ p: String) -> Bool {
         if failsWrites { return false }
         stored = p
@@ -77,5 +79,59 @@ final class HTTPTests: XCTestCase {
         XCTAssertEqual(fake.stored, "secret")
         XCTAssertTrue(config.isConfigured)
         XCTAssertEqual(config.endpoint()?.url().absoluteString, "https://nas:8080/RPC2")
+    }
+
+    func testDisplayAddressNeverReadsPassword() {
+        let fake = FakePasswordStore()
+        fake.stored = "secret"
+        let config = ServerConfig(store: UserDefaults(suiteName: "HTTPTests-\(UUID().uuidString)")!, passwords: fake)
+        config.serverHost = "nas"
+        config.serverPort = "9091"
+        XCTAssertEqual(config.displayAddress, "nas:9091")
+        XCTAssertEqual(fake.reads, 0)
+    }
+
+    func testDisplayAddressBlankPortShowsSchemeDefault() {
+        let config = ServerConfig(store: UserDefaults(suiteName: "HTTPTests-\(UUID().uuidString)")!, passwords: FakePasswordStore())
+        config.serverHost = "nas"
+        config.serverPort = ""
+        XCTAssertEqual(config.displayAddress, "nas:80")
+        config.useHTTPS = true
+        XCTAssertEqual(config.displayAddress, "nas:443")
+        config.serverHost = "http://box.local:8080/"
+        XCTAssertEqual(config.displayAddress, "box.local:8080")
+    }
+}
+
+final class KeychainWriteTests: XCTestCase {
+    func testUpdateFailureFallsBackToDeleteThenAdd() {
+        var calls: [String] = []
+        let ok = KeychainService.write(update: { calls.append("update"); return errSecInvalidOwnerEdit },
+                                       delete: { calls.append("delete"); return errSecSuccess },
+                                       add: { calls.append("add"); return errSecSuccess })
+        XCTAssertTrue(ok)
+        XCTAssertEqual(calls, ["update", "delete", "add"])
+    }
+
+    func testUpdateSuccessDoesNothingElse() {
+        var calls: [String] = []
+        XCTAssertTrue(KeychainService.write(update: { calls.append("update"); return errSecSuccess },
+                                            delete: { calls.append("delete"); return errSecSuccess },
+                                            add: { calls.append("add"); return errSecSuccess }))
+        XCTAssertEqual(calls, ["update"])
+    }
+
+    func testNotFoundAddsWithoutDelete() {
+        var calls: [String] = []
+        XCTAssertTrue(KeychainService.write(update: { calls.append("update"); return errSecItemNotFound },
+                                            delete: { calls.append("delete"); return errSecSuccess },
+                                            add: { calls.append("add"); return errSecSuccess }))
+        XCTAssertEqual(calls, ["update", "add"])
+    }
+
+    func testFallbackAddFailureReturnsFalse() {
+        XCTAssertFalse(KeychainService.write(update: { errSecInvalidOwnerEdit },
+                                             delete: { errSecSuccess },
+                                             add: { errSecDuplicateItem }))
     }
 }

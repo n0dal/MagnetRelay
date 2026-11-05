@@ -91,4 +91,14 @@ final class MagnetHandlerTests: XCTestCase {
         XCTAssertEqual(notifier.posts[0].body,
                        ConnectionError.message(for: BackendError.authenticationFailed, client: .transmission))
     }
+
+    func testLocalSynologyCertificateFailureMessage() async {
+        config.clientType = .synology
+        config.serverHost = "192.168.1.5"
+        config.serverPort = "5001"
+        config.useHTTPS = true
+        client.error = URLError(.serverCertificateHasUnknownRoot)
+        await handler().handleMagnet(magnet)
+        XCTAssertEqual(notifier.posts.last?.body, "Your Synology's certificate isn't trusted by this Mac. On your home network you can turn off Use HTTPS, or install a trusted certificate on the Synology.")
+    }
 }

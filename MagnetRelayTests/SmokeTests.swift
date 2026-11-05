@@ -13,4 +13,10 @@ final class SmokeTests: XCTestCase {
         _ = try await StubURLProtocol.session().data(for: req)
         XCTAssertEqual(StubURLProtocol.requests.first?.bodyString, "a=1")
     }
+
+    func testATSAllowsOnlyLocalNetworking() {
+        let ats = Bundle.main.object(forInfoDictionaryKey: "NSAppTransportSecurity") as? [String: Any]
+        XCTAssertEqual(ats?["NSAllowsLocalNetworking"] as? Bool, true)
+        XCTAssertNil(ats?["NSAllowsArbitraryLoads"])
+    }
 }

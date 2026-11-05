@@ -1,8 +1,11 @@
 import Foundation
 
 enum ConnectionError {
+    static let localSynologyCertificate = "Your Synology's certificate isn't trusted by this Mac. On your home network you can turn off Use HTTPS, or install a trusted certificate on the Synology."
+
     /// Turns an error into a full sentence for the user. Matches on error codes, never on text.
-    static func message(for error: Error, client: ClientType) -> String {
+    /// `host` (the configured server host) refines a few messages, e.g. Synology on the home network.
+    static func message(for error: Error, client: ClientType, host: String? = nil) -> String {
         let c = client.displayName
         let timedOut = "\(c) didn't answer in time. Check that it's running and reachable from this Mac."
 
@@ -16,8 +19,6 @@ enum ConnectionError {
                 return "Couldn't reach \(c): \(reason)"
             case .serverError(let reason):
                 return "\(c) couldn't add the link: \(reason)"
-            case .timeout:
-                return timedOut
             case .insecureConnection:
                 return "Synology needs HTTPS for addresses outside your home network."
             case .daemonNotConnected:
@@ -41,7 +42,12 @@ enum ConnectionError {
             case .timedOut:
                 return timedOut
             case .serverCertificateUntrusted, .serverCertificateHasUnknownRoot, .secureConnectionFailed:
+                if client == .synology, let host, NetworkAddress.isLocal(host: host) {
+                    return localSynologyCertificate
+                }
                 return "The server's certificate isn't trusted by this Mac. Use a trusted certificate, or HTTPS may not be set up on this port."
+            case .appTransportSecurityRequiresSecureConnection:
+                return "This address needs HTTPS. Turn on Use HTTPS, or use the server's local IP address."
             case .notConnectedToInternet:
                 return "This Mac isn't connected to a network."
             default: break

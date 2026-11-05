@@ -1,14 +1,12 @@
 import Cocoa
 import SwiftUI
 import UserNotifications
-import Combine
 
 class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSWindowDelegate {
     private var statusItem: NSStatusItem!
     private var magnetHandler: MagnetHandler!
     private let notifier = Notifier()
     private var settingsWindow: NSWindow?
-    private var cancellables = Set<AnyCancellable>()
 
     func applicationWillFinishLaunching(_ notification: Notification) {
         // URL handler MUST be registered early to catch URLs on cold launch

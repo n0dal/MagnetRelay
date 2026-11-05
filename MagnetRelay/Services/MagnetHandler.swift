@@ -30,6 +30,7 @@ final class MagnetHandler {
             await MainActor.run { openSettings() }
             return
         }
+        let host = endpoint.baseURL.host
         let notifyOnSuccess = config.showNotifications
         let backend = clientFactory(client)
 
@@ -42,7 +43,7 @@ final class MagnetHandler {
                 await notifier.post(title: "Sent to \(client.displayName)", body: MagnetLink.displayName(from: magnet))
             }
         } catch {
-            await notifier.post(title: "Couldn't send link", body: ConnectionError.message(for: error, client: client))
+            await notifier.post(title: "Couldn't send link", body: ConnectionError.message(for: error, client: client, host: host))
         }
     }
 }

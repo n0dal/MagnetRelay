@@ -10,7 +10,6 @@ enum BackendError: LocalizedError {
     case authenticationFailed
     case connectionFailed(String)
     case serverError(String)
-    case timeout
     case insecureConnection
     case daemonNotConnected
     case httpStatus(Int)
@@ -25,8 +24,6 @@ enum BackendError: LocalizedError {
             return "Connection failed: \(reason)"
         case .serverError(let reason):
             return "Server error: \(reason)"
-        case .timeout:
-            return "Connection timed out"
         case .insecureConnection:
             return "Insecure connection: this client requires HTTPS"
         case .daemonNotConnected:
@@ -102,7 +99,7 @@ enum BackendSession {
         // BackendError cases that might be transient
         if let backendError = error as? BackendError {
             switch backendError {
-            case .timeout, .connectionFailed:
+            case .connectionFailed:
                 return true
             default:
                 return false

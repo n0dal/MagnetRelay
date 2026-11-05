@@ -15,14 +15,25 @@ enum KeychainService {
             kSecAttrAccount as String: account
         ]
 
-        let updateStatus = SecItemUpdate(match as CFDictionary, [kSecValueData as String: data] as CFDictionary)
-        if updateStatus == errSecSuccess { return true }
-        guard updateStatus == errSecItemNotFound else { return false }
-
         var add = match
         add[kSecValueData as String] = data
         add[kSecAttrAccessible as String] = kSecAttrAccessibleWhenUnlockedThisDeviceOnly
-        return SecItemAdd(add as CFDictionary, nil) == errSecSuccess
+
+        return write(update: { SecItemUpdate(match as CFDictionary, [kSecValueData as String: data] as CFDictionary) },
+                     delete: { SecItemDelete(match as CFDictionary) },
+                     add: { SecItemAdd(add as CFDictionary, nil) })
+    }
+
+    /// Update in place; add if missing. Any other update failure (e.g. the item was written under a
+    /// different code-signing identity) falls back to delete-then-add.
+    static func write(update: () -> OSStatus, delete: () -> OSStatus, add: () -> OSStatus) -> Bool {
+        let status = update()
+        if status == errSecSuccess { return true }
+        if status != errSecItemNotFound {
+            let deleted = delete()
+            guard deleted == errSecSuccess || deleted == errSecItemNotFound else { return false }
+        }
+        return add() == errSecSuccess
     }
 
     static func getPassword() -> String? {
@@ -44,15 +55,5 @@ enum KeychainService {
         }
 
         return password
-    }
-
-    static func deletePassword() {
-        let query: [String: Any] = [
-            kSecClass as String: kSecClassGenericPassword,
-            kSecAttrService as String: service,
-            kSecAttrAccount as String: account
-        ]
-
-        SecItemDelete(query as CFDictionary)
     }
 }

@@ -187,6 +187,20 @@ final class BackendTests: XCTestCase {
         XCTAssertEqual(StubURLProtocol.requests.first?.url?.path, "/webapi/auth.cgi")
     }
 
+    func testSynologyAddFailureReadsAsPhrase() async {
+        StubURLProtocol.handler = { req in
+            if req.url!.path == "/webapi/auth.cgi" { return self.response(req, #"{"success":true,"data":{"sid":"S"}}"#) }
+            return self.response(req, #"{"success":false,"error":{"code":403}}"#)
+        }
+        do {
+            try await SynologyBackend(session: StubURLProtocol.session()).addMagnet(M, to: endpoint(host: "192.168.1.5", port: "5000"))
+            XCTFail("expected throw")
+        } catch {
+            XCTAssertEqual(ConnectionError.message(for: error, client: .synology),
+                           "Synology couldn't add the link: Download Station returned error 403")
+        }
+    }
+
     // MARK: Parameter preservation (Review Focus 1)
 
     private func stubAll() {

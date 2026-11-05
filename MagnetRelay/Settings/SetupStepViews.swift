@@ -153,8 +153,8 @@ private struct AddressStepView: View {
                     RowTextField(label: "Address", placeholder: "192.168.0.100", text: $model.draft.host)
                 }
                 RelayRow(title: "Port") {
-                    RowTextField(label: "Port", placeholder: model.draft.clientType.defaultPort(https: model.draft.useHTTPS),
-                                 text: portBinding)
+                    // A blank port is allowed and means the scheme's default (80 / 443).
+                    RowTextField(label: "Port", placeholder: "Default", text: portBinding)
                 }
                 RelayRow(title: "Use HTTPS") {
                     Toggle("Use HTTPS", isOn: Binding(get: { model.draft.useHTTPS }, set: { model.setHTTPS($0) }))
@@ -229,9 +229,9 @@ private struct SignInStepView: View {
                     HStack(spacing: 6) {
                         Group {
                             if showsPassword {
-                                RowTextField(label: "Password", placeholder: "Required", text: $model.draft.password)
+                                RowTextField(label: "Password", placeholder: model.passwordPlaceholder, text: $model.draft.password)
                             } else {
-                                SecureField("Required", text: $model.draft.password)
+                                SecureField(model.passwordPlaceholder, text: $model.draft.password)
                                     .textFieldStyle(.plain)
                                     .multilineTextAlignment(.trailing)
                                     .foregroundStyle(Color.Relay.ink)

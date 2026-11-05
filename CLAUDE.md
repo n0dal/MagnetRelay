@@ -6,7 +6,7 @@ A macOS menu bar app that handles `magnet:` URLs and forwards them to remote dow
 
 MagnetRelay registers as the system-wide handler for `magnet:` URL scheme. When a user clicks a magnet link in any app (browser, email, etc.), macOS routes it to this app, which forwards it to the user's configured download server.
 
-**Target:** macOS 13.0+ (Sonoma)
+**Target:** macOS 13.0+ (Ventura)
 **Language:** Swift 5.9, SwiftUI
 **Distribution:** App Store
 
@@ -67,8 +67,8 @@ Tests/
 All download clients implement `RemoteClient`:
 ```swift
 protocol RemoteClient {
-    func testConnection(url: String, username: String, password: String) async throws
-    func addMagnet(_ magnet: String, url: String, username: String, password: String) async throws
+    func testConnection(_ endpoint: ServerEndpoint) async throws
+    func addMagnet(_ magnet: String, to endpoint: ServerEndpoint) async throws
 }
 ```
 

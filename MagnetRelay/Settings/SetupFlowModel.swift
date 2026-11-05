@@ -8,7 +8,10 @@ final class SetupFlowModel: ObservableObject {
     enum Outcome { case connected, cancelled }
 
     @Published var step: Step = .client
-    @Published var draft: ConnectionDraft
+    @Published var draft: ConnectionDraft {
+        // Editing anything makes an earlier connection error stale.
+        didSet { if draft != oldValue { errorMessage = nil } }
+    }
     @Published private(set) var isConnecting = false
     @Published private(set) var errorMessage: String?
     @Published var showsPath: Bool
@@ -43,6 +46,9 @@ final class SetupFlowModel: ObservableObject {
     }
 
     func selectClient(_ c: ClientType) {
+        // Tapping the selected tile again changes nothing (keeps e.g. Synology's HTTPS choice).
+        guard c != draft.clientType else { return }
+        let previous = draft.clientType
         let wasDefault = isDefaultPort(draft.port)
         draft.clientType = c
         if c == .synology { draft.useHTTPS = true }
@@ -50,8 +56,20 @@ final class SetupFlowModel: ObservableObject {
         if c == .rtorrent {
             if draft.path.trimmed.isEmpty { draft.path = "/RPC2" }
             showsPath = true
+        } else if previous == .rtorrent, draft.path.trimmed == "/RPC2" {
+            // rTorrent's prefilled path means nothing to other clients.
+            draft.path = ""
+            showsPath = false
         }
         errorMessage = nil
+    }
+
+    /// Placeholder for the password field: only Deluge and Synology always need one.
+    var passwordPlaceholder: String {
+        switch draft.clientType {
+        case .deluge, .synology: return "Password"
+        default: return "Optional"
+        }
     }
 
     func setHTTPS(_ on: Bool) {
@@ -68,7 +86,8 @@ final class SetupFlowModel: ObservableObject {
         case .address: return draft.endpoint() != nil
         case .signIn:
             if isConnecting { return false }
-            return draft.clientType == .deluge || !draft.username.trimmed.isEmpty
+            // Many setups have no login (auth off, localhost bypass); Synology always needs an account.
+            return draft.clientType != .synology || !draft.username.trimmed.isEmpty
         }
     }
 
@@ -82,6 +101,7 @@ final class SetupFlowModel: ObservableObject {
     }
 
     func back() {
+        errorMessage = nil
         switch step {
         case .client:
             if mode == .changeServer { onFinish(.cancelled) }
@@ -116,7 +136,8 @@ final class SetupFlowModel: ObservableObject {
             guard !task.isCancelled, connectTask == task else { return }
             connectTask = nil
             isConnecting = false
-            errorMessage = ConnectionError.message(for: error, client: draft.clientType)
+            errorMessage = ConnectionError.message(for: error, client: draft.clientType,
+                                                   host: draft.endpoint()?.baseURL.host)
         }
     }
 

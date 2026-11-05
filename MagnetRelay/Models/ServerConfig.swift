@@ -98,6 +98,16 @@ class ServerConfig: ObservableObject {
 
     func endpoint() -> ServerEndpoint? { draft().endpoint() }
 
+    /// "host:port" for display, built from the stored fields without reading the Keychain.
+    /// A blank port shows the scheme's default.
+    var displayAddress: String {
+        let d = ConnectionDraft(clientType: clientType, host: serverHost, port: serverPort, useHTTPS: useHTTPS,
+                                path: serverPath, username: username, password: "")
+        guard let url = d.endpoint()?.baseURL, let host = url.host else { return serverHost.trimmed }
+        let port = url.port ?? (url.scheme == "https" ? 443 : 80)
+        return "\(host):\(port)"
+    }
+
     /// Fingerprint of current connection settings (client, host, port, https, path, username)
     var currentConfigHash: String {
         "\(clientType.rawValue)|\(serverHost)|\(serverPort)|\(useHTTPS)|\(serverPath)|\(username)"

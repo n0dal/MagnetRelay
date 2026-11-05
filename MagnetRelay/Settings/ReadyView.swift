@@ -92,10 +92,7 @@ struct ReadyView: View {
     }
 
     private var statusText: String {
-        let endpoint = config.endpoint()?.baseURL
-        let host = endpoint?.host ?? config.serverHost.trimmed
-        let port = endpoint?.port.map(String.init) ?? config.serverPort.trimmed
-        let base = "\(config.clientType.displayName) · \(host):\(port)"
+        let base = "\(config.clientType.displayName) · \(config.displayAddress)"
         if config.isCurrentConfigTested, let checked = config.lastConnectedString {
             return "\(base) · checked \(checked)"
         }

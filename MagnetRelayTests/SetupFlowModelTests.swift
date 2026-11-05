@@ -124,14 +124,84 @@ final class SetupFlowModelTests: XCTestCase {
         XCTAssertTrue(outcomes.isEmpty)
     }
 
-    func testDelugeNeedsNoUsername() {
+    func testUsernameOptionalExceptSynology() {
         let m = model(.firstRun)
         m.draft.host = "nas"
         m.step = .signIn
-        m.draft.clientType = .qbittorrent
+        for c in [ClientType.qbittorrent, .transmission, .deluge, .rtorrent] {
+            m.draft.clientType = c
+            XCTAssertTrue(m.canContinue, c.rawValue)
+        }
+        m.draft.clientType = .synology
         XCTAssertFalse(m.canContinue)
-        m.draft.clientType = .deluge
+        m.draft.username = "admin"
         XCTAssertTrue(m.canContinue)
+    }
+
+    func testLeavingRTorrentClearsDefaultPath() {
+        let m = model(.firstRun)
+        m.selectClient(.rtorrent)
+        m.selectClient(.qbittorrent)
+        XCTAssertEqual(m.draft.path, "")
+        XCTAssertFalse(m.showsPath)
+    }
+
+    func testLeavingRTorrentKeepsCustomPath() {
+        let m = model(.firstRun)
+        m.selectClient(.rtorrent)
+        m.draft.path = "/rutorrent/RPC2"
+        m.selectClient(.transmission)
+        XCTAssertEqual(m.draft.path, "/rutorrent/RPC2")
+        XCTAssertTrue(m.showsPath)
+    }
+
+    func testChangeServerEditsDoNotWriteLiveConfig() {
+        config.clientType = .qbittorrent
+        config.serverHost = "old"
+        config.useHTTPS = false
+        let m = model(.changeServer)
+        m.selectClient(.synology)
+        m.setHTTPS(false)
+        m.setHTTPS(true)
+        XCTAssertEqual(config.clientType, .qbittorrent)
+        XCTAssertFalse(config.useHTTPS)
+        XCTAssertEqual(config.serverPort, "8080")
+    }
+
+    func testReselectingSynologyKeepsHTTPSOff() {
+        let m = model(.firstRun)
+        m.selectClient(.synology)
+        m.setHTTPS(false)
+        m.selectClient(.synology)
+        XCTAssertFalse(m.draft.useHTTPS)
+        XCTAssertEqual(m.draft.port, "5000")
+    }
+
+    func testErrorClearsOnBackAndOnEdit() async {
+        client.error = BackendError.authenticationFailed
+        let m = model(.firstRun)
+        m.draft.host = "nas"; m.draft.username = "u"
+        m.step = .signIn
+        await m.connect()
+        XCTAssertNotNil(m.errorMessage)
+        m.back()
+        XCTAssertNil(m.errorMessage)
+
+        m.step = .signIn
+        await m.connect()
+        XCTAssertNotNil(m.errorMessage)
+        m.draft.password = "new"
+        XCTAssertNil(m.errorMessage)
+    }
+
+    func testLocalSynologyCertificateMessage() async {
+        client.error = URLError(.serverCertificateUntrusted)
+        let m = model(.firstRun)
+        m.selectClient(.synology)
+        m.draft.host = "192.168.1.5"; m.draft.username = "u"
+        m.step = .signIn
+        await m.connect()
+        XCTAssertEqual(m.errorMessage, "Your Synology's certificate isn't trusted by this Mac. On your home network you can turn off Use HTTPS, or install a trusted certificate on the Synology.")
     }
 
     func testCancelAfterSuccessBeforeResumeDoesNotApply() async {
@@ -165,5 +235,17 @@ final class SetupFlowModelTests: XCTestCase {
         XCTAssertFalse(config.hasCompletedSetup)
         XCTAssertFalse(config.isCurrentConfigTested)
         XCTAssertTrue(outcomes.isEmpty)
+    }
+
+    func testPasswordPlaceholder() {
+        let m = model(.firstRun)
+        for c in [ClientType.qbittorrent, .transmission, .rtorrent] {
+            m.selectClient(c)
+            XCTAssertEqual(m.passwordPlaceholder, "Optional", c.rawValue)
+        }
+        for c in [ClientType.deluge, .synology] {
+            m.selectClient(c)
+            XCTAssertEqual(m.passwordPlaceholder, "Password", c.rawValue)
+        }
     }
 }

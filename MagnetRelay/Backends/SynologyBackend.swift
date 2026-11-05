@@ -28,7 +28,7 @@ final class SynologyBackend: RemoteClient {
         if let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
            let success = json["success"] as? Bool, !success {
             let code = (json["error"] as? [String: Any])?["code"] as? Int ?? 0
-            throw BackendError.serverError("Error code: \(code)")
+            throw BackendError.serverError("Download Station returned error \(code)")
         }
     }
 
