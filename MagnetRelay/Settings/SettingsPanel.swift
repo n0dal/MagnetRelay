@@ -40,11 +40,22 @@ final class SettingsPanel: NSPanel {
     /// Esc (when nothing more specific handles it, e.g. an open completion list). With the
     /// Recent links popover (or another child window) open, Esc dismisses that instead.
     override func cancelOperation(_ sender: Any?) {
-        if let child = visibleChildWindow {
-            child.cancelOperation(sender)
-            return
+        handleEscape(sender) { $0.cancelOperation(sender) }
+    }
+
+    /// The child window the last Esc was handed to. A child gets one Esc: if it is still showing
+    /// at the next Esc (it ignored it), that Esc closes the panel, so Esc can never go dead.
+    /// Cleared by any click or other key on the panel (e.g. reopening the popover).
+    private weak var escapeHandedTo: NSWindow?
+
+    private func handleEscape(_ sender: Any?, forward: (NSWindow) -> Void) {
+        if let child = visibleChildWindow, child !== escapeHandedTo {
+            escapeHandedTo = child
+            forward(child)
+        } else {
+            escapeHandedTo = nil
+            performClose(sender)
         }
-        performClose(sender)
     }
 
     /// The popover, sheet or other child window on top of the panel, if one is showing.
@@ -73,16 +84,17 @@ final class SettingsPanel: NSPanel {
     /// Esc always closes, even while a text field is being edited (the field editor would
     /// otherwise turn Esc into "complete"). Text input composition (marked text) keeps its Esc.
     /// While a child window such as the Recent links popover is open, the panel stays key and
-    /// Esc goes to that child, which dismisses itself; a second Esc then closes the panel.
+    /// Esc goes to that child, which dismisses itself; a second Esc then closes the panel, even
+    /// if the child ignored the first one.
     override func sendEvent(_ event: NSEvent) {
         if event.type == .keyDown, SettingsPanel.isPlainEscape(event),
            !((firstResponder as? NSTextView)?.hasMarkedText() ?? false) {
-            if let child = visibleChildWindow {
-                child.sendEvent(event)
-            } else {
-                performClose(nil)
-            }
+            handleEscape(nil) { $0.sendEvent(event) }
             return
+        }
+        switch event.type {
+        case .keyDown, .leftMouseDown, .rightMouseDown, .otherMouseDown: escapeHandedTo = nil
+        default: break
         }
         super.sendEvent(event)
     }

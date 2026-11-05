@@ -19,6 +19,16 @@ private final class ChildWindow: NSWindow {
     override func cancelOperation(_ sender: Any?) { escapes += 1; orderOut(nil) }
 }
 
+/// A child window that ignores Esc entirely (think tooltip or a third-party popover).
+private final class DeafChildWindow: NSWindow {
+    var escapes = 0
+    override func sendEvent(_ event: NSEvent) {
+        if event.type == .keyDown, event.keyCode == 53 { escapes += 1; return }
+        super.sendEvent(event)
+    }
+    override func cancelOperation(_ sender: Any?) { escapes += 1 }
+}
+
 @MainActor
 final class SettingsPanelTests: XCTestCase {
     private var panel: SettingsPanel!
@@ -143,6 +153,48 @@ final class SettingsPanelTests: XCTestCase {
         defer { panel.removeChildWindow(child); child.orderOut(nil) }
         panel.cancelOperation(nil)
         XCTAssertEqual(child.escapes, 1)
+        XCTAssertEqual(recorder.closes, 0)
+    }
+
+    private func addDeafChild() -> DeafChildWindow {
+        let child = DeafChildWindow(contentRect: NSRect(x: 0, y: 0, width: 200, height: 120),
+                                    styleMask: [.borderless], backing: .buffered, defer: false)
+        child.isReleasedWhenClosed = false
+        panel.addChildWindow(child, ordered: .above)
+        child.orderFront(nil)
+        return child
+    }
+
+    func testEscapeNeverGoesDeadWhenChildIgnoresIt() {
+        let child = addDeafChild()
+        defer { panel.removeChildWindow(child); child.orderOut(nil) }
+        panel.sendEvent(key("\u{1b}", code: 53))
+        XCTAssertEqual(child.escapes, 1)
+        XCTAssertEqual(recorder.closes, 0)
+        XCTAssertTrue(child.isVisible)
+
+        // The child ignored it, so the second Esc closes the panel.
+        panel.sendEvent(key("\u{1b}", code: 53))
+        XCTAssertEqual(child.escapes, 1)
+        XCTAssertEqual(recorder.closes, 1)
+    }
+
+    func testCancelOperationNeverGoesDeadWhenChildIgnoresIt() {
+        let child = addDeafChild()
+        defer { panel.removeChildWindow(child); child.orderOut(nil) }
+        panel.cancelOperation(nil)
+        XCTAssertEqual(recorder.closes, 0)
+        panel.cancelOperation(nil)
+        XCTAssertEqual(recorder.closes, 1)
+    }
+
+    func testOtherInputGivesTheChildAnotherEscape() {
+        let child = addDeafChild()
+        defer { panel.removeChildWindow(child); child.orderOut(nil) }
+        panel.sendEvent(key("\u{1b}", code: 53))
+        panel.sendEvent(key("a", code: 0))      // e.g. reopening the popover from the keyboard
+        panel.sendEvent(key("\u{1b}", code: 53))
+        XCTAssertEqual(child.escapes, 2)
         XCTAssertEqual(recorder.closes, 0)
     }
 }
