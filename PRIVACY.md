@@ -1,6 +1,6 @@
 # Privacy Policy for MagnetRelay
 
-**Last Updated:** February 2025
+**Last Updated:** November 2026
 
 ## Overview
 
@@ -22,14 +22,14 @@ The following data is stored **locally on your device only**:
 - **Server configuration** (host, port, protocol) - Stored in macOS User Defaults
 - **Username** - Stored in macOS User Defaults
 - **Password** - Stored securely in macOS Keychain
-- **Recent magnets** - Stored locally for your convenience (last 10 links)
+- **Recent magnets** - Stored locally for your convenience (last 5 links)
 - **Preferences** - Notification settings, launch at login preference
 
 ## Network Activity
 
 MagnetRelay only connects to:
 
-- **Your configured download server** - To send magnet links and test connections
+- **Your configured download server** - To send magnet links and test connections. If you set one, this includes an optional path on that server (for example behind a reverse proxy).
 
 No other network connections are made. We do not operate any servers that receive data from this app.
 
@@ -55,7 +55,7 @@ If we update this policy, we will post the new version here with an updated date
 
 ## Contact
 
-For privacy questions, please open an issue at: https://github.com/pgpillar/MagnetRelay
+For privacy questions, please open an issue at: https://github.com/n0dal/MagnetRelay/issues
 
 ---
 

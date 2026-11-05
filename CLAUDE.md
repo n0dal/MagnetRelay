@@ -15,29 +15,36 @@ MagnetRelay registers as the system-wide handler for `magnet:` URL scheme. When 
 ```
 MagnetRelay/
 ├── MagnetRelayApp.swift      # App entry point, SwiftUI lifecycle
-├── AppDelegate.swift          # Menu bar setup, URL event handling
-├── SettingsView.swift         # Settings UI
-├── DesignSystem.swift         # Color tokens, typography, spacing, animations
-├── Components.swift           # Reusable UI components (MRSectionCard, MRButton, etc.)
+├── AppDelegate.swift          # Menu bar, URL event handling, settings window
+├── Design/
+│   ├── Theme.swift            # `Relay` colour/type tokens, RelayMetrics
+│   ├── MagnetMark.swift       # The horseshoe-magnet mark (+ menu bar template)
+│   └── Controls.swift         # Buttons, cards, tiles
+├── Settings/
+│   ├── SettingsRootView.swift # Switches between setup steps and Ready
+│   ├── SetupStepViews.swift   # Client, Address, Sign in
+│   ├── SetupFlowModel.swift   # Step state, draft config, connect/cancel
+│   ├── ReadyView.swift
+│   └── RecentLinksView.swift
 ├── Models/
-│   └── ServerConfig.swift     # User configuration (AppStorage-backed)
+│   └── ServerConfig.swift     # User configuration (AppStorage-backed), ConnectionDraft
 ├── Backends/
+│   ├── HTTP.swift             # Form encoding, ServerEndpoint, URL joining
 │   ├── RemoteClient.swift     # Protocol + BackendFactory
-│   ├── QBittorrentBackend.swift
-│   ├── TransmissionBackend.swift
-│   ├── DelugeBackend.swift
-│   ├── RTorrentBackend.swift
-│   └── SynologyBackend.swift
-├── Services/
-│   ├── MagnetHandler.swift    # Core magnet processing logic
-│   ├── KeychainService.swift  # Secure credential storage
-│   └── LaunchAtLogin.swift    # SMAppService wrapper
-├── Assets.xcassets/           # App icon (magnet themed, purple/blue)
+│   └── QBittorrent / Transmission / Deluge / RTorrent / Synology Backend.swift
+├── Services/                  # MagnetHandler, MagnetLink, Notifier, ConnectionError,
+│                              # NetworkAddress, KeychainService, LaunchAtLogin, RecentMagnets
+├── Assets.xcassets/           # App icon (magnet mark, red poles)
 ├── Info.plist                 # URL scheme registration (magnet:)
 └── MagnetRelay.entitlements  # Sandbox + network client
 
+MagnetRelayTests/              # Unit tests (StubURLProtocol for backends)
+assets/                        # brand/, readme/, screenshots/, appstore/
+tools/render_brand.swift       # Icon, README hero, App Store screenshots (--appstore)
+docs/DEVELOPMENT.md            # Human-facing repo map and commands
+
 Tests/
-├── visual_tests.sh            # Automated visual testing script
+├── visual_tests.sh            # Automated visual testing script (run on a signed build)
 ├── screenshot.sh              # Quick screenshot helper
 ├── window_capture.py          # Python/Quartz helper for window screenshots
 ├── mock_synology.py           # Mock Synology server for testing
@@ -52,11 +59,9 @@ Tests/
 - Must register early (willFinish, not didFinish) to catch URLs on cold launch
 
 ### Design System
-- Color tokens: `Color.MR.accent`, `.surface`, `.textPrimary`, `.accentRed`, `.accentBlue`, etc.
-- Typography: `Font.MR.title1`, `.body`, `.caption`, etc.
-- Spacing: `MRSpacing.sm`, `.md`, `.lg`, etc.
-- Components prefixed with `MR` (MRSectionCard, MRPrimaryButton, MRConnectionStatus, etc.)
-- Purple/indigo accent color palette (`#6366F1` light, `#818CF8` dark)
+- Tokens live in `Color.Relay`: `background`, `card`, `ink`, `secondary`, `hairline`, `accent` (magnet red, only for the active/selected thing), `ready` (green, only the connected dot and on-switches). Type in `Font.Relay`, sizes in `RelayMetrics`.
+- Native macOS controls first; cards are 10pt continuous radius with a 0.5pt hairline, no shadows. No springs or scale-on-press; respect Reduce Motion.
+- The mark (`MagnetMark`): dark tile, white horseshoe magnet, red pole tips. Source SVG: `assets/brand/magnetrelay-mark.svg`.
 
 ### Backend Protocol
 All download clients implement `RemoteClient`:
@@ -70,24 +75,23 @@ protocol RemoteClient {
 ### Configuration
 - `ServerConfig.shared` singleton with `@AppStorage` properties
 - Password stored separately in Keychain via `KeychainService`
-- Key properties: `clientType`, `serverHost`, `serverPort`, `useHTTPS`, `username`
-- State tracking: `hasCompletedSetup`, `lastConnectedAt`, `bannerDismissed`
-- `ClientType` enum has `displayName`, `shortName`, `icon`, `defaultPort`
+- Key properties: `clientType`, `serverHost`, `serverPort`, `serverPath`, `useHTTPS`, `username`
+- State tracking: `hasCompletedSetup`, `lastConnectedAt`
+- `ClientType` enum has `displayName` and `defaultPort`
 
 ### UX Patterns
-- Connection status indicator in header
+- Three-step setup (Client, Address, Sign in) then a Ready screen; Change server edits a draft until Connect succeeds
 - Password visibility toggle (eye icon)
 - Numeric port validation
 - User-friendly error messages via `ConnectionError.userFriendlyMessage()`
-- Dismissible welcome banner for first-time users
 - Cancellable connection test
 - Accessibility labels on all interactive elements
 
 ### Menu Bar & Window Conventions
-- Menu bar icon: SF Symbol `link`
-- Menu items: "Settings..." and "Quit MagnetRelay"
+- Menu bar icon: template magnet (`MagnetMark`), monochrome
+- Menu items: recent links, "Settings..." and "Quit MagnetRelay"
 - Window title: "MagnetRelay"
-- Preferences sheet via gear icon (Launch at Login, Notifications, About)
+- Open at login and notification switches live on the Ready screen
 
 ## Supported Backends
 
@@ -183,6 +187,12 @@ The app name is **MagnetRelay** (no space). `CFBundleName` and `CFBundleDisplayN
 
 ### Window Owner Name Matches CFBundleName
 The Quartz window owner name (used by `Tests/window_capture.py`) is determined by `CFBundleName`. If you change the display name, update `Tests/window_capture.py` to match.
+
+## Identity
+
+- GitHub account: `n0dal` (the account was renamed; old links redirect). Repo: github.com/n0dal/MagnetRelay.
+- Commit as Henry Cuevas, `81403084+n0dal@users.noreply.github.com`.
+- No Co-Authored-By trailers on commits.
 
 ## App Store Notes
 
