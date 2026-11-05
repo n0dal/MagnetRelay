@@ -144,7 +144,7 @@ open "magnet:?xt=urn:btih:TEST&dn=TestFile"
 ./Tests/screenshot.sh my_feature
 ```
 
-Available tests: `first_launch`, `normal_settings`, `client_qbittorrent`, `client_transmission`, `client_deluge`, `client_rtorrent`, `client_synology`, `https_enabled`, `empty_config`
+Available tests: `first_launch`, `client_qbittorrent`, `client_transmission`, `client_deluge`, `client_rtorrent`, `client_synology`, `signin_deluge`, `signin_error`, `ready`, `ready_unchecked`, `ready_dark`
 
 ## Important Notes
 

@@ -1,16 +1,20 @@
 // Renders MagnetRelay brand art with AppKit/CoreGraphics.
 //
 //   swift tools/render_brand.swift <repo-root>
+//   swift tools/render_brand.swift --appstore <repo-root>
 //
 // Writes:
 //   MagnetRelay/Assets.xcassets/AppIcon.appiconset/icon_*.png   (16…1024 px, existing filenames)
 //   assets/readme/hero-light.png, assets/readme/hero-dark.png  (1600×560)
 //   assets/brand/magnetrelay-mark.svg                          (reference copy of the icon)
+// With --appstore, only:
+//   assets/appstore/screenshot_1280x800.png, screenshot_1440x900.png (Ready window on the background)
 //
 // This drawing code is the source of truth; the SVG is a reference copy. The glyph geometry
 // matches MagnetRelay/Design/MagnetMark.swift (24×24 design space, U "M6 4v8a6 6 0 0 0 12 0V4",
 // tips "M6 4h3M15 4h3", stroke 2.6, round caps, glyph box 58% of the tile).
-// The hero needs Tests/screenshots/ready.png and ready_dark.png (from Tests/visual_tests.sh).
+// The hero and App Store images need Tests/screenshots/ready.png (and ready_dark.png for the hero),
+// from Tests/visual_tests.sh.
 
 import AppKit
 import SwiftUI
@@ -202,33 +206,10 @@ func renderIcon(pixels: Int) -> CGContext {
     return ctx
 }
 
-// MARK: - Hero
+// MARK: - Window screenshot
 
-func drawText(_ ctx: CGContext, _ string: String, at origin: CGPoint, font: NSFont, color: CGColor,
-              kern: CGFloat = 0) -> CGSize {
-    let attributed = NSAttributedString(string: string, attributes: [
-        .font: font,
-        .foregroundColor: NSColor(cgColor: color)!,
-        .kern: kern,
-    ])
-    NSGraphicsContext.saveGraphicsState()
-    NSGraphicsContext.current = NSGraphicsContext(cgContext: ctx, flipped: true)
-    attributed.draw(at: origin)
-    NSGraphicsContext.restoreGraphicsState()
-    return attributed.size()
-}
-
-func renderHero(palette: Palette, screenshot: CGImage, dark: Bool) -> CGContext {
-    let size = CGSize(width: 1600, height: 560)
-    let ctx = makeContext(width: Int(size.width), height: Int(size.height))
-    ctx.setFillColor(palette.background)
-    ctx.fill(CGRect(origin: .zero, size: size))
-
-    // Right: the Ready window, scaled so it sits with a 56px margin top and bottom.
-    let margin: CGFloat = 56
-    let shotHeight = size.height - margin * 2
-    let shotWidth = shotHeight * CGFloat(screenshot.width) / CGFloat(screenshot.height)
-    let shot = CGRect(x: size.width - 112 - shotWidth, y: margin, width: shotWidth, height: shotHeight)
+/// Draws a window capture clipped to a 12px continuous radius, with one soft shadow and a hairline.
+func drawWindowShot(_ ctx: CGContext, _ screenshot: CGImage, in shot: CGRect, palette: Palette, dark: Bool) {
     let windowRadius: CGFloat = 12
     let windowPath = continuousRect(shot, radius: windowRadius)
 
@@ -257,6 +238,36 @@ func renderHero(palette: Palette, screenshot: CGImage, dark: Bool) -> CGContext 
     ctx.setLineWidth(1)
     ctx.strokePath()
     ctx.restoreGState()
+}
+
+// MARK: - Hero
+
+func drawText(_ ctx: CGContext, _ string: String, at origin: CGPoint, font: NSFont, color: CGColor,
+              kern: CGFloat = 0) -> CGSize {
+    let attributed = NSAttributedString(string: string, attributes: [
+        .font: font,
+        .foregroundColor: NSColor(cgColor: color)!,
+        .kern: kern,
+    ])
+    NSGraphicsContext.saveGraphicsState()
+    NSGraphicsContext.current = NSGraphicsContext(cgContext: ctx, flipped: true)
+    attributed.draw(at: origin)
+    NSGraphicsContext.restoreGraphicsState()
+    return attributed.size()
+}
+
+func renderHero(palette: Palette, screenshot: CGImage, dark: Bool) -> CGContext {
+    let size = CGSize(width: 1600, height: 560)
+    let ctx = makeContext(width: Int(size.width), height: Int(size.height))
+    ctx.setFillColor(palette.background)
+    ctx.fill(CGRect(origin: .zero, size: size))
+
+    // Right: the Ready window, scaled so it sits with a 56px margin top and bottom.
+    let margin: CGFloat = 56
+    let shotHeight = size.height - margin * 2
+    let shotWidth = shotHeight * CGFloat(screenshot.width) / CGFloat(screenshot.height)
+    let shot = CGRect(x: size.width - 112 - shotWidth, y: margin, width: shotWidth, height: shotHeight)
+    drawWindowShot(ctx, screenshot, in: shot, palette: palette, dark: dark)
 
     // Left: mark, name, pitch — a block vertically centred on the canvas.
     let left: CGFloat = 112
@@ -279,6 +290,21 @@ func renderHero(palette: Palette, screenshot: CGImage, dark: Bool) -> CGContext 
     y += titleHeight + gapTitlePitch
     _ = drawText(ctx, "Click a magnet link. It lands on your home server.", at: CGPoint(x: left - 1, y: y),
                  font: pitchFont, color: palette.secondary)
+    return ctx
+}
+
+// MARK: - App Store
+
+/// The window centred on the light background, its height 78% of the canvas (rounded to whole pixels).
+func renderAppStore(width: Int, height: Int, screenshot: CGImage) -> CGContext {
+    let ctx = makeContext(width: width, height: height)
+    ctx.setFillColor(Palette.light.background)
+    ctx.fill(CGRect(x: 0, y: 0, width: width, height: height))
+    let shotHeight = (CGFloat(height) * 0.78).rounded()
+    let shotWidth = (shotHeight * CGFloat(screenshot.width) / CGFloat(screenshot.height)).rounded()
+    let shot = CGRect(x: ((CGFloat(width) - shotWidth) / 2).rounded(), y: ((CGFloat(height) - shotHeight) / 2).rounded(),
+                      width: shotWidth, height: shotHeight)
+    drawWindowShot(ctx, screenshot, in: shot, palette: .light, dark: false)
     return ctx
 }
 
@@ -308,12 +334,27 @@ func iconSVG() -> String {
 
 // MARK: - Main
 
-let args = CommandLine.arguments
-guard args.count == 2 else {
-    FileHandle.standardError.write("usage: swift tools/render_brand.swift <repo-root>\n".data(using: .utf8)!)
+var args = Array(CommandLine.arguments.dropFirst())
+let appStoreOnly = args.first == "--appstore"
+if appStoreOnly { args.removeFirst() }
+guard args.count == 1 else {
+    FileHandle.standardError.write("usage: swift tools/render_brand.swift [--appstore] <repo-root>\n".data(using: .utf8)!)
     exit(2)
 }
-let root = URL(fileURLWithPath: args[1], isDirectory: true)
+let root = URL(fileURLWithPath: args[0], isDirectory: true)
+let shots = root.appendingPathComponent("Tests/screenshots", isDirectory: true)
+
+if appStoreOnly {
+    let appStoreDir = root.appendingPathComponent("assets/appstore", isDirectory: true)
+    try! FileManager.default.createDirectory(at: appStoreDir, withIntermediateDirectories: true)
+    let ready = loadImage(shots.appendingPathComponent("ready.png"))
+    for (w, h) in [(1280, 800), (1440, 900)] {
+        writePNG(renderAppStore(width: w, height: h, screenshot: ready),
+                 to: appStoreDir.appendingPathComponent("screenshot_\(w)x\(h).png"))
+    }
+    exit(0)
+}
+
 let iconDir = root.appendingPathComponent("MagnetRelay/Assets.xcassets/AppIcon.appiconset", isDirectory: true)
 let readmeDir = root.appendingPathComponent("assets/readme", isDirectory: true)
 let brandDir = root.appendingPathComponent("assets/brand", isDirectory: true)
@@ -332,7 +373,6 @@ for (name, pixels) in iconFiles {
     writePNG(renderIcon(pixels: pixels), to: iconDir.appendingPathComponent(name))
 }
 
-let shots = root.appendingPathComponent("Tests/screenshots", isDirectory: true)
 writePNG(renderHero(palette: .light, screenshot: loadImage(shots.appendingPathComponent("ready.png")), dark: false),
          to: readmeDir.appendingPathComponent("hero-light.png"))
 writePNG(renderHero(palette: .dark, screenshot: loadImage(shots.appendingPathComponent("ready_dark.png")), dark: true),

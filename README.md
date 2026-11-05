@@ -25,7 +25,7 @@
 ---
 
 <p align="center">
-  <img src="assets/screenshot-main.png" alt="MagnetRelay Screenshot" width="400">
+  <img src="assets/screenshots/ready.png" alt="MagnetRelay Ready screen" width="400">
 </p>
 
 ## What is MagnetRelay?
@@ -88,7 +88,7 @@ cp -r ~/Library/Developer/Xcode/DerivedData/MagnetRelay-*/Build/Products/Debug/M
 4. **Click** any magnet link — it's automatically sent to your server!
 
 <p align="center">
-  <img src="assets/screenshot-configured.png" alt="Configured Settings" width="500">
+  <img src="assets/screenshots/address.png" alt="Server address step" width="400">
 </p>
 
 ### Menu Bar
