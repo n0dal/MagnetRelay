@@ -18,6 +18,7 @@ targets:
       - path: MagnetRelay
         excludes:
           - "**/.DS_Store"
+          - "**/.claude/**"
     settings:
       PRODUCT_BUNDLE_IDENTIFIER: com.magnetrelay.app
       INFOPLIST_FILE: MagnetRelay/Info.plist
