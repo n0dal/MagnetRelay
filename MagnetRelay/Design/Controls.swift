@@ -176,8 +176,10 @@ struct StatusPill: View {
         }
         .padding(.horizontal, 10)
         .padding(.vertical, 4)
-        .background(Capsule().fill(Color.Relay.card))
-        .overlay(Capsule().strokeBorder(Color.Relay.hairline, lineWidth: RelayMetrics.hairlineWidth))
+        // Circular, not continuous: a continuous capsule's hairline leaves a stray vertical tick
+        // just outside each end cap.
+        .background(Capsule(style: .circular).fill(Color.Relay.card))
+        .overlay(Capsule(style: .circular).strokeBorder(Color.Relay.hairline, lineWidth: RelayMetrics.hairlineWidth))
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(isReady ? "Connected. \(text)" : text)
     }

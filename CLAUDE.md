@@ -148,7 +148,7 @@ open "magnet:?xt=urn:btih:TEST&dn=TestFile"
 ./Tests/screenshot.sh my_feature
 ```
 
-Captures are the panel alone (no shadow, transparent outside the rounded corners). README screenshots, hero, social card and App Store images: see `docs/DEVELOPMENT.md`.
+Raw captures in `Tests/screenshots/` (from these tests or the screenshot harness) are the panel alone with no shadow, transparent outside the rounded corners; they feed `tools/render_brand.swift`. The committed README screenshots in `assets/screenshots/` do have a soft shadow on a transparent canvas. Details, plus the hero, social card and App Store images: `docs/DEVELOPMENT.md`.
 
 Available tests: `first_launch`, `client_qbittorrent`, `client_transmission`, `client_deluge`, `client_rtorrent`, `client_synology`, `signin_deluge`, `signin_error`, `ready`, `ready_unchecked`, `ready_dark`
 

@@ -44,7 +44,7 @@ Open it again from the menu bar under **Settings…**. It's a small panel that g
 The last five links you sent stay on your Mac. Pick one from **Recent links**, or from the menu bar, and it goes to your server again.
 
 <p align="center">
-  <img src="assets/screenshots/recent-links.png" width="440" alt="Recent links: the last five links, each one click away from being sent again">
+  <img src="assets/screenshots/recent-links.png" width="420" alt="Recent links: the last five links, each one click away from being sent again">
 </p>
 
 ## Works with
