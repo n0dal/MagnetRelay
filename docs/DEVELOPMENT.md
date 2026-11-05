@@ -33,6 +33,7 @@ MagnetRelay is a menu bar app (`LSUIElement`), Swift 5.9 and SwiftUI, macOS 13+.
 | Fake Synology server | `python3 Tests/mock_synology.py`, then host `localhost`, port 5000, HTTPS off, user `admin`, password `password123` |
 | Visual tests | `./Tests/visual_tests.sh` or `./Tests/visual_tests.sh ready` |
 | Quick screenshot | `./Tests/screenshot.sh my_feature` |
+| Rebuild README screenshots | `./tools/screenshots/build.sh` (no permissions needed; never touches your real settings) |
 | Rebuild icon, README hero and social card | `swift tools/render_brand.swift .` |
 | Rebuild App Store screenshots | `swift tools/render_brand.swift --appstore .` |
 
@@ -42,8 +43,8 @@ Visual tests need Screen Recording, Accessibility and Automation permission for 
 
 Every picture shows the settings panel alone: no title bar, no window buttons, 16pt continuous corners.
 
-- **Raw captures.** `Tests/visual_tests.sh` writes them to `Tests/screenshots/` (gitignored) without the system shadow, so the area outside the corners is transparent. `ready.png` and `ready_dark.png` feed `tools/render_brand.swift`, which draws the panel shape, one soft shadow and a hairline itself.
-- **README screenshots** (`assets/screenshots/`): `client`, `address`, `signin`, `ready`, `ready-dark` and `recent-links` (Ready with the Recent links popover open, drawn above the button, where macOS puts it when there is no room below). They are 2x, the panel on a transparent canvas with a 28pt margin and one soft shadow. Use real-looking values (address `192.168.0.100`, port `8080`, user `admin`, a filled password) so Continue and Connect show enabled, the current version in the footer (the capture needs an Info.plist for it to show), and open-source names (Linux ISOs, Blender films) in Recent links.
+- **Raw captures.** `./tools/screenshots/build.sh` (or `Tests/visual_tests.sh` on a signed build) writes them to `Tests/screenshots/` (gitignored) without the system shadow, so the area outside the corners is transparent. `ready.png` and `ready_dark.png` feed `tools/render_brand.swift`, which draws the panel shape, one soft shadow and a hairline itself.
+- **README screenshots** (`assets/screenshots/`), written by `./tools/screenshots/build.sh`: `client`, `address`, `signin`, `ready`, `ready-dark` and `recent-links` (Ready with the Recent links popover open, drawn above the button, where macOS puts it when there is no room below). They are 2x, the panel on a transparent canvas with a 28pt margin and one soft shadow. Use real-looking values (address `192.168.0.100`, port `8080`, user `admin`, a filled password) so Continue and Connect show enabled, the current version in the footer (the capture needs an Info.plist for it to show), and open-source names (Linux ISOs, Blender films) in Recent links.
 - **Hero** (`assets/readme/hero-*.png`, 1600×560), **social card** (`assets/social/social-preview.png`, 1280×640) and **App Store** images come from `swift tools/render_brand.swift`. The social card is uploaded by hand under the repo's Settings → Social preview.
 - **App icon.** `render_brand.swift` also writes the icon PNGs; they should come out byte-identical unless the mark changes. Check with `git status` after a render.
 
