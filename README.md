@@ -105,6 +105,10 @@ xcodebuild -project MagnetRelay.xcodeproj -scheme MagnetRelay -configuration Deb
 
 The repo map, tests, screenshot tools and gotchas are in [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md).
 
-## License
+## License & disclaimer
 
-[MIT](LICENSE). MagnetRelay forwards links to a server you run and downloads nothing itself. Use it for what magnet links are good at, like Linux ISOs and open-source releases.
+[MIT](LICENSE). Please read the [disclaimer](DISCLAIMER.md) before use. Security issues: see [SECURITY.md](SECURITY.md). What the app is built on: [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+
+MagnetRelay forwards links to a server you run and downloads nothing itself. What your server downloads is up to you; use it for content you have the right to get, like Linux ISOs and open-source releases.
+
+MagnetRelay is not affiliated with, endorsed by, or sponsored by Apple, the qBittorrent, Transmission, Deluge or rTorrent projects, or Synology Inc. All trademarks belong to their respective owners.
