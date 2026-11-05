@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Quick screenshot helper for MagnetRelay
-# Captures the app window with proper rounded corners and shadow
+# Captures the settings panel (borderless, rounded corners) with its shadow; --no-shadow for the panel alone
 #
 # Usage: ./Tests/screenshot.sh [output_name]
 #   ./Tests/screenshot.sh                    # Saves to Tests/screenshots/quick.png

@@ -2,8 +2,9 @@
 """
 Window capture helper for MagnetRelay screenshots.
 
-Uses macOS Quartz framework to get proper window IDs for screenshot capture
-with rounded corners and shadows preserved.
+Uses macOS Quartz framework to get proper window IDs for screenshot capture.
+The settings window is a borderless panel, so a capture is the panel alone with
+its rounded corners; --no-shadow drops the system shadow (transparent corners).
 
 Usage:
     python3 window_capture.py --get-id              # Print window ID

@@ -1,8 +1,10 @@
 #!/bin/bash
 
 # Visual Tests for MagnetRelay
-# Captures one screenshot per screen state of the guided settings window (3 setup steps + Ready)
-# into Tests/screenshots/<test_name>.png, using proper window capture (rounded corners + shadow).
+# Captures one screenshot per screen state of the settings panel (3 setup steps + Ready) into
+# Tests/screenshots/<test_name>.png. The panel is borderless, so a capture is the panel alone:
+# no title bar, transparent outside its rounded corners, and taken without the system shadow
+# (tools/render_brand.swift draws its own shadow when it places the panel on the hero).
 #
 # Usage: ./Tests/visual_tests.sh [test_name]
 #   Run all tests:     ./Tests/visual_tests.sh
@@ -16,7 +18,11 @@
 # the tests never complete a Connect.
 #
 # After capturing, Tests/screenshots/ready.png and ready_dark.png feed
-# `swift tools/render_brand.swift .` (README hero) and `swift tools/render_brand.swift --appstore .`.
+# `swift tools/render_brand.swift .` (README hero, social card) and
+# `swift tools/render_brand.swift --appstore .`.
+#
+# On the Ready screen the panel closes when MagnetRelay stops being the active app (click-away),
+# so keep other apps out of the way while a Ready test runs.
 
 set -e
 
@@ -196,7 +202,7 @@ EOF
     sleep 0.6
 }
 
-# Take screenshot with proper window capture (rounded corners + shadow)
+# Capture the panel alone: window capture without the shadow keeps its rounded, transparent corners
 take_screenshot() {
     local name=$1
     local filename="${SCREENSHOT_DIR}/${name}.png"
@@ -207,7 +213,7 @@ take_screenshot() {
     sleep 0.3
 
     # Use Python helper for proper window capture
-    if python3 "$SCRIPT_DIR/window_capture.py" --capture "$filename" 2>/dev/null; then
+    if python3 "$SCRIPT_DIR/window_capture.py" --capture "$filename" --no-shadow 2>/dev/null; then
         echo -e "${GREEN}✓${NC} Screenshot: $filename"
         return 0
     fi
@@ -216,7 +222,7 @@ take_screenshot() {
     local window_id=$(python3 "$SCRIPT_DIR/window_capture.py" --get-id 2>/dev/null)
 
     if [ -n "$window_id" ]; then
-        screencapture -l"$window_id" -x "$filename"
+        screencapture -l"$window_id" -o -x "$filename"
         echo -e "${GREEN}✓${NC} Screenshot: $filename"
         return 0
     fi

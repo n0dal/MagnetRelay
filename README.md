@@ -1,61 +1,65 @@
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="assets/readme/hero-dark.png">
-  <img src="assets/readme/hero-light.png" width="100%" alt="MagnetRelay: click a magnet link and it lands on your home server">
+  <img src="assets/readme/hero-light.png" width="100%" alt="MagnetRelay: the Ready panel next to the line 'Click a magnet link. It lands on your home server.'">
 </picture>
 
 # MagnetRelay
 
 **Click a magnet link. It lands on your home server.**
 
-MagnetRelay is a small menu bar app for macOS. It becomes your Mac's handler for `magnet:` links, so a click in any browser or mail app is sent straight to the download app on your NAS or home server.
+MagnetRelay is a small menu bar app for your Mac. It becomes the handler for `magnet:` links, so whatever you click in a browser or mail app goes straight to the download app on your NAS or home server.
 
-[Download](#download) · [How it works](#how-it-works) · [Supported clients](#supported-clients) · [Privacy](#privacy) · [FAQ](#faq) · [For tinkerers](#for-tinkerers)
-
----
-
-## Download
+## Get it
 
 **Mac App Store: coming soon.**
 <!-- TODO: App Store URL -->
 
-Or [build it from source](#for-tinkerers). Requires macOS 13 (Ventura) or newer.
+Or [build it from source](#build-from-source). MagnetRelay needs macOS 13 Ventura or later.
 
 ## How it works
 
-1. **Pick your client.** Choose the app that runs on your server or NAS.
-2. **Enter its address.** The one you would type in a browser to open its web page.
-3. **Sign in.** The same login you use on that web page. Your password is saved in your Keychain.
+1. **Pick your app.** The one that runs downloads on your server or NAS.
+2. **Enter its address.** The one you'd type in a browser to open its web page.
+3. **Sign in.** The same login you use on that page. Your password goes in your Keychain.
 
 <p align="center">
-  <img src="assets/screenshots/client.png" width="260" alt="Step 1: choose your download client">
-  <img src="assets/screenshots/address.png" width="260" alt="Step 2: enter the server address and port">
-  <img src="assets/screenshots/signin.png" width="260" alt="Step 3: sign in with your username and password">
+  <img src="assets/screenshots/client.png" width="32%" alt="Step 1: choose qBittorrent, Transmission, Deluge, rTorrent or Synology">
+  <img src="assets/screenshots/address.png" width="32%" alt="Step 2: address 192.168.0.100, port 8080">
+  <img src="assets/screenshots/signin.png" width="32%" alt="Step 3: sign in with your username and password">
 </p>
 
-When the connection test passes you are done. From then on, clicking a magnet link anywhere on your Mac sends it to your server and shows a notification. The menu bar keeps your last 5 links, so you can send one again.
+MagnetRelay checks the connection, and you're set. From now on every magnet link you click goes to your server, and a notification tells you it was sent.
 
 <p align="center">
-  <img src="assets/screenshots/ready.png" width="340" alt="The Ready screen showing the connected server">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/screenshots/ready-dark.png">
+    <img src="assets/screenshots/ready.png" width="420" alt="The Ready panel: connected to qBittorrent at 192.168.0.100:8080">
+  </picture>
 </p>
 
-## Supported clients
+Open it again from the menu bar under **Settings…**. It's a small panel that gets out of your way: press Esc, or just click somewhere else.
 
-| Client | Default port | Notes |
+## Send it again
+
+The last five links you sent stay on your Mac. Pick one from **Recent links**, or from the menu bar, and it goes to your server again.
+
+<p align="center">
+  <img src="assets/screenshots/recent-links.png" width="440" alt="Recent links: the last five links, each one click away from being sent again">
+</p>
+
+## Works with
+
+| App | Default port | Good to know |
 |---|---|---|
-| qBittorrent | 8080 | Web UI must be switched on. |
-| Transmission | 9091 | Remote access must be switched on. |
-| Deluge | 8112 | Password only, there is no username. The Web UI must be connected to a daemon; if it is not, MagnetRelay connects it to the first host in the list. |
-| rTorrent | 8080 | Reached through an XML-RPC web front end. The path is `/RPC2` and is filled in for you. |
-| Synology Download Station | 5000 (HTTP), 5001 (HTTPS) | HTTPS is required outside your home network. Plain HTTP is allowed for local and private addresses, and for single-word names like `diskstation`. |
+| qBittorrent | 8080 | Switch on the Web UI. |
+| Transmission | 9091 | Switch on remote access. |
+| Deluge | 8112 | Password only, no username. If the Web UI isn't connected to a daemon, MagnetRelay connects it to the first host in the list. |
+| rTorrent | 8080 | Through an XML-RPC web front end. The path `/RPC2` is filled in for you. |
+| Synology Download Station | 5000 (HTTP), 5001 (HTTPS) | HTTPS is required outside your home network. Plain HTTP is fine for local and private addresses, `.local` names and single-word names like `diskstation`. |
 
 ## Privacy
 
-- No analytics, no tracking, no account.
-- The only network connection is to the server you set up.
-- Settings stay on your Mac; the last 5 links are kept locally so you can resend them.
-- Your password lives in the macOS Keychain.
-
-Read the full [Privacy Policy](PRIVACY.md).
+MagnetRelay has no analytics, no tracking and no account. It only talks to the server you set up. Your settings and recent links stay on your Mac, and your password stays in the macOS Keychain. The details are in the [Privacy Policy](PRIVACY.md).
 
 ## FAQ
 
@@ -87,9 +91,9 @@ MagnetRelay only sends your password over plain HTTP on your home network: local
 
 </details>
 
-## For tinkerers
+## Build from source
 
-MagnetRelay is Swift and SwiftUI, with no third-party dependencies. The Xcode project is generated by [XcodeGen](https://github.com/yonaskolb/XcodeGen).
+MagnetRelay is Swift and SwiftUI with no third-party dependencies. You need Xcode and [XcodeGen](https://github.com/yonaskolb/XcodeGen).
 
 ```bash
 git clone https://github.com/n0dal/MagnetRelay.git
@@ -99,15 +103,8 @@ xcodegen generate
 xcodebuild -project MagnetRelay.xcodeproj -scheme MagnetRelay -configuration Debug build
 ```
 
-Run the tests (unsigned, no developer account needed):
-
-```bash
-xcodebuild test -project MagnetRelay.xcodeproj -scheme MagnetRelay -destination 'platform=macOS' \
-  CODE_SIGN_IDENTITY="-" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO -quiet
-```
-
-`python3 Tests/mock_synology.py` starts a fake Synology server for trying the app without hardware, and `Tests/visual_tests.sh` captures a screenshot of every screen. Visual tests should run against a signed build. The repo map, every command and the gotchas are in [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md).
+The repo map, tests, screenshot tools and gotchas are in [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md).
 
 ## License
 
-[MIT](LICENSE)
+[MIT](LICENSE). MagnetRelay forwards links to a server you run and downloads nothing itself. Use it for what magnet links are good at, like Linux ISOs and open-source releases.

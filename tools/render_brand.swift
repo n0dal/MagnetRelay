@@ -6,15 +6,18 @@
 // Writes:
 //   MagnetRelay/Assets.xcassets/AppIcon.appiconset/icon_*.png   (16…1024 px, existing filenames)
 //   assets/readme/hero-light.png, assets/readme/hero-dark.png  (1600×560)
+//   assets/social/social-preview.png                           (1280×640, GitHub social card)
 //   assets/brand/magnetrelay-mark.svg                          (reference copy of the icon)
 // With --appstore, only:
-//   assets/appstore/screenshot_1280x800.png, screenshot_1440x900.png (Ready window on the background)
+//   assets/appstore/screenshot_1280x800.png, screenshot_1440x900.png (Ready panel on the background)
 //
 // This drawing code is the source of truth; the SVG is a reference copy. The glyph geometry
 // matches MagnetRelay/Design/MagnetMark.swift (24×24 design space, U "M6 4v8a6 6 0 0 0 12 0V4",
 // tips "M6 4h3M15 4h3", stroke 2.6, round caps, glyph box 58% of the tile).
-// The hero and App Store images need Tests/screenshots/ready.png (and ready_dark.png for the hero),
-// from Tests/visual_tests.sh.
+// The hero, social card and App Store images need Tests/screenshots/ready.png (and ready_dark.png
+// for the dark hero): a capture of the settings panel alone, transparent outside its rounded corners
+// and without the system shadow (Tests/visual_tests.sh captures it that way). The panel shape,
+// shadow and hairline are drawn here.
 
 import AppKit
 import SwiftUI
@@ -72,7 +75,7 @@ func writePNG(_ ctx: CGContext, to url: URL) {
 func loadImage(_ url: URL) -> CGImage {
     guard let source = CGImageSourceCreateWithURL(url as CFURL, nil),
           let image = CGImageSourceCreateImageAtIndex(source, 0, nil) else {
-        fatalError("missing image: \(url.path) — run Tests/visual_tests.sh to capture the Ready screen")
+        fatalError("missing image: \(url.path) — capture the Ready panel first (see docs/DEVELOPMENT.md)")
     }
     return image
 }
@@ -206,35 +209,43 @@ func renderIcon(pixels: Int) -> CGContext {
     return ctx
 }
 
-// MARK: - Window screenshot
+// MARK: - Panel screenshot
 
-/// Draws a window capture clipped to a 12px continuous radius, with one soft shadow and a hairline.
-func drawWindowShot(_ ctx: CGContext, _ screenshot: CGImage, in shot: CGRect, palette: Palette, dark: Bool) {
-    let windowRadius: CGFloat = 12
-    let windowPath = continuousRect(shot, radius: windowRadius)
+/// The settings panel in points (RelayMetrics.windowSize) and its corner radius
+/// (RelayMetrics.panelCornerRadius). Captures are drawn at any size; the radius scales with them.
+let panelPoints = CGSize(width: 460, height: 424)
+let panelCornerPoints: CGFloat = 16
 
-    // One soft shadow under the window.
+/// Draws a capture of the borderless settings panel: 16pt continuous corners (scaled to the drawn
+/// size), one soft shadow and a hairline edge. No title bar or window buttons.
+func drawPanelShot(_ ctx: CGContext, _ screenshot: CGImage, in shot: CGRect, palette: Palette, dark: Bool) {
+    let radius = panelCornerPoints * shot.width / panelPoints.width
+    let panelPath = continuousRect(shot, radius: radius)
+
+    // One soft shadow under the panel.
     ctx.saveGState()
-    ctx.setShadow(offset: CGSize(width: 0, height: 14), blur: 44,
-                  color: CGColor(gray: 0, alpha: dark ? 0.45 : 0.13))
-    ctx.addPath(windowPath)
+    ctx.setShadow(offset: CGSize(width: 0, height: 16), blur: 48,
+                  color: CGColor(gray: 0, alpha: dark ? 0.50 : 0.14))
+    ctx.addPath(panelPath)
     ctx.setFillColor(palette.background)
     ctx.fillPath()
     ctx.restoreGState()
 
     ctx.saveGState()
-    ctx.addPath(windowPath)
+    ctx.addPath(panelPath)
     ctx.clip()
+    ctx.setFillColor(palette.background)
+    ctx.fill(shot)
     // The context is flipped; draw the image upright.
     ctx.translateBy(x: 0, y: shot.maxY)
     ctx.scaleBy(x: 1, y: -1)
     ctx.draw(screenshot, in: CGRect(x: shot.minX, y: 0, width: shot.width, height: shot.height))
     ctx.restoreGState()
 
-    // Hairline around the window.
+    // Hairline edge.
     ctx.saveGState()
-    ctx.addPath(continuousRect(shot.insetBy(dx: 0.5, dy: 0.5), radius: windowRadius - 0.5))
-    ctx.setStrokeColor(dark ? CGColor(gray: 1, alpha: 0.14) : CGColor(gray: 0, alpha: 0.12))
+    ctx.addPath(continuousRect(shot.insetBy(dx: 0.5, dy: 0.5), radius: radius - 0.5))
+    ctx.setStrokeColor(dark ? CGColor(gray: 1, alpha: 0.12) : CGColor(gray: 0, alpha: 0.09))
     ctx.setLineWidth(1)
     ctx.strokePath()
     ctx.restoreGState()
@@ -256,46 +267,92 @@ func drawText(_ ctx: CGContext, _ string: String, at origin: CGPoint, font: NSFo
     return attributed.size()
 }
 
+/// One line of the left-hand text block: string, font, colour, gap above, tracking (em) and the
+/// optical inset (SF's side bearing grows with size, so big type is nudged left to align).
+struct TextLine {
+    let text: String
+    let font: NSFont
+    let color: CGColor
+    var gapAbove: CGFloat = 0
+    var trackingEm: CGFloat = 0
+    var optical: CGFloat = 0
+}
+
+func lineHeight(_ font: NSFont) -> CGFloat { ceil(font.ascender - font.descender) }
+
+/// Mark above a stack of lines, the whole block vertically centred in `height`, left edge at `left`.
+func drawTextBlock(_ ctx: CGContext, left: CGFloat, height: CGFloat, markSize: CGFloat, gapMark: CGFloat,
+                   lines: [TextLine], dark: Bool, palette: Palette) {
+    let blockHeight = markSize + gapMark + lines.reduce(0) { $0 + $1.gapAbove + lineHeight($1.font) }
+    var y = ((height - blockHeight) / 2).rounded()
+    drawMark(ctx, tile: CGRect(x: left, y: y, width: markSize, height: markSize), radius: markSize * 0.24,
+             border: dark ? palette.hairline : nil)
+    y += markSize + gapMark
+    for line in lines {
+        y += line.gapAbove
+        _ = drawText(ctx, line.text, at: CGPoint(x: left - line.optical, y: y), font: line.font, color: line.color,
+                     kern: line.trackingEm * line.font.pointSize)
+        y += lineHeight(line.font)
+    }
+}
+
+let clientsLine = "qBittorrent · Transmission · Deluge · rTorrent · Synology"
+
+/// README hero: mark, name, pitch and the supported clients on the left; the Ready panel on the right.
 func renderHero(palette: Palette, screenshot: CGImage, dark: Bool) -> CGContext {
     let size = CGSize(width: 1600, height: 560)
     let ctx = makeContext(width: Int(size.width), height: Int(size.height))
     ctx.setFillColor(palette.background)
     ctx.fill(CGRect(origin: .zero, size: size))
 
-    // Right: the Ready window, scaled so it sits with a 56px margin top and bottom.
+    // Right: the Ready panel, 56px clear of the top and bottom edges.
     let margin: CGFloat = 56
     let shotHeight = size.height - margin * 2
-    let shotWidth = shotHeight * CGFloat(screenshot.width) / CGFloat(screenshot.height)
-    let shot = CGRect(x: size.width - 112 - shotWidth, y: margin, width: shotWidth, height: shotHeight)
-    drawWindowShot(ctx, screenshot, in: shot, palette: palette, dark: dark)
+    let shotWidth = (shotHeight * panelPoints.width / panelPoints.height).rounded()
+    let shot = CGRect(x: size.width - 120 - shotWidth, y: margin, width: shotWidth, height: shotHeight)
+    drawPanelShot(ctx, screenshot, in: shot, palette: palette, dark: dark)
 
-    // Left: mark, name, pitch — a block vertically centred on the canvas.
-    let left: CGFloat = 112
-    let markSize: CGFloat = 120
-    let titleFont = NSFont.systemFont(ofSize: 64, weight: .semibold)
-    let pitchFont = NSFont.systemFont(ofSize: 24, weight: .regular)
-    let titleHeight = ceil(titleFont.ascender - titleFont.descender)
-    let pitchHeight = ceil(pitchFont.ascender - pitchFont.descender)
-    let gapMarkTitle: CGFloat = 36
-    let gapTitlePitch: CGFloat = 10
-    let blockHeight = markSize + gapMarkTitle + titleHeight + gapTitlePitch + pitchHeight
-    var y = ((size.height - blockHeight) / 2).rounded()
+    drawTextBlock(ctx, left: 120, height: size.height, markSize: 104, gapMark: 34, lines: [
+        TextLine(text: "MagnetRelay", font: .systemFont(ofSize: 64, weight: .semibold), color: palette.ink,
+                 trackingEm: -0.02, optical: 3),
+        TextLine(text: "Click a magnet link. It lands on your home server.", font: .systemFont(ofSize: 25),
+                 color: palette.secondary, gapAbove: 8, optical: 1),
+        TextLine(text: clientsLine, font: .systemFont(ofSize: 16, weight: .medium),
+                 color: palette.secondary.copy(alpha: 0.75)!, gapAbove: 26),
+    ], dark: dark, palette: palette)
+    return ctx
+}
 
-    drawMark(ctx, tile: CGRect(x: left, y: y, width: markSize, height: markSize), radius: markSize * 0.24,
-             border: dark ? palette.hairline : nil)
-    y += markSize + gapMarkTitle
-    // Optical alignment: SF's side bearing at 64pt sits ~4px in from the box edge.
-    _ = drawText(ctx, "MagnetRelay", at: CGPoint(x: left - 3, y: y), font: titleFont, color: palette.ink,
-                 kern: -0.02 * 64)
-    y += titleHeight + gapTitlePitch
-    _ = drawText(ctx, "Click a magnet link. It lands on your home server.", at: CGPoint(x: left - 1, y: y),
-                 font: pitchFont, color: palette.secondary)
+// MARK: - Social card
+
+/// GitHub social preview (1280×640, shown as small as ~400px wide): large name and pitch on the
+/// left, the Ready panel on the right. Light only; GitHub shows one image in both themes.
+func renderSocial(screenshot: CGImage) -> CGContext {
+    let palette = Palette.light
+    let size = CGSize(width: 1280, height: 640)
+    let ctx = makeContext(width: Int(size.width), height: Int(size.height))
+    ctx.setFillColor(palette.background)
+    ctx.fill(CGRect(origin: .zero, size: size))
+
+    let margin: CGFloat = 64
+    let shotHeight = size.height - margin * 2
+    let shotWidth = (shotHeight * panelPoints.width / panelPoints.height).rounded()
+    let shot = CGRect(x: size.width - 80 - shotWidth, y: margin, width: shotWidth, height: shotHeight)
+    drawPanelShot(ctx, screenshot, in: shot, palette: palette, dark: false)
+
+    let pitchFont = NSFont.systemFont(ofSize: 34)
+    drawTextBlock(ctx, left: 88, height: size.height, markSize: 104, gapMark: 34, lines: [
+        TextLine(text: "MagnetRelay", font: .systemFont(ofSize: 70, weight: .semibold), color: palette.ink,
+                 trackingEm: -0.02, optical: 4),
+        TextLine(text: "Click a magnet link.", font: pitchFont, color: palette.secondary, gapAbove: 10, optical: 1),
+        TextLine(text: "It lands on your home server.", font: pitchFont, color: palette.secondary, optical: 1),
+    ], dark: false, palette: palette)
     return ctx
 }
 
 // MARK: - App Store
 
-/// The window centred on the light background, its height 78% of the canvas (rounded to whole pixels).
+/// The Ready panel centred on the light background, its height 78% of the canvas (rounded to whole pixels).
 func renderAppStore(width: Int, height: Int, screenshot: CGImage) -> CGContext {
     let ctx = makeContext(width: width, height: height)
     ctx.setFillColor(Palette.light.background)
@@ -304,7 +361,7 @@ func renderAppStore(width: Int, height: Int, screenshot: CGImage) -> CGContext {
     let shotWidth = (shotHeight * CGFloat(screenshot.width) / CGFloat(screenshot.height)).rounded()
     let shot = CGRect(x: ((CGFloat(width) - shotWidth) / 2).rounded(), y: ((CGFloat(height) - shotHeight) / 2).rounded(),
                       width: shotWidth, height: shotHeight)
-    drawWindowShot(ctx, screenshot, in: shot, palette: .light, dark: false)
+    drawPanelShot(ctx, screenshot, in: shot, palette: .light, dark: false)
     return ctx
 }
 
@@ -377,6 +434,11 @@ writePNG(renderHero(palette: .light, screenshot: loadImage(shots.appendingPathCo
          to: readmeDir.appendingPathComponent("hero-light.png"))
 writePNG(renderHero(palette: .dark, screenshot: loadImage(shots.appendingPathComponent("ready_dark.png")), dark: true),
          to: readmeDir.appendingPathComponent("hero-dark.png"))
+
+let socialDir = root.appendingPathComponent("assets/social", isDirectory: true)
+try! FileManager.default.createDirectory(at: socialDir, withIntermediateDirectories: true)
+writePNG(renderSocial(screenshot: loadImage(shots.appendingPathComponent("ready.png"))),
+         to: socialDir.appendingPathComponent("social-preview.png"))
 
 let svgURL = brandDir.appendingPathComponent("magnetrelay-mark.svg")
 try! iconSVG().write(to: svgURL, atomically: true, encoding: .utf8)
