@@ -72,6 +72,57 @@ final class BackendTests: XCTestCase {
         } catch { XCTFail("\(error)") }
     }
 
+    // MARK: qBittorrent 5.2+ (Web API 2.14+): login answers 204 with no body, bad login 401,
+    // torrents/add answers JSON counts with 202 (pending) or 409 (all failed).
+
+    func testQBittorrent52LoginNoContentThenAdd() async throws {
+        StubURLProtocol.handler = { req in
+            if req.url!.path == "/api/v2/auth/login" {
+                return self.response(req, "", status: 204, headers: ["Set-Cookie": "QBT_SID_8080=xyz; HttpOnly; path=/"])
+            }
+            return self.response(req, #"{"success_count":1,"pending_count":0,"failure_count":0,"added_torrent_ids":["0123"]}"#)
+        }
+        try await QBittorrentBackend(session: StubURLProtocol.session()).addMagnet(M, to: endpoint())
+        let reqs = StubURLProtocol.requests
+        XCTAssertEqual(reqs.count, 2)
+        XCTAssertEqual(reqs[1].value(forHTTPHeaderField: "Cookie"), "QBT_SID_8080=xyz")
+    }
+
+    func testQBittorrent52TestConnectionAcceptsNoContent() async throws {
+        StubURLProtocol.handler = { self.response($0, "", status: 204) }
+        try await QBittorrentBackend(session: StubURLProtocol.session()).testConnection(endpoint())
+    }
+
+    func testQBittorrent52BadLogin401ThrowsAuth() async {
+        StubURLProtocol.handler = { self.response($0, "Unauthorized", status: 401) }
+        do {
+            try await QBittorrentBackend(session: StubURLProtocol.session()).testConnection(endpoint())
+            XCTFail("expected throw")
+        } catch BackendError.authenticationFailed {
+        } catch { XCTFail("\(error)") }
+    }
+
+    func testQBittorrent52AddAllFailed409Throws() async {
+        StubURLProtocol.handler = { req in
+            if req.url!.path == "/api/v2/auth/login" { return self.response(req, "", status: 204) }
+            return self.response(req, #"{"success_count":0,"pending_count":0,"failure_count":1,"added_torrent_ids":[]}"#, status: 409)
+        }
+        do {
+            try await QBittorrentBackend(session: StubURLProtocol.session()).addMagnet(M, to: endpoint())
+            XCTFail("expected throw")
+        } catch BackendError.serverError(let m) {
+            XCTAssertEqual(m, "qBittorrent rejected the link")
+        } catch { XCTFail("\(error)") }
+    }
+
+    func testQBittorrent52AddPending202Succeeds() async throws {
+        StubURLProtocol.handler = { req in
+            if req.url!.path == "/api/v2/auth/login" { return self.response(req, "", status: 204) }
+            return self.response(req, #"{"success_count":0,"pending_count":1,"failure_count":0,"added_torrent_ids":[]}"#, status: 202)
+        }
+        try await QBittorrentBackend(session: StubURLProtocol.session()).addMagnet(M, to: endpoint())
+    }
+
     // MARK: Transmission
 
     func testTransmissionSessionHandshake() async throws {
